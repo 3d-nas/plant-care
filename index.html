@@ -1,763 +1,796 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D NAS | مساعد النباتات الذكي</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D NAS | مساعد النباتات الذكي</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --forest: #2d4a1e;
+  --moss: #4a6b2f;
+  --sage: #7a9e4e;
+  --mint: #a8c97f;
+  --gold: #c9a84c;
+  --gold-light: #e8d08a;
+  --text-dark: #1a2e0d;
+  --white: #ffffff;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family:'Cairo',sans-serif;
+  background-color:#1a2e0d;
+  color:var(--text-dark);
+  overflow-x:hidden;
+  min-height:100vh;
+}
+.bg-canvas {
+  position:fixed; inset:0; z-index:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 10% 20%,rgba(74,107,47,.35) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 80% at 90% 80%,rgba(45,74,30,.4) 0%,transparent 55%),
+    radial-gradient(ellipse 100% 100% at 50% 50%,#0f1f08 0%,#1a2e0d 100%);
+}
+.bg-canvas::before {
+  content:''; position:absolute; inset:0;
+  background-image:
+    radial-gradient(circle 1px at 20% 30%,rgba(168,201,127,.3) 0%,transparent 1px),
+    radial-gradient(circle 1px at 75% 15%,rgba(201,168,76,.2) 0%,transparent 1px),
+    radial-gradient(circle 1px at 45% 70%,rgba(168,201,127,.2) 0%,transparent 1px),
+    radial-gradient(circle 1px at 85% 55%,rgba(201,168,76,.15) 0%,transparent 1px),
+    radial-gradient(circle 1px at 30% 85%,rgba(168,201,127,.25) 0%,transparent 1px);
+  animation:shimmer 8s ease-in-out infinite alternate;
+}
+@keyframes shimmer { from{opacity:.5} to{opacity:1} }
+.leaf {
+  position:fixed; opacity:.12;
+  animation:floatLeaf linear infinite;
+  pointer-events:none; z-index:1;
+}
+@keyframes floatLeaf {
+  0%{transform:translateY(100vh) rotate(0deg);opacity:0}
+  10%{opacity:.12} 90%{opacity:.08}
+  100%{transform:translateY(-120px) rotate(360deg);opacity:0}
+}
+.page {
+  position:relative; z-index:2;
+  max-width:1100px; margin:0 auto;
+  padding:30px 20px 60px;
+}
+/* HERO */
+.hero {
+  text-align:center; padding:70px 40px 60px;
+  margin-bottom:30px;
+  animation:fadeDown .9s ease both;
+}
+@keyframes fadeDown {
+  from{opacity:0;transform:translateY(-30px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes fadeUp {
+  from{opacity:0;transform:translateY(30px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.hero-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(201,168,76,.12);
+  border:1px solid rgba(201,168,76,.35);
+  color:var(--gold-light);
+  padding:7px 20px; border-radius:30px;
+  font-size:13px; letter-spacing:2px;
+  margin-bottom:25px; font-weight:600;
+}
+.hero h1 {
+  font-family:'Amiri',serif;
+  font-size:clamp(52px,8vw,90px);
+  line-height:1;
+  background:linear-gradient(135deg,#e8d08a 0%,#a8c97f 45%,#c9a84c 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text; margin-bottom:10px; letter-spacing:2px;
+}
+.hero-sub {
+  font-size:17px; color:rgba(168,201,127,.75);
+  max-width:450px; margin:0 auto 40px;
+  line-height:1.8; font-weight:300;
+}
+.hero-divider {
+  display:flex; align-items:center; justify-content:center;
+  gap:16px; margin:0 auto; max-width:300px;
+}
+.hero-divider-line {
+  flex:1; height:1px;
+  background:linear-gradient(90deg,transparent,rgba(201,168,76,.4),transparent);
+}
+.hero-divider-icon { color:var(--gold); font-size:18px; }
 
-        :root {
-            --green-dark: #2e4a1f;
-            --green-mid: #4a6b2d;
-            --green-light: #7b9e5a;
-            --gold: #c9a84c;
-            --cream: #fdfbf4;
-            --white: #ffffff;
-            --glass-bg: rgba(255, 255, 255, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.6);
-            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.04);
-            --shadow-md: 0 15px 30px rgba(0, 0, 0, 0.07);
-            --shadow-hover: 0 20px 35px rgba(0, 0, 0, 0.1);
-            --radius: 24px;
-            --transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-        }
+/* GLASS */
+.glass {
+  background:rgba(255,255,255,.06);
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(168,201,127,.15);
+  border-radius:28px;
+}
 
-        body {
-            font-family: 'Tajawal', 'Cairo', sans-serif;
-            background: linear-gradient(150deg, #eaf3e3 0%, #d4e2c9 40%, #f8f6ef 100%);
-            background-attachment: fixed;
-            min-height: 100vh;
-            padding: 20px;
-            color: #2c3a1f;
-            line-height: 1.6;
-        }
+/* TABS */
+.tabs {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:12px; margin-bottom:28px;
+  animation:fadeUp .7s .15s ease both;
+}
+.tab-btn {
+  padding:22px 10px; text-align:center; cursor:pointer;
+  transition:all .3s ease; position:relative; overflow:hidden;
+  border:none; background:rgba(255,255,255,.06);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(168,201,127,.15); border-radius:22px;
+}
+.tab-btn::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg,rgba(168,201,127,.08) 0%,transparent 60%);
+  opacity:0; transition:opacity .3s;
+}
+.tab-btn:hover { transform:translateY(-4px); border-color:rgba(201,168,76,.3); }
+.tab-btn:hover::before { opacity:1; }
+.tab-btn.active {
+  border-color:rgba(201,168,76,.5);
+  background:rgba(201,168,76,.1);
+}
+.tab-icon { font-size:28px; margin-bottom:8px; display:block; filter:drop-shadow(0 0 8px rgba(168,201,127,.4)); }
+.tab-label { font-size:12px; color:rgba(168,201,127,.7); font-weight:600; }
+.tab-btn.active .tab-label { color:var(--gold-light); }
 
-        .app-wrapper {
-            max-width: 1200px;
-            margin: auto;
-            background: var(--glass-bg);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border);
-            border-radius: 40px;
-            padding: 25px 30px 20px;
-            box-shadow: var(--shadow-md);
-        }
+/* PANELS */
+.panel { display:none; animation:fadeUp .4s ease both; }
+.panel.active { display:block; }
 
-        .navbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(74, 107, 45, 0.2);
-        }
+/* SECTION CARD */
+.section-card { margin-bottom:22px; padding:32px; animation:fadeUp .7s ease both; }
+.section-title {
+  display:flex; align-items:center; gap:12px;
+  font-family:'Amiri',serif; font-size:26px;
+  color:var(--gold-light); margin-bottom:22px;
+  padding-bottom:14px; border-bottom:1px solid rgba(168,201,127,.15);
+}
+.section-title-icon {
+  width:42px; height:42px;
+  background:linear-gradient(135deg,rgba(201,168,76,.2),rgba(168,201,127,.1));
+  border:1px solid rgba(201,168,76,.3); border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px; flex-shrink:0;
+}
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+/* SELECT */
+.select-wrapper { position:relative; margin-bottom:14px; }
+.select-wrapper::after {
+  content:'▼'; position:absolute; left:18px; top:50%;
+  transform:translateY(-50%); color:var(--gold);
+  font-size:11px; pointer-events:none;
+}
+select {
+  width:100%; padding:15px 20px 15px 45px;
+  background:rgba(255,255,255,.06); border:1px solid rgba(168,201,127,.2);
+  border-radius:16px; color:rgba(168,201,127,.9);
+  font-size:15px; font-family:'Cairo',sans-serif;
+  appearance:none; cursor:pointer;
+  transition:border-color .3s,background .3s; outline:none;
+}
+select:focus { border-color:rgba(201,168,76,.5); background:rgba(255,255,255,.09); }
+select option { background:#1a2e0d; color:#a8c97f; }
 
-        .logo-icon {
-            background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
-            color: white;
-            width: 48px;
-            height: 48px;
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            box-shadow: 0 8px 16px rgba(46, 74, 31, 0.3);
-        }
+/* BUTTONS */
+.btn-primary {
+  width:100%; padding:16px; border:none; border-radius:16px;
+  background:linear-gradient(135deg,#4a6b2f,#7a9e4e);
+  color:white; font-size:16px; font-family:'Cairo',sans-serif;
+  font-weight:700; cursor:pointer; transition:all .3s ease;
+  box-shadow:0 8px 25px rgba(74,107,47,.4); letter-spacing:.5px;
+  position:relative; overflow:hidden;
+}
+.btn-primary:hover { transform:translateY(-2px); box-shadow:0 12px 35px rgba(74,107,47,.55); }
+.btn-primary:active { transform:translateY(0); }
 
-        .logo-text {
-            font-family: 'Cairo', sans-serif;
-            font-weight: 900;
-            font-size: 28px;
-            background: linear-gradient(to left, var(--green-dark), var(--green-mid));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+.btn-danger {
+  padding:6px 14px; border:1px solid rgba(220,80,80,.3);
+  background:rgba(220,80,80,.1); color:rgba(255,120,120,.8);
+  border-radius:10px; font-size:12px; font-family:'Cairo',sans-serif;
+  cursor:pointer; transition:all .25s;
+}
+.btn-danger:hover { background:rgba(220,80,80,.25); }
 
-        .nav-links {
-            display: flex;
-            gap: 25px;
-            font-weight: 500;
-        }
+.btn-sm {
+  padding:8px 18px; border:1px solid rgba(168,201,127,.25);
+  background:rgba(168,201,127,.08); color:rgba(168,201,127,.8);
+  border-radius:12px; font-size:13px; font-family:'Cairo',sans-serif;
+  cursor:pointer; transition:all .25s;
+}
+.btn-sm:hover { background:rgba(168,201,127,.18); border-color:rgba(168,201,127,.4); }
 
-        .nav-links a {
-            text-decoration: none;
-            color: #2c3a1f;
-            font-size: 16px;
-            transition: var(--transition);
-            padding: 8px 0;
-            border-bottom: 2px solid transparent;
-        }
+/* RESULT BOX */
+.result-box {
+  margin-top:16px; padding:20px;
+  background:rgba(168,201,127,.07); border:1px solid rgba(168,201,127,.18);
+  border-radius:18px; text-align:center; color:rgba(168,201,127,.85);
+  font-size:15px; line-height:1.8; transition:all .4s ease;
+}
+.result-box.has-date { border-color:rgba(201,168,76,.35); background:rgba(201,168,76,.08); color:var(--gold-light); }
+.result-date {
+  font-family:'Amiri',serif; font-size:26px; display:block;
+  margin-top:5px; color:var(--gold);
+}
 
-        .nav-links a:hover {
-            color: var(--green-dark);
-            border-bottom-color: var(--gold);
-        }
+/* MY PLANTS TABLE */
+.my-plants-header {
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:20px; flex-wrap:wrap; gap:12px;
+}
+.my-plants-count {
+  background:rgba(201,168,76,.15); border:1px solid rgba(201,168,76,.3);
+  color:var(--gold-light); padding:5px 16px; border-radius:20px;
+  font-size:13px; font-weight:600;
+}
 
-        .store-btn-nav {
-            background: var(--gold);
-            color: white !important;
-            padding: 10px 22px !important;
-            border-radius: 50px;
-            font-weight: 700;
-            box-shadow: 0 6px 14px rgba(201, 168, 76, 0.4);
-            transition: var(--transition);
-            border: none !important;
-            text-decoration: none;
-        }
+.add-plant-row {
+  display:grid; grid-template-columns:1fr auto;
+  gap:12px; margin-bottom:24px; align-items:start;
+}
+.add-plant-row .select-wrapper { margin-bottom:0; }
 
-        .hero {
-            text-align: center;
-            margin-bottom: 35px;
-        }
+.plants-table-wrap { overflow-x:auto; border-radius:18px; }
+table {
+  width:100%; border-collapse:collapse; font-size:14px;
+}
+thead tr {
+  background:rgba(168,201,127,.07);
+  border-bottom:1px solid rgba(168,201,127,.15);
+}
+thead th {
+  padding:14px 16px; text-align:right;
+  color:rgba(168,201,127,.6); font-weight:600;
+  font-size:12px; letter-spacing:.5px; white-space:nowrap;
+}
+tbody tr {
+  border-bottom:1px solid rgba(168,201,127,.07);
+  transition:background .2s;
+}
+tbody tr:hover { background:rgba(168,201,127,.04); }
+tbody tr:last-child { border-bottom:none; }
+tbody td {
+  padding:14px 16px; color:rgba(168,201,127,.8);
+  white-space:nowrap;
+}
+.plant-name-cell { color:var(--gold-light); font-weight:700; font-size:15px; }
+.emoji-cell { font-size:22px; }
+.badge-cell .tag {
+  display:inline-block; padding:3px 10px; border-radius:20px;
+  font-size:11px; font-weight:600;
+}
+.tag-ok { background:rgba(80,180,80,.12); border:1px solid rgba(80,180,80,.25); color:#7fcc7f; }
+.tag-soon { background:rgba(201,168,76,.12); border:1px solid rgba(201,168,76,.25); color:#e8d08a; }
+.tag-water { background:rgba(80,140,220,.12); border:1px solid rgba(80,140,220,.25); color:#8ab8f0; }
+.empty-state {
+  text-align:center; padding:50px 20px;
+  color:rgba(168,201,127,.35); font-size:16px; line-height:2;
+}
+.empty-icon { font-size:48px; display:block; margin-bottom:12px; }
 
-        .hero-emoji {
-            font-size: 70px;
-            margin-bottom: 5px;
-            filter: drop-shadow(0 10px 12px rgba(0,0,0,0.1));
-            animation: float 3s ease-in-out infinite;
-        }
+/* CATALOG GRID */
+.catalog-search {
+  display:flex; gap:10px; margin-bottom:20px;
+}
+.search-input {
+  flex:1; padding:13px 18px;
+  background:rgba(255,255,255,.06); border:1px solid rgba(168,201,127,.2);
+  border-radius:14px; color:rgba(168,201,127,.9);
+  font-size:15px; font-family:'Cairo',sans-serif; outline:none;
+  transition:border-color .3s;
+}
+.search-input::placeholder { color:rgba(168,201,127,.35); }
+.search-input:focus { border-color:rgba(201,168,76,.4); }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
+.catalog-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:14px;
+}
+.catalog-item {
+  background:rgba(255,255,255,.05); border:1px solid rgba(168,201,127,.1);
+  border-radius:18px; padding:18px 16px;
+  display:flex; flex-direction:column; gap:10px;
+  transition:all .25s ease; cursor:default;
+}
+.catalog-item:hover { border-color:rgba(201,168,76,.3); transform:translateY(-3px); }
+.catalog-item-top { display:flex; align-items:center; gap:10px; }
+.catalog-emoji { font-size:28px; }
+.catalog-name { font-family:'Amiri',serif; font-size:17px; color:var(--gold-light); line-height:1.3; }
+.catalog-tags { display:flex; gap:6px; flex-wrap:wrap; }
+.ctag {
+  padding:3px 9px; border-radius:12px; font-size:10px; font-weight:600;
+  background:rgba(168,201,127,.08); border:1px solid rgba(168,201,127,.18);
+  color:rgba(168,201,127,.7);
+}
+.catalog-add-btn {
+  margin-top:auto; padding:8px 12px;
+  border:1px solid rgba(168,201,127,.25);
+  background:rgba(168,201,127,.07); color:rgba(168,201,127,.8);
+  border-radius:12px; font-size:12px; font-family:'Cairo',sans-serif;
+  cursor:pointer; transition:all .25s; font-weight:600;
+  display:flex; align-items:center; justify-content:center; gap:5px;
+}
+.catalog-add-btn:hover { background:rgba(201,168,76,.15); border-color:rgba(201,168,76,.4); color:var(--gold-light); }
 
-        .hero h1 {
-            font-family: 'Cairo', sans-serif;
-            font-size: 46px;
-            font-weight: 900;
-            color: var(--green-dark);
-            letter-spacing: -1px;
-            margin-bottom: 8px;
-        }
+/* CARE GUIDE */
+.care-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+  gap:16px;
+}
+.care-card {
+  background:rgba(255,255,255,.05); border:1px solid rgba(168,201,127,.1);
+  border-radius:20px; padding:22px 18px;
+  transition:all .25s;
+}
+.care-card:hover { border-color:rgba(201,168,76,.25); transform:translateY(-3px); }
+.care-icon { font-size:32px; margin-bottom:10px; }
+.care-title { font-family:'Amiri',serif; font-size:18px; color:var(--gold-light); margin-bottom:6px; }
+.care-desc { font-size:13px; color:rgba(168,201,127,.6); line-height:1.7; }
 
-        .hero p {
-            font-size: 19px;
-            color: #4a5a3a;
-            max-width: 650px;
-            margin: auto;
-        }
+/* CTA */
+.cta-section {
+  padding:45px; text-align:center; margin-bottom:28px;
+  background:linear-gradient(135deg,rgba(201,168,76,.1) 0%,rgba(74,107,47,.15) 100%);
+  border-color:rgba(201,168,76,.2);
+}
+.cta-section h2 { font-family:'Amiri',serif; font-size:30px; color:var(--gold-light); margin-bottom:8px; }
+.cta-section p { color:rgba(168,201,127,.6); font-size:15px; margin-bottom:26px; }
+.btn-store {
+  display:inline-flex; align-items:center; gap:10px;
+  background:linear-gradient(135deg,var(--gold),#a8823a);
+  color:#1a2e0d; padding:16px 42px; border-radius:50px;
+  text-decoration:none; font-size:17px; font-weight:800;
+  font-family:'Cairo',sans-serif; transition:all .3s ease;
+  box-shadow:0 10px 30px rgba(201,168,76,.35);
+}
+.btn-store:hover { transform:translateY(-3px) scale(1.02); box-shadow:0 18px 45px rgba(201,168,76,.5); }
 
-        .actions-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            margin: 25px 0 20px;
-        }
+footer {
+  text-align:center; padding:28px 20px;
+  color:rgba(168,201,127,.35); font-size:13px;
+  border-top:1px solid rgba(168,201,127,.08); letter-spacing:.5px;
+}
+footer span { color:rgba(201,168,76,.55); }
 
-        .btn-add {
-            background: linear-gradient(135deg, #5a7d3a, #3b5622);
-            color: white;
-            border: none;
-            padding: 14px 30px;
-            border-radius: 50px;
-            font-size: 18px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            box-shadow: 0 10px 20px rgba(46, 74, 31, 0.35);
-            transition: var(--transition);
-        }
+/* NOTIF */
+.notif {
+  position:fixed; bottom:28px; left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:linear-gradient(135deg,#4a6b2f,#2d4a1e);
+  border:1px solid rgba(168,201,127,.3); color:#a8c97f;
+  padding:13px 26px; border-radius:50px; font-size:14px;
+  font-family:'Cairo',sans-serif; box-shadow:0 10px 40px rgba(0,0,0,.5);
+  z-index:9999; opacity:0; transition:all .4s ease;
+  pointer-events:none; white-space:nowrap;
+}
+.notif.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
-        .btn-add:hover {
-            transform: scale(1.03);
-            box-shadow: 0 15px 25px rgba(46, 74, 31, 0.45);
-        }
-
-        .search-box {
-            display: flex;
-            align-items: center;
-            background: white;
-            border-radius: 50px;
-            padding: 8px 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            gap: 10px;
-        }
-
-        .search-box input {
-            border: none;
-            outline: none;
-            font-size: 16px;
-            font-family: 'Tajawal', sans-serif;
-            width: 200px;
-            background: transparent;
-        }
-
-        .plant-table-container {
-            background: rgba(255,255,255,0.8);
-            backdrop-filter: blur(10px);
-            border-radius: 32px;
-            padding: 20px;
-            box-shadow: var(--shadow-md);
-            overflow-x: auto;
-            margin-bottom: 30px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 850px;
-        }
-
-        th {
-            text-align: right;
-            padding: 16px 12px;
-            color: var(--green-dark);
-            font-weight: 700;
-            font-size: 17px;
-            border-bottom: 2px solid rgba(74,107,45,0.3);
-            white-space: nowrap;
-        }
-
-        td {
-            padding: 14px 12px;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-            vertical-align: middle;
-        }
-
-        .plant-row {
-            transition: var(--transition);
-        }
-
-        .plant-row:hover {
-            background: rgba(237, 247, 235, 0.7);
-        }
-
-        .plant-name {
-            font-weight: 700;
-            color: #2e4a1f;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .plant-icon {
-            font-size: 24px;
-        }
-
-        .countdown-badge {
-            display: inline-block;
-            background: #e3eed9;
-            color: #2e4a1f;
-            border-radius: 20px;
-            padding: 5px 14px;
-            font-weight: 600;
-            font-size: 15px;
-            white-space: nowrap;
-        }
-
-        .countdown-badge.urgent {
-            background: #fde2e2;
-            color: #a12b2b;
-        }
-
-        .btn-action {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 18px;
-            margin: 0 5px;
-            color: #4a6b2d;
-            transition: var(--transition);
-            padding: 6px;
-            border-radius: 50%;
-        }
-
-        .btn-action:hover {
-            background: rgba(74,107,45,0.1);
-            color: #2e4a1f;
-        }
-
-        .btn-water-now {
-            background: #d1e7c5;
-            border: none;
-            border-radius: 20px;
-            padding: 8px 18px;
-            font-weight: 600;
-            color: #2e4a1f;
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .btn-water-now:hover {
-            background: #b8d9a8;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px;
-            color: #7a8a6a;
-            font-size: 18px;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4);
-            backdrop-filter: blur(8px);
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 32px;
-            padding: 30px;
-            width: 90%;
-            max-width: 450px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-            animation: fadeUp 0.3s ease;
-        }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .modal h3 {
-            font-family: 'Cairo', sans-serif;
-            color: var(--green-dark);
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-
-        .input-group {
-            margin-bottom: 18px;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            color: #2c3a1f;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 14px;
-            border-radius: 16px;
-            border: 1px solid #dde5d5;
-            font-family: 'Tajawal', sans-serif;
-            font-size: 16px;
-            outline: none;
-            transition: var(--transition);
-        }
-
-        .input-group input:focus {
-            border-color: var(--green-mid);
-            box-shadow: 0 0 0 4px rgba(74,107,45,0.2);
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 12px;
-            margin-top: 25px;
-        }
-
-        .btn-save {
-            background: var(--green-mid);
-            color: white;
-            border: none;
-            padding: 14px 24px;
-            border-radius: 50px;
-            font-weight: 700;
-            cursor: pointer;
-            flex: 1;
-            transition: var(--transition);
-        }
-
-        .btn-cancel {
-            background: #eee;
-            border: none;
-            padding: 14px 24px;
-            border-radius: 50px;
-            font-weight: 700;
-            cursor: pointer;
-            flex: 1;
-            transition: var(--transition);
-        }
-
-        .store-cta {
-            display: block;
-            text-align: center;
-            background: linear-gradient(135deg, #c9a84c, #b38f3a);
-            color: white;
-            padding: 18px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-size: 20px;
-            font-weight: 800;
-            box-shadow: 0 10px 25px rgba(201, 168, 76, 0.5);
-            transition: var(--transition);
-            margin: 25px 0 15px;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 20px;
-            color: #4a5a3a;
-            font-size: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            border-top: 1px solid rgba(74,107,45,0.2);
-            padding-top: 15px;
-        }
-
-        @media (max-width: 600px) {
-            .hero h1 { font-size: 32px; }
-            .navbar { flex-direction: column; gap: 15px; }
-        }
-    </style>
+@media(max-width:700px){
+  .tabs{ grid-template-columns:repeat(2,1fr); }
+  .hero h1{ font-size:56px; }
+  .section-card{ padding:22px 16px; }
+  .add-plant-row{ grid-template-columns:1fr; }
+}
+@media(max-width:420px){
+  .hero{ padding:50px 16px 38px; }
+}
+</style>
 </head>
 <body>
-    <div class="app-wrapper">
-        <!-- شريط التنقل -->
-        <nav class="navbar">
-            <div class="logo">
-                <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
-                <span class="logo-text">3D NAS</span>
-            </div>
-            <div class="nav-links">
-                <a href="#">الرئيسية</a>
-                <a href="#">جدول الري</a>
-                <a href="#" class="store-btn-nav"><i class="fa-solid fa-store"></i> المتجر</a>
-            </div>
-        </nav>
 
-        <!-- القسم الترحيبي -->
-        <div class="hero">
-            <div class="hero-emoji">🌿✨</div>
-            <h1>جدول نباتاتي الذكي</h1>
-            <p>أضف نباتاتك، تابع مواعيد الري، وتمتع بعناية فاخرة لكل نبتة</p>
-        </div>
+<div class="bg-canvas"></div>
+<div class="leaf" style="right:8%;animation-duration:18s;animation-delay:0s;font-size:16px;">🍃</div>
+<div class="leaf" style="right:22%;animation-duration:22s;animation-delay:4s;font-size:22px;">🌿</div>
+<div class="leaf" style="right:55%;animation-duration:16s;animation-delay:8s;font-size:14px;">🍃</div>
+<div class="leaf" style="right:78%;animation-duration:25s;animation-delay:2s;font-size:18px;">🌿</div>
+<div class="leaf" style="right:90%;animation-duration:20s;animation-delay:11s;font-size:13px;">🍃</div>
 
-        <!-- شريط الإجراءات -->
-        <div class="actions-bar">
-            <button class="btn-add" id="openAddModal"><i class="fa-solid fa-plus-circle"></i> إضافة نبات جديد</button>
-            <div class="search-box">
-                <i class="fa-solid fa-search" style="color:#4a6b2d;"></i>
-                <input type="text" id="searchInput" placeholder="ابحث عن نبات...">
-            </div>
-        </div>
+<div class="notif" id="notif"></div>
 
-        <!-- جدول النباتات -->
-        <div class="plant-table-container">
-            <table id="plantsTable">
-                <thead>
-                    <tr>
-                        <th>النبات</th>
-                        <th>الري كل (أيام)</th>
-                        <th>آخر ري</th>
-                        <th>الري القادم</th>
-                        <th>الحالة</th>
-                        <th>إجراءات</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                    <!-- يتم ملؤه ديناميكيًا -->
-                </tbody>
-            </table>
-            <div class="empty-state" id="emptyState" style="display:none;">
-                <i class="fa-solid fa-plant-wilt" style="font-size:40px;opacity:0.5;"></i>
-                <p>لا توجد نباتات مضافة بعد. ابدأ بإضافة نباتك الأول 🌱</p>
-            </div>
-        </div>
+<div class="page">
 
-        <!-- رابط المتجر -->
-        <a href="https://3d-nas.com/ar" target="_blank" class="store-cta">
-            <i class="fa-solid fa-bag-shopping"></i> تسوق من متجر 3D NAS الفاخر
-        </a>
-
-        <div class="footer">
-            <span>🌿 جميع الحقوق محفوظة لـ <strong>3D NAS</strong></span>
-            <span>صُمم بعناية فائقة</span>
-        </div>
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">🌿 &nbsp; مساعد النباتات الذكي</div>
+    <h1>3D NAS</h1>
+    <p class="hero-sub">عالَمك الأخضر في مكان واحد — اعتنِ بنباتاتك بذكاء وأناقة</p>
+    <div class="hero-divider">
+      <div class="hero-divider-line"></div>
+      <div class="hero-divider-icon">✦</div>
+      <div class="hero-divider-line"></div>
     </div>
+  </div>
 
-    <!-- Modal إضافة/تعديل نبات -->
-    <div class="modal" id="plantModal">
-        <div class="modal-content">
-            <h3 id="modalTitle">إضافة نبات جديد</h3>
-            <div class="input-group">
-                <label>اسم النبات</label>
-                <input type="text" id="plantNameInput" placeholder="مثال: بوتس، مونستيرا...">
-            </div>
-            <div class="input-group">
-                <label>عدد الأيام بين الريات</label>
-                <input type="number" id="plantDaysInput" placeholder="مثال: 7" min="1" max="60">
-            </div>
-            <input type="hidden" id="editId" value="">
-            <div class="modal-buttons">
-                <button class="btn-cancel" id="closeModal">إلغاء</button>
-                <button class="btn-save" id="savePlant">حفظ</button>
-            </div>
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('myplants')">
+      <span class="tab-icon">🪴</span>
+      <span class="tab-label">نباتاتي</span>
+    </button>
+    <button class="tab-btn" onclick="showTab('watering')">
+      <span class="tab-icon">💧</span>
+      <span class="tab-label">جدول الري</span>
+    </button>
+    <button class="tab-btn" onclick="showTab('catalog')">
+      <span class="tab-icon">📖</span>
+      <span class="tab-label">دليل النباتات</span>
+    </button>
+    <button class="tab-btn" onclick="showTab('care')">
+      <span class="tab-icon">🌱</span>
+      <span class="tab-label">العناية</span>
+    </button>
+  </div>
+
+  <!-- PANEL: MY PLANTS -->
+  <div class="panel active" id="panel-myplants">
+    <div class="section-card glass">
+      <div class="my-plants-header">
+        <div class="section-title" style="margin-bottom:0;border:none;padding:0;">
+          <div class="section-title-icon">🪴</div>
+          نباتاتي
         </div>
+        <span class="my-plants-count" id="my-count">0 نبتة</span>
+      </div>
+
+      <div class="add-plant-row">
+        <div class="select-wrapper">
+          <select id="add-select">
+            <option value="">— اختر نبتة لإضافتها —</option>
+          </select>
+        </div>
+        <button class="btn-primary" style="width:auto;padding:15px 28px;" onclick="addMyPlant()">➕ إضافة</button>
+      </div>
+
+      <div class="plants-table-wrap">
+        <table id="my-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>النبتة</th>
+              <th>الري كل</th>
+              <th>آخر ري</th>
+              <th>الري القادم</th>
+              <th>الحالة</th>
+              <th>ري الآن</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="my-tbody"></tbody>
+        </table>
+        <div class="empty-state" id="empty-state">
+          <span class="empty-icon">🌱</span>
+          لم تضف أي نبتة بعد<br>
+          <span style="font-size:13px;color:rgba(168,201,127,.25);">اختر نبتة من القائمة أعلاه وابدأ مجموعتك</span>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <script>
-        // البيانات الأولية الافتراضية (النباتات المذكورة)
-        const defaultPlants = [
-            { name: "ساق البامبو", days: 7 },
-            { name: "الزاميا", days: 10 },
-            { name: "إبرة الراعي", days: 4 },
-            { name: "شجرة الفيل الملونة", days: 6 },
-            { name: "نبات العنكبوت", days: 6 },
-            { name: "تراديسكانتيا زبرينا", days: 5 },
-            { name: "رجلة الصبار", days: 9 },
-            { name: "البوتس", days: 5 },
-            { name: "البيبروميا", days: 8 },
-            { name: "بيبروميا راين دروب", days: 8 },
-            { name: "نخيل القطة", days: 6 },
-            { name: "الأنثوريوم", days: 6 },
-            { name: "السينغونيوم", days: 6 },
-            { name: "الدراسينا", days: 8 },
-            { name: "ألوكاسيا أذن الفيل", days: 8 },
-            { name: "فيلوديندرون القمرية", days: 6 },
-            { name: "الكروتون", days: 6 },
-            { name: "دراسينا ريفلكسا", days: 8 },
-            { name: "دراسينا فراجرانس", days: 8 },
-            { name: "اليوكا", days: 12 },
-            { name: "فيكس ليراتا (شجرة الكمان)", days: 8 },
-            { name: "الفيكس المطاطي", days: 8 },
-            { name: "زنبق السلام", days: 6 },
-            { name: "الشيفليرا", days: 8 },
-            { name: "الإشيفيريا", days: 12 },
-            { name: "الأجلونيما", days: 6 },
-            { name: "البونساي", days: 4 },
-            { name: "الديفنباخيا", days: 6 },
-            { name: "السانسيفيريا", days: 18 },
-            { name: "الكالاتيا", days: 6 },
-            { name: "المونستيرا", days: 8 },
-            { name: "فيلوديندرون إيروبيسنس", days: 6 },
-            { name: "الكورديلين", days: 6 },
-            { name: "سانسيفيريا مون شاين", days: 18 },
-            { name: "عصفور الجنة الأبيض", days: 8 }
-        ];
+  <!-- PANEL: WATERING -->
+  <div class="panel" id="panel-watering">
+    <div class="section-card glass">
+      <div class="section-title">
+        <div class="section-title-icon">💧</div>
+        حساب موعد الري
+      </div>
+      <div class="select-wrapper">
+        <select id="water-plant-select">
+          <option value="">— اختر نبتة —</option>
+        </select>
+      </div>
+      <button class="btn-primary" onclick="calcWatering()">احسب موعد الري 💧</button>
+      <div class="result-box" id="water-result">اختر النبتة لحساب موعد الري القادم</div>
+    </div>
+  </div>
 
-        // تحميل البيانات من localStorage أو التهيئة الافتراضية
-        let plants = JSON.parse(localStorage.getItem('3dnas_plants'));
-        if (!plants || plants.length === 0) {
-            // تحويل القائمة الافتراضية إلى كائنات كاملة مع تواريخ
-            plants = defaultPlants.map(p => ({
-                id: Date.now() + Math.random().toString(36),
-                name: p.name,
-                days: p.days,
-                lastWatered: null,
-                nextWatering: null
-            }));
-            localStorage.setItem('3dnas_plants', JSON.stringify(plants));
-        }
+  <!-- PANEL: CATALOG -->
+  <div class="panel" id="panel-catalog">
+    <div class="section-card glass">
+      <div class="section-title">
+        <div class="section-title-icon">📖</div>
+        دليل النباتات
+      </div>
+      <div class="catalog-search">
+        <input class="search-input" type="text" id="catalog-search" placeholder="🔍 ابحث عن نبتة..." oninput="filterCatalog()">
+      </div>
+      <div class="catalog-grid" id="catalog-grid"></div>
+    </div>
+  </div>
 
-        // عناصر DOM
-        const tableBody = document.getElementById('tableBody');
-        const emptyState = document.getElementById('emptyState');
-        const searchInput = document.getElementById('searchInput');
-        const modal = document.getElementById('plantModal');
-        const openAddBtn = document.getElementById('openAddModal');
-        const closeModalBtn = document.getElementById('closeModal');
-        const savePlantBtn = document.getElementById('savePlant');
-        const plantNameInput = document.getElementById('plantNameInput');
-        const plantDaysInput = document.getElementById('plantDaysInput');
-        const editIdInput = document.getElementById('editId');
-        const modalTitle = document.getElementById('modalTitle');
+  <!-- PANEL: CARE -->
+  <div class="panel" id="panel-care">
+    <div class="section-card glass">
+      <div class="section-title">
+        <div class="section-title-icon">🌱</div>
+        دليل العناية
+      </div>
+      <div class="care-grid">
+        <div class="care-card">
+          <div class="care-icon">💧</div>
+          <div class="care-title">الري الصحيح</div>
+          <div class="care-desc">تأكد من أن التربة تجف بين جلسات الري. الإفراط في الري أكثر ضرراً من النسيان. ضع إصبعك في التربة — إذا كانت رطبة فلا داعي للري.</div>
+        </div>
+        <div class="care-card">
+          <div class="care-icon">☀️</div>
+          <div class="care-title">الإضاءة المثالية</div>
+          <div class="care-desc">معظم النباتات الداخلية تحتاج ضوءاً غير مباشر. تجنب أشعة الشمس المباشرة التي قد تحرق الأوراق، وابتعد عن الأماكن المظلمة تماماً.</div>
+        </div>
+        <div class="care-card">
+          <div class="care-icon">🌡️</div>
+          <div class="care-title">درجة الحرارة</div>
+          <div class="care-desc">معظم النباتات المنزلية تعيش بشكل مثالي بين 18–27 درجة مئوية. ابتعد بها عن مصادر التدفئة المباشرة والتيارات الهوائية الباردة.</div>
+        </div>
+        <div class="care-card">
+          <div class="care-icon">💨</div>
+          <div class="care-title">الرطوبة</div>
+          <div class="care-desc">النباتات الاستوائية كالمونستيرا والكالاتيا تحب الرطوبة العالية. رش الأوراق بالماء أو ضع وعاءً بالماء بجانبها.</div>
+        </div>
+        <div class="care-card">
+          <div class="care-icon">🪣</div>
+          <div class="care-title">التربة والتصريف</div>
+          <div class="care-desc">استخدم تربة جيدة التصريف مناسبة لنوع النبتة. تأكد من وجود ثقوب في الأصيص لتجنب تراكم الماء وتعفن الجذور.</div>
+        </div>
+        <div class="care-card">
+          <div class="care-icon">🌿</div>
+          <div class="care-title">التسميد</div>
+          <div class="care-desc">سمّد نباتاتك مرة في الشهر خلال فصل النمو (الربيع والصيف). توقف عن التسميد في الشتاء حين يتباطأ نمو النبتة.</div>
+        </div>
+        <div class="care-card">
+          <div class="care-icon">✂️</div>
+          <div class="care-title">التقليم</div>
+          <div class="care-desc">أزل الأوراق الصفراء أو الميتة بانتظام. التقليم يحفز النمو الجديد ويحافظ على شكل النبتة وصحتها العامة.</div>
+        </div>
+        <div class="care-card">
+          <div class="care-icon">🪴</div>
+          <div class="care-title">إعادة التأصيل</div>
+          <div class="care-desc">انقل النبتة إلى أصيص أكبر حين ترى الجذور تخرج من الثقوب. الربيع هو أفضل وقت لإعادة التأصيل لمعظم النباتات.</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        // عرض الجدول
-        function renderTable(filterText = '') {
-            const filtered = plants.filter(p => p.name.includes(filterText.trim()));
-            if (filtered.length === 0) {
-                tableBody.innerHTML = '';
-                emptyState.style.display = 'block';
-                if (filterText) {
-                    emptyState.querySelector('p').textContent = 'لا توجد نباتات تطابق البحث 🔍';
-                } else {
-                    emptyState.querySelector('p').textContent = 'لا توجد نباتات مضافة بعد. ابدأ بإضافة نباتك الأول 🌱';
-                }
-                return;
-            }
-            emptyState.style.display = 'none';
-            
-            tableBody.innerHTML = filtered.map(plant => {
-                const nextDate = plant.nextWatering ? new Date(plant.nextWatering) : null;
-                const now = new Date();
-                let statusHtml = '';
-                let remainingDays = null;
-                
-                if (nextDate) {
-                    const diffTime = nextDate.getTime() - now.getTime();
-                    remainingDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                    if (remainingDays > 1) {
-                        statusHtml = `<span class="countdown-badge">متبقي ${remainingDays} يوم</span>`;
-                    } else if (remainingDays === 1) {
-                        statusHtml = `<span class="countdown-badge">غداً 💧</span>`;
-                    } else if (remainingDays === 0) {
-                        statusHtml = `<span class="countdown-badge urgent">اليوم! 💧</span>`;
-                    } else {
-                        statusHtml = `<span class="countdown-badge urgent">متأخر ${Math.abs(remainingDays)} يوم</span>`;
-                    }
-                } else {
-                    statusHtml = `<span class="countdown-badge" style="background:#f0f0f0;">لم يُسجل ري بعد</span>`;
-                }
+  <!-- CTA -->
+  <div class="cta-section glass" style="margin-top:10px;">
+    <h2>🛒 اكتشف المزيد من النباتات</h2>
+    <p>تسوّق أجمل النباتات المنزلية وملحقاتها في متجر 3D NAS</p>
+    <a class="btn-store" href="https://3d-nas.com/ar" target="_blank">زيارة المتجر الرسمي &nbsp;←</a>
+  </div>
 
-                const lastWateredStr = plant.lastWatered ? new Date(plant.lastWatered).toLocaleDateString('ar-SA') : '-';
-                const nextWateringStr = nextDate ? nextDate.toLocaleDateString('ar-SA') : '-';
+  <footer>🌿 جميع الحقوق محفوظة &nbsp;<span>3D NAS</span>&nbsp; © 2025</footer>
+</div>
 
-                return `
-                    <tr class="plant-row">
-                        <td><span class="plant-name"><span class="plant-icon">🪴</span>${plant.name}</span></td>
-                        <td>${plant.days} يوم</td>
-                        <td>${lastWateredStr}</td>
-                        <td>${nextWateringStr}</td>
-                        <td>${statusHtml}</td>
-                        <td>
-                            <button class="btn-water-now" onclick="waterPlant('${plant.id}')"><i class="fa-solid fa-droplet"></i> تم الري</button>
-                            <button class="btn-action" onclick="editPlant('${plant.id}')" title="تعديل"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button class="btn-action" onclick="deletePlant('${plant.id}')" title="حذف"><i class="fa-solid fa-trash-can" style="color:#a12b2b;"></i></button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
+<script>
+// ── Plant Database ──
+const PLANTS = [
+  { name:'ساق البامبو',        emoji:'🎋', days:5,  light:'ضوء متوسط',   diff:'سهلة',    tags:['داخلية','سريعة النمو'] },
+  { name:'الزاميا',            emoji:'🌴', days:14, light:'ضوء خافت',    diff:'سهلة',    tags:['داخلية','صبر'] },
+  { name:'إبرة الراعي',        emoji:'🌵', days:14, light:'ضوء ساطع',   diff:'سهلة',    tags:['صبار','ضوء كثير'] },
+  { name:'شجرة الفيل الملونة', emoji:'🌈', days:7,  light:'ضوء متوسط',  diff:'متوسطة',  tags:['ملونة','داخلية'] },
+  { name:'نبات العنكبوت',      emoji:'🕷️', days:7,  light:'ضوء خافت',   diff:'سهلة',    tags:['معلقة','مبتدئين'] },
+  { name:'تراديسكانتيا زبرينا',emoji:'💜', days:7,  light:'ضوء متوسط',  diff:'سهلة',    tags:['ملونة','سريعة النمو'] },
+  { name:'رجلة الصبار',        emoji:'🌵', days:10, light:'ضوء ساطع',   diff:'سهلة',    tags:['صبار','مقاومة'] },
+  { name:'البوتس',             emoji:'🪴', days:5,  light:'ضوء خافت',   diff:'سهلة',    tags:['مبتدئين','داخلية'] },
+  { name:'البيبروميا',         emoji:'🍃', days:10, light:'ضوء متوسط',  diff:'سهلة',    tags:['صغيرة','داخلية'] },
+  { name:'بيبروميا راين دروب', emoji:'💚', days:10, light:'ضوء متوسط',  diff:'سهلة',    tags:['مميزة','داخلية'] },
+  { name:'نخيل القطة',         emoji:'🌿', days:7,  light:'ضوء خافت',   diff:'سهلة',    tags:['آمنة للحيوانات','داخلية'] },
+  { name:'الأنثوريوم',         emoji:'❤️', days:7,  light:'ضوء متوسط',  diff:'متوسطة',  tags:['مزهرة','فاخرة'] },
+  { name:'السينغونيوم',        emoji:'🌸', days:7,  light:'ضوء خافت',   diff:'سهلة',    tags:['متسلقة','داخلية'] },
+  { name:'الدراسينا',          emoji:'🌱', days:10, light:'ضوء خافت',   diff:'سهلة',    tags:['مقاومة','داخلية'] },
+  { name:'ألوكاسيا أذن الفيل', emoji:'🐘', days:7,  light:'ضوء ساطع',   diff:'متوسطة',  tags:['استوائية','فاخرة'] },
+  { name:'فيلوديندرون القمرية',emoji:'🌙', days:7,  light:'ضوء خافت',   diff:'سهلة',    tags:['داخلية','متسلقة'] },
+  { name:'الكروتون',           emoji:'🎨', days:5,  light:'ضوء ساطع',   diff:'متوسطة',  tags:['ملونة','استوائية'] },
+  { name:'دراسينا ريفلكسا',    emoji:'🍀', days:10, light:'ضوء متوسط',  diff:'سهلة',    tags:['مقاومة','داخلية'] },
+  { name:'دراسينا فراجرانس',   emoji:'🌾', days:10, light:'ضوء خافت',   diff:'سهلة',    tags:['معطرة','داخلية'] },
+  { name:'اليوكا',             emoji:'⚔️', days:14, light:'ضوء ساطع',   diff:'سهلة',    tags:['صحراوية','مقاومة'] },
+  { name:'فيكس ليراتا',        emoji:'🎸', days:7,  light:'ضوء ساطع',   diff:'صعبة',    tags:['شجرة','فاخرة'] },
+  { name:'الفيكس المطاطي',     emoji:'🌳', days:7,  light:'ضوء متوسط',  diff:'سهلة',    tags:['شجرة','داخلية'] },
+  { name:'زنبق السلام',        emoji:'☮️', days:7,  light:'ضوء خافت',   diff:'سهلة',    tags:['مزهرة','مبتدئين'] },
+  { name:'الشيفليرا',          emoji:'🌂', days:7,  light:'ضوء متوسط',  diff:'سهلة',    tags:['شجرة','داخلية'] },
+  { name:'الإشيفيريا',         emoji:'🌸', days:14, light:'ضوء ساطع',   diff:'سهلة',    tags:['عصارية','صغيرة'] },
+  { name:'الأجلونيما',         emoji:'🍁', days:10, light:'ضوء خافت',   diff:'سهلة',    tags:['ملونة','مقاومة'] },
+  { name:'البونساي',           emoji:'🌳', days:3,  light:'ضوء ساطع',   diff:'صعبة',    tags:['فنية','نادرة'] },
+  { name:'الديفنباخيا',        emoji:'🌿', days:7,  light:'ضوء متوسط',  diff:'سهلة',    tags:['كبيرة','داخلية'] },
+  { name:'السانسيفيريا',       emoji:'🗡️', days:14, light:'ضوء خافت',   diff:'سهلة',    tags:['مبتدئين','مقاومة'] },
+  { name:'الكالاتيا',          emoji:'🦚', days:5,  light:'ضوء خافت',   diff:'صعبة',    tags:['استوائية','فاخرة'] },
+  { name:'المونستيرا',         emoji:'🌿', days:7,  light:'ضوء متوسط',  diff:'سهلة',    tags:['استوائية','شهيرة'] },
+  { name:'فيلوديندرون إيروبيسنس',emoji:'💎',days:7, light:'ضوء خافت',  diff:'سهلة',    tags:['نادرة','داخلية'] },
+  { name:'الكورديلين',         emoji:'🌺', days:7,  light:'ضوء متوسط',  diff:'سهلة',    tags:['ملونة','داخلية'] },
+  { name:'سانسيفيريا مون شاين',emoji:'🌕', days:14, light:'ضوء خافت',  diff:'سهلة',    tags:['مقاومة','فضية'] },
+  { name:'عصفور الجنة الأبيض', emoji:'🤍', days:7,  light:'ضوء ساطع',  diff:'متوسطة',  tags:['مزهرة','فاخرة'] },
+];
 
-        // تسجيل الري لنبات معين
-        window.waterPlant = function(id) {
-            const plant = plants.find(p => p.id === id);
-            if (!plant) return;
-            const now = new Date();
-            plant.lastWatered = now.toISOString();
-            const next = new Date(now);
-            next.setDate(now.getDate() + plant.days);
-            plant.nextWatering = next.toISOString();
-            saveAndRender();
-        };
+// ── State ──
+let myPlants = JSON.parse(localStorage.getItem('myPlants3DNAS') || '[]');
 
-        // حذف نبات
-        window.deletePlant = function(id) {
-            if (confirm('هل أنت متأكد من حذف هذا النبات؟')) {
-                plants = plants.filter(p => p.id !== id);
-                saveAndRender();
-            }
-        };
+// ── Helpers ──
+function saveState() { localStorage.setItem('myPlants3DNAS', JSON.stringify(myPlants)); }
 
-        // تعديل نبات (فتح المودال بالبيانات)
-        window.editPlant = function(id) {
-            const plant = plants.find(p => p.id === id);
-            if (!plant) return;
-            editIdInput.value = plant.id;
-            plantNameInput.value = plant.name;
-            plantDaysInput.value = plant.days;
-            modalTitle.textContent = 'تعديل بيانات النبات';
-            modal.classList.add('active');
-        };
+function showNotif(msg) {
+  const n = document.getElementById('notif');
+  n.textContent = msg;
+  n.classList.add('show');
+  setTimeout(() => n.classList.remove('show'), 3000);
+}
 
-        // فتح المودال للإضافة
-        openAddBtn.addEventListener('click', () => {
-            editIdInput.value = '';
-            plantNameInput.value = '';
-            plantDaysInput.value = '';
-            modalTitle.textContent = 'إضافة نبات جديد';
-            modal.classList.add('active');
-        });
+function fmt(dateStr) {
+  if (!dateStr) return '—';
+  return new Date(dateStr).toLocaleDateString('ar-SA', { day:'numeric', month:'short', year:'numeric' });
+}
 
-        // إغلاق المودال
-        closeModalBtn.addEventListener('click', () => {
-            modal.classList.remove('active');
-        });
+function statusTag(nextDate) {
+  if (!nextDate) return '<span class="tag tag-ok">—</span>';
+  const today = new Date(); today.setHours(0,0,0,0);
+  const next = new Date(nextDate); next.setHours(0,0,0,0);
+  const diff = Math.round((next - today) / 86400000);
+  if (diff < 0)  return `<span class="tag tag-water">يحتاج ري!</span>`;
+  if (diff === 0) return `<span class="tag tag-water">اليوم 💧</span>`;
+  if (diff <= 2)  return `<span class="tag tag-soon">قريباً (${diff} أيام)</span>`;
+  return `<span class="tag tag-ok">بخير (${diff} أيام)</span>`;
+}
 
-        // حفظ النبات (إضافة أو تعديل)
-        savePlantBtn.addEventListener('click', () => {
-            const name = plantNameInput.value.trim();
-            const days = parseInt(plantDaysInput.value);
-            if (!name || !days || days < 1) {
-                alert('الرجاء إدخال اسم النبات وعدد الأيام بشكل صحيح');
-                return;
-            }
-            const id = editIdInput.value;
-            if (id) {
-                // تعديل
-                const plant = plants.find(p => p.id === id);
-                if (plant) {
-                    plant.name = name;
-                    plant.days = days;
-                    // لا نغير تواريخ الري إلا إذا تغيرت الأيام؟ يمكن تركها كما هي أو إعادة حساب التالي
-                    if (plant.lastWatered) {
-                        const last = new Date(plant.lastWatered);
-                        const next = new Date(last);
-                        next.setDate(last.getDate() + days);
-                        plant.nextWatering = next.toISOString();
-                    }
-                }
-            } else {
-                // إضافة جديد
-                const newPlant = {
-                    id: Date.now().toString(36) + Math.random().toString(36).substr(2, 5),
-                    name: name,
-                    days: days,
-                    lastWatered: null,
-                    nextWatering: null
-                };
-                plants.push(newPlant);
-            }
-            saveAndRender();
-            modal.classList.remove('active');
-        });
+// ── Populate selects ──
+function populateSelects() {
+  const selects = ['add-select','water-plant-select'];
+  selects.forEach(id => {
+    const el = document.getElementById(id);
+    const val = el.value;
+    while (el.options.length > 1) el.remove(1);
+    PLANTS.forEach((p,i) => {
+      const opt = new Option(`${p.emoji} ${p.name} — كل ${p.days} أيام`, i);
+      el.appendChild(opt);
+    });
+    el.value = val;
+  });
+}
 
-        // حفظ البيانات وإعادة العرض
-        function saveAndRender() {
-            localStorage.setItem('3dnas_plants', JSON.stringify(plants));
-            renderTable(searchInput.value);
-        }
+// ── Render my plants table ──
+function renderMyPlants() {
+  const tbody = document.getElementById('my-tbody');
+  const empty = document.getElementById('empty-state');
+  const count = document.getElementById('my-count');
+  tbody.innerHTML = '';
+  count.textContent = myPlants.length + ' نبتة';
 
-        // فلترة البحث
-        searchInput.addEventListener('input', (e) => {
-            renderTable(e.target.value);
-        });
+  if (myPlants.length === 0) {
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
 
-        // عرض أولي
-        renderTable();
+  myPlants.forEach((entry, idx) => {
+    const p = PLANTS[entry.plantIdx];
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="emoji-cell">${p.emoji}</td>
+      <td class="plant-name-cell">${p.name}</td>
+      <td style="color:rgba(168,201,127,.6)">${p.days} أيام</td>
+      <td>${fmt(entry.lastWatered)}</td>
+      <td>${fmt(entry.nextWatering)}</td>
+      <td class="badge-cell">${statusTag(entry.nextWatering)}</td>
+      <td>
+        <button class="btn-sm" onclick="waterPlant(${idx})">💧 ريت</button>
+      </td>
+      <td>
+        <button class="btn-danger" onclick="removePlant(${idx})">🗑</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
 
-        // إغلاق المودال بالنقر خارج المحتوى
-        window.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.classList.remove('active');
-            }
-        });
-    </script>
+// ── Add plant ──
+function addMyPlant() {
+  const sel = document.getElementById('add-select');
+  const idx = parseInt(sel.value);
+  if (isNaN(idx) || sel.value === '') { showNotif('⚠️ اختر نبتة أولاً'); return; }
+  const already = myPlants.find(e => e.plantIdx === idx);
+  if (already) { showNotif('🌿 هذه النبتة موجودة بالفعل'); return; }
+  const today = new Date().toISOString().split('T')[0];
+  const next = new Date(); next.setDate(next.getDate() + PLANTS[idx].days);
+  myPlants.push({ plantIdx: idx, lastWatered: today, nextWatering: next.toISOString().split('T')[0] });
+  saveState();
+  renderMyPlants();
+  showNotif(`✅ تمت إضافة ${PLANTS[idx].emoji} ${PLANTS[idx].name}`);
+  sel.value = '';
+}
+
+// ── Water plant ──
+function waterPlant(idx) {
+  const p = PLANTS[myPlants[idx].plantIdx];
+  const today = new Date().toISOString().split('T')[0];
+  const next = new Date(); next.setDate(next.getDate() + p.days);
+  myPlants[idx].lastWatered = today;
+  myPlants[idx].nextWatering = next.toISOString().split('T')[0];
+  saveState();
+  renderMyPlants();
+  showNotif(`💧 تم ري ${p.emoji} ${p.name} — الري القادم بعد ${p.days} أيام`);
+}
+
+// ── Remove ──
+function removePlant(idx) {
+  const p = PLANTS[myPlants[idx].plantIdx];
+  myPlants.splice(idx, 1);
+  saveState();
+  renderMyPlants();
+  showNotif(`🗑 تم حذف ${p.name}`);
+}
+
+// ── Watering calc ──
+function calcWatering() {
+  const sel = document.getElementById('water-plant-select');
+  const idx = parseInt(sel.value);
+  if (isNaN(idx) || sel.value === '') { showNotif('⚠️ اختر نبتة أولاً'); return; }
+  const p = PLANTS[idx];
+  const next = new Date(); next.setDate(next.getDate() + p.days);
+  const dateStr = next.toLocaleDateString('ar-SA', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  const box = document.getElementById('water-result');
+  box.classList.add('has-date');
+  box.innerHTML = `🌱 موعد الري القادم لـ ${p.emoji} ${p.name}<br><span class="result-date">${dateStr}</span>`;
+}
+
+// ── Catalog ──
+function renderCatalog(filter) {
+  const grid = document.getElementById('catalog-grid');
+  grid.innerHTML = '';
+  const q = (filter || '').trim().toLowerCase();
+  let count = 0;
+  PLANTS.forEach((p, i) => {
+    if (q && !p.name.toLowerCase().includes(q)) return;
+    count++;
+    const div = document.createElement('div');
+    div.className = 'catalog-item';
+    div.innerHTML = `
+      <div class="catalog-item-top">
+        <span class="catalog-emoji">${p.emoji}</span>
+        <div class="catalog-name">${p.name}</div>
+      </div>
+      <div class="catalog-tags">
+        <span class="ctag">💧 كل ${p.days} أيام</span>
+        <span class="ctag">${p.light}</span>
+        <span class="ctag">${p.diff}</span>
+      </div>
+      <div class="catalog-tags">${p.tags.map(t=>`<span class="ctag">${t}</span>`).join('')}</div>
+      <button class="catalog-add-btn" onclick="addFromCatalog(${i})">➕ أضف لنباتاتي</button>
+    `;
+    grid.appendChild(div);
+  });
+  if (count === 0) grid.innerHTML = '<div style="color:rgba(168,201,127,.35);padding:30px;text-align:center;">لا توجد نتائج 🌿</div>';
+}
+
+function filterCatalog() {
+  renderCatalog(document.getElementById('catalog-search').value);
+}
+
+function addFromCatalog(idx) {
+  const already = myPlants.find(e => e.plantIdx === idx);
+  if (already) { showNotif('🌿 هذه النبتة موجودة بالفعل في قائمتك'); return; }
+  const today = new Date().toISOString().split('T')[0];
+  const next = new Date(); next.setDate(next.getDate() + PLANTS[idx].days);
+  myPlants.push({ plantIdx: idx, lastWatered: today, nextWatering: next.toISOString().split('T')[0] });
+  saveState();
+  renderMyPlants();
+  showNotif(`✅ تمت إضافة ${PLANTS[idx].emoji} ${PLANTS[idx].name} لنباتاتك`);
+}
+
+// ── Tabs ──
+function showTab(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  const idx = ['myplants','watering','catalog','care'].indexOf(id);
+  document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+}
+
+// ── Init ──
+populateSelects();
+renderCatalog();
+renderMyPlants();
+</script>
 </body>
 </html>
