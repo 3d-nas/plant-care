@@ -7,7 +7,11 @@
   OneSignalDeferred.push(async function(OneSignal) {
     await OneSignal.init({
       appId: "9c1c18d0-febe-418d-a70d-7e27d444484a",
+      serviceWorkerPath: "OneSignalSDKWorker.js",
+      notifyButton: { enable: false },
     });
+    // Update permission status after init
+    setTimeout(updatePermStatus, 1000);
   });
 </script>
 <meta charset="UTF-8">
@@ -310,7 +314,7 @@ select option{background:#162a0e;color:#a8c97f}
 .fbtn:hover{border-color:rgba(168,201,127,.3)}
 .fbtn.on{background:rgba(201,168,76,.12);border-color:rgba(201,168,76,.35);color:var(--gold2)}
 .cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(218px,1fr));gap:14px}
-.cat-card{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:20px;padding:0;overflow:hidden;display:flex;flex-direction:column;transition:all .25s}
+.cat-card{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:20px;padding:0;overflow:hidden;display:flex;flex-direction:column;transition:all .25px}
 .cat-card:hover{transform:translateY(-5px);border-color:rgba(201,168,76,.28);box-shadow:0 18px 45px rgba(0,0,0,.28)}
 .cat-card-head{padding:22px 18px 16px;background:linear-gradient(160deg,rgba(168,201,127,.06) 0%,transparent 100%);border-bottom:1px solid var(--border)}
 .cat-emoji-wrap{width:58px;height:58px;border-radius:16px;background:linear-gradient(135deg,rgba(201,168,76,.12),rgba(168,201,127,.07));border:1px solid var(--border-gold);display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:12px}
@@ -507,7 +511,7 @@ footer b{color:rgba(201,168,76,.45)}
   </div>
 </div>
 
-<!-- PANEL: CATALOG (with care merged) -->
+<!-- PANEL: CATALOG -->
 <div class="panel" id="panel-catalog">
   <div class="sc glass">
     <div class="sc-title"><div class="sc-icon">📖</div>دليل النباتات <span style="font-size:14px;color:rgba(168,201,127,.4);font-family:'Cairo',sans-serif;margin-right:8px">(35 نبتة)</span></div>
@@ -672,8 +676,8 @@ const PLANTS=[
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 let myPlants=JSON.parse(localStorage.getItem('myP3DNAS')||'[]');
 let settings=JSON.parse(localStorage.getItem('settings3DNAS')||JSON.stringify({
-  browserNotif:false, remindDays:1, remindTime:'08:00',
-  alertOverdue:true, alertToday:true, alertSoon:true
+  browserNotif:false,remindDays:1,remindTime:'08:00',
+  alertOverdue:true,alertToday:true,alertSoon:true
 }));
 let catFilter='all';
 let alertCollapsed=false;
@@ -741,26 +745,19 @@ function renderAlertBanner(){
   const list=document.getElementById('alert-list');
   const title=document.getElementById('alert-banner-title');
   const tabBadge=document.querySelector('.tab-badge');
-
-  // collect alerts
   const alerts=[];
   myPlants.forEach((e,i)=>{
     const p=PLANTS[e.plantIdx];
     const d=daysUntil(e.next);
     if(d===null)return;
-    if(d<0 && settings.alertOverdue) alerts.push({e,i,p,d,type:'overdue'});
-    else if(d===0 && settings.alertToday) alerts.push({e,i,p,d,type:'today'});
-    else if(d<=parseInt(settings.remindDays||1) && d>0 && settings.alertSoon) alerts.push({e,i,p,d,type:'soon'});
+    if(d<0&&settings.alertOverdue)alerts.push({e,i,p,d,type:'overdue'});
+    else if(d===0&&settings.alertToday)alerts.push({e,i,p,d,type:'today'});
+    else if(d<=parseInt(settings.remindDays||1)&&d>0&&settings.alertSoon)alerts.push({e,i,p,d,type:'soon'});
   });
-
-  // tab badge
   if(tabBadge){tabBadge.style.display=alerts.length?'flex':'none';tabBadge.textContent=alerts.length>9?'!':alerts.length}
-
-  // hero stat color
   const needEl=document.getElementById('stat-need');
   const urgentCount=myPlants.filter(e=>{const d=daysUntil(e.next);return d!==null&&d<=0}).length;
   if(needEl){needEl.classList.toggle('alert-num',urgentCount>0)}
-
   if(!alerts.length){banner.classList.remove('show');return}
   banner.classList.add('show');
   title.textContent=`${alerts.length} نبتة تحتاج عنايتك!`;
@@ -783,7 +780,7 @@ function renderAlertBanner(){
     `;
     list.appendChild(div);
   });
-  if(alertCollapsed) list.classList.add('collapsed');
+  if(alertCollapsed)list.classList.add('collapsed');
 }
 
 function toggleAlertList(){
@@ -802,57 +799,99 @@ function waterFromAlert(i){
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// BROWSER NOTIFICATIONS
+// ONESIGNAL NOTIFICATIONS
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function updatePermStatus(){
   const s=document.getElementById('notif-perm-status');
   const btn=document.getElementById('perm-btn');
-  if(!('Notification' in window)){
-    if(s)s.textContent='غير مدعوم في هذا المتصفح';
-    return;
-  }
-  const p=Notification.permission;
-  if(s){
-    if(p==='granted'){s.textContent='✅ مفعّل';s.style.color='#7fcc7f'}
+  if(!s||!btn)return;
+
+  // Check OneSignal subscription status
+  if(window.OneSignal){
+    OneSignal.push(function(){
+      OneSignal.isPushNotificationsEnabled(function(isEnabled){
+        if(isEnabled){
+          s.textContent='✅ مفعّل';s.style.color='#7fcc7f';
+          btn.classList.add('granted');
+          btn.textContent='✅ الإشعارات مفعّلة!';
+        } else {
+          OneSignal.getNotificationPermission(function(permission){
+            if(permission==='denied'){
+              s.textContent='🚫 محظور';s.style.color='#f88';
+            } else {
+              s.textContent='⏳ في الانتظار';s.style.color='var(--gold2)';
+            }
+            btn.classList.remove('granted');
+            btn.textContent='طلب إذن الإشعارات 🔔';
+          });
+        }
+      });
+    });
+  } else {
+    // Fallback for non-OneSignal
+    if(!('Notification' in window)){
+      if(s)s.textContent='غير مدعوم في هذا المتصفح';
+      return;
+    }
+    const p=Notification.permission;
+    if(p==='granted'){s.textContent='✅ مفعّل';s.style.color='#7fcc7f';btn.classList.add('granted');btn.textContent='✅ الإذن ممنوح'}
     else if(p==='denied'){s.textContent='🚫 محظور';s.style.color='#f88'}
-    else{s.textContent='⏳ في الانتظار';s.style.color=getComputedStyle(document.documentElement).getPropertyValue('--gold2')}
-  }
-  if(btn){
-    btn.classList.toggle('granted',p==='granted');
-    btn.textContent=p==='granted'?'✅ الإذن ممنوح — شكراً!':'طلب إذن الإشعارات 🔔';
+    else{s.textContent='⏳ في الانتظار';s.style.color='var(--gold2)'}
   }
 }
 
 function requestPermission(){
-  if(!('Notification' in window)){showToast('⚠️ المتصفح لا يدعم الإشعارات','warn');return}
-  Notification.requestPermission().then(p=>{
-    updatePermStatus();
-    if(p==='granted'){
-      settings.browserNotif=true;
-      document.getElementById('notif-toggle').checked=true;
-      localStorage.setItem('settings3DNAS',JSON.stringify(settings));
-      showToast('✅ تم منح إذن الإشعارات!');
-      sendBrowserNotif('مرحباً! 🌿','تنبيهات 3D NAS مفعّلة. سنذكّرك بري نباتاتك في الوقت المناسب.');
-    } else {
-      showToast('⚠️ لم يتم منح الإذن — تحقق من إعدادات المتصفح','warn');
-    }
-  });
+  if(window.OneSignal){
+    OneSignal.push(function(){
+      OneSignal.showNativePrompt();
+      setTimeout(updatePermStatus, 3000);
+    });
+  } else if('Notification' in window){
+    Notification.requestPermission().then(p=>{
+      updatePermStatus();
+      if(p==='granted'){
+        settings.browserNotif=true;
+        document.getElementById('notif-toggle').checked=true;
+        localStorage.setItem('settings3DNAS',JSON.stringify(settings));
+        showToast('✅ تم منح إذن الإشعارات!');
+      } else {
+        showToast('⚠️ لم يتم منح الإذن — تحقق من إعدادات المتصفح','warn');
+      }
+    });
+  } else {
+    showToast('⚠️ المتصفح لا يدعم الإشعارات','warn');
+  }
 }
 
 function toggleBrowserNotif(){
   settings.browserNotif=document.getElementById('notif-toggle').checked;
   localStorage.setItem('settings3DNAS',JSON.stringify(settings));
-  if(settings.browserNotif && Notification.permission!=='granted') requestPermission();
+  if(settings.browserNotif){requestPermission()}
 }
 
 function sendBrowserNotif(title,body){
-  if(Notification.permission==='granted'){
+  // OneSignal handles push from server side
+  // For in-app fallback use Notification API if available
+  if('Notification' in window && Notification.permission==='granted'){
     try{new Notification(title,{body,icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🌿</text></svg>'})}catch(e){}
   }
 }
 
 function sendTestNotif(){
-  if(Notification.permission==='granted'){
+  if(window.OneSignal){
+    OneSignal.push(function(){
+      OneSignal.isPushNotificationsEnabled(function(isEnabled){
+        if(isEnabled){
+          // Send local notification as test
+          sendBrowserNotif('🌿 تنبيه تجريبي من 3D NAS','هذا اختبار للتأكد من أن التنبيهات تعمل بشكل صحيح!');
+          showToast('✅ تم إرسال الإشعار التجريبي');
+        } else {
+          showToast('⚠️ فعّل الإشعارات أولاً من الزر أعلاه','warn');
+          requestPermission();
+        }
+      });
+    });
+  } else if('Notification' in window && Notification.permission==='granted'){
     sendBrowserNotif('🌿 تنبيه تجريبي من 3D NAS','هذا اختبار للتأكد من أن التنبيهات تعمل بشكل صحيح!');
     showToast('✅ تم إرسال الإشعار التجريبي');
   } else {
@@ -865,7 +904,7 @@ function checkAndNotify(){
   const soon=myPlants.filter(e=>{const d=daysUntil(e.next);return d!==null&&d>0&&d<=parseInt(settings.remindDays||1)});
   if(urgent.length){
     const names=urgent.slice(0,3).map(e=>PLANTS[e.plantIdx].name).join('، ');
-    sendBrowserNotif(`🚨 ${urgent.length} نبتة تحتاج ري الآن!`,names+(urgent.length>3?` وأكثر...`:''));
+    sendBrowserNotif(`🚨 ${urgent.length} نبتة تحتاج ري الآن!`,names+(urgent.length>3?' وأكثر...':''));
     showToast(`🚨 ${urgent.length} نبتة تحتاج ري الآن!`,'warn');
   } else if(soon.length){
     const names=soon.slice(0,2).map(e=>PLANTS[e.plantIdx].name).join('، ');
@@ -877,16 +916,15 @@ function checkAndNotify(){
 }
 
 function scheduleLocalNotifications(){
-  // Use localStorage to track last notification time
   const key='lastNotifDate3DNAS';
   const today=new Date().toISOString().split('T')[0];
   const last=localStorage.getItem(key);
-  if(last===today)return; // already notified today
+  if(last===today)return;
   const [h,m]=(settings.remindTime||'08:00').split(':').map(Number);
   const now=new Date();
   const target=new Date();target.setHours(h,m,0,0);
   const ms=target-now;
-  if(ms>0 && ms<86400000){
+  if(ms>0&&ms<86400000){
     setTimeout(()=>{
       localStorage.setItem(key,today);
       checkAndNotify();
@@ -895,7 +933,7 @@ function scheduleLocalNotifications(){
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// NOTIFICATION SCHEDULE (settings panel)
+// NOTIFICATION SCHEDULE
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function renderNotifSchedule(){
   const el=document.getElementById('notif-schedule');
@@ -904,7 +942,6 @@ function renderNotifSchedule(){
     el.innerHTML='<div style="text-align:center;padding:24px;color:rgba(168,201,127,.3);font-size:13px">لم تضف نباتات بعد 🌱</div>';
     return;
   }
-  // sort by next watering
   const sorted=[...myPlants].sort((a,b)=>new Date(a.next)-new Date(b.next)).slice(0,10);
   el.innerHTML='';
   sorted.forEach(e=>{
@@ -928,7 +965,7 @@ function renderNotifSchedule(){
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// HERO & WATERING STATS
+// STATS & LISTS
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function updateStats(){
   const need=myPlants.filter(e=>{const d=daysUntil(e.next);return d!==null&&d<=0}).length;
@@ -942,9 +979,6 @@ function updateStats(){
   document.getElementById('wi-ok').textContent=myPlants.length-need;
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// WATERING LIST
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function renderWaterList(){
   const el=document.getElementById('water-list');
   if(!el)return;
@@ -1016,9 +1050,6 @@ function renderMyPlants(){
   updateStats();
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// RENDER ALL
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function renderAll(){
   renderMyPlants();
   renderAlertBanner();
@@ -1186,7 +1217,6 @@ function init(){
   renderCatalog();
   renderAll();
 
-  // Add tab badge element to first tab
   const firstTab=document.querySelector('.tab-btn');
   if(firstTab&&!firstTab.querySelector('.tab-badge')){
     const badge=document.createElement('span');
@@ -1194,7 +1224,6 @@ function init(){
     firstTab.appendChild(badge);
   }
 
-  // Restore settings UI
   document.getElementById('notif-toggle').checked=!!settings.browserNotif;
   document.getElementById('remind-days').value=settings.remindDays||1;
   document.getElementById('remind-time').value=settings.remindTime||'08:00';
@@ -1205,10 +1234,9 @@ function init(){
   updatePermStatus();
   scheduleLocalNotifications();
 
-  // Auto-check on load
   setTimeout(()=>{
     const urgent=myPlants.filter(e=>{const d=daysUntil(e.next);return d!==null&&d<0});
-    if(urgent.length>0 && settings.browserNotif && Notification.permission==='granted'){
+    if(urgent.length>0&&settings.browserNotif){
       const names=urgent.slice(0,2).map(e=>PLANTS[e.plantIdx].name).join('، ');
       sendBrowserNotif(`🚨 ${urgent.length} نبتة تحتاج ري عاجل!`,names+(urgent.length>2?'...':''));
     }
