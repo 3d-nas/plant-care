@@ -2,731 +2,1210 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>3D NAS | واحتك الذكية الخضراء</title>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700;800&family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D NAS | مساعد النباتات الذكي</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
+:root{
+  --g1:#0d1f07;--g2:#162a0e;--g3:#1e3812;
+  --forest:#2d4a1e;--moss:#3d6128;--sage:#5a8a38;
+  --mint:#8fc45a;--pale:#c2df9a;
+  --gold:#c9a84c;--gold2:#e8d08a;--gold3:#f5e4a8;
+  --card:rgba(255,255,255,.055);
+  --border:rgba(168,201,127,.13);
+  --border-gold:rgba(201,168,76,.28);
 }
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Cairo',sans-serif;background:var(--g1);overflow-x:hidden;min-height:100vh;color:#e0f0cc}
 
-:root {
-  --g-deep: #071a04;
-  --g-dark: #0e2410;
-  --g-forest: #1c3112;
-  --g-emerald: #2b4a1a;
-  --g-moss: #416d25;
-  --g-sage: #679b3c;
-  --gold-light: #f8e7b4;
-  --gold-soft: #e6cf7a;
-  --gold-rich: #c9a13b;
-  --gold-ember: #b37b2e;
-  --glass-bg: rgba(10, 20, 6, 0.48);
-  --glass-border: rgba(168, 201, 127, 0.2);
-  --glass-gold: rgba(201, 168, 76, 0.28);
-  --shadow-xl: 0 25px 45px -12px rgba(0,0,0,0.5);
+.bg-glow{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 25%,rgba(58,100,30,.28) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 70% at 85% 75%,rgba(35,70,20,.32) 0%,transparent 55%),
+    radial-gradient(ellipse 80% 80% at 50% 50%,var(--g1) 30%,var(--g2) 100%);
 }
+.ptcl{position:fixed;pointer-events:none;z-index:1;opacity:0;animation:rise linear infinite}
+@keyframes rise{
+  0%{transform:translateY(100vh) rotate(0deg) scale(.5);opacity:0}
+  8%{opacity:.18}88%{opacity:.1}
+  100%{transform:translateY(-10vh) rotate(720deg) scale(1);opacity:0}
+}
+.page{position:relative;z-index:2;max-width:1140px;margin:0 auto;padding:28px 18px 80px}
 
-body {
-  font-family: 'Cairo', sans-serif;
-  background: radial-gradient(circle at 20% 30%, #10200b, #030a01);
-  min-height: 100vh;
-  color: #eef5e0;
-  overflow-x: hidden;
+/* HERO */
+.hero{text-align:center;padding:68px 30px 58px;margin-bottom:30px;animation:fDown .9s ease both}
+@keyframes fDown{from{opacity:0;transform:translateY(-28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:9px;
+  background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.3);
+  color:var(--gold2);padding:7px 22px;border-radius:40px;
+  font-size:12px;letter-spacing:2.5px;font-weight:700;margin-bottom:28px;
 }
+.hero h1{
+  font-family:'Amiri',serif;font-size:clamp(56px,10vw,96px);
+  line-height:.95;letter-spacing:3px;margin-bottom:14px;
+  background:linear-gradient(150deg,var(--gold3) 0%,var(--pale) 40%,var(--gold) 80%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-tagline{font-size:16px;color:rgba(168,201,127,.65);font-weight:300;max-width:420px;margin:0 auto 38px;line-height:1.9}
+.hero-stats{display:flex;justify-content:center;gap:36px;flex-wrap:wrap;margin-bottom:40px}
+.hstat{text-align:center;cursor:pointer}
+.hstat-num{font-family:'Amiri',serif;font-size:34px;color:var(--gold2);line-height:1;transition:transform .2s}
+.hstat:hover .hstat-num{transform:scale(1.1)}
+.hstat-lbl{font-size:11px;color:rgba(168,201,127,.45);letter-spacing:1px;margin-top:4px}
+.hstat-num.alert-num{color:#f8a080;animation:blink 2s ease infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.5}}
+.hero-rule{display:flex;align-items:center;gap:14px;max-width:280px;margin:0 auto}
+.hero-rule-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.35),transparent)}
+.hero-rule-dot{color:var(--gold);font-size:14px}
 
-/* animated orbs & particles */
-.orb-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
-}
+/* GLASS */
+.glass{background:var(--card);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:1px solid var(--border);border-radius:26px}
 
-.glow-bg {
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(ellipse 60% 40% at 40% 30%, rgba(90, 138, 56, 0.2), transparent 70%),
-              radial-gradient(circle at 85% 75%, rgba(201, 161, 59, 0.12), transparent 60%);
-  pointer-events: none;
-  z-index: 0;
+/* ── ALERT BANNER ── */
+.alert-banner{
+  display:none;margin-bottom:22px;padding:18px 22px;
+  background:linear-gradient(135deg,rgba(230,90,60,.12),rgba(200,60,40,.08));
+  border:1px solid rgba(230,90,60,.35);border-radius:20px;
+  animation:fUp .5s ease both;
 }
+.alert-banner.show{display:block}
+.alert-banner-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;cursor:pointer}
+.alert-banner-icon{font-size:22px;animation:shake 2.5s ease infinite}
+@keyframes shake{0%,100%{transform:rotate(0)}15%{transform:rotate(-8deg)}30%{transform:rotate(8deg)}45%{transform:rotate(-5deg)}60%{transform:rotate(5deg)}75%{transform:rotate(-2deg)}90%{transform:rotate(2deg)}}
+.alert-banner-title{font-family:'Amiri',serif;font-size:18px;color:#f8a080;flex:1}
+.alert-toggle{font-size:12px;color:rgba(248,160,128,.6);background:none;border:none;cursor:pointer;font-family:'Cairo',sans-serif;padding:4px 10px;border-radius:8px;border:1px solid rgba(248,160,128,.2)}
+.alert-toggle:hover{background:rgba(248,160,128,.1)}
+.alert-list{display:flex;flex-direction:column;gap:8px}
+.alert-list.collapsed{display:none}
+.alert-item{
+  display:flex;align-items:center;gap:12px;padding:12px 16px;
+  background:rgba(230,90,60,.07);border:1px solid rgba(230,90,60,.2);
+  border-radius:14px;transition:all .2s;
+}
+.alert-item:hover{background:rgba(230,90,60,.13)}
+.alert-item-emoji{font-size:22px}
+.alert-item-info{flex:1;min-width:0}
+.alert-item-name{font-size:14px;color:#f8d0c0;font-weight:700}
+.alert-item-sub{font-size:11px;color:rgba(248,160,128,.6);margin-top:2px}
+.alert-item-badge{
+  padding:5px 12px;border-radius:12px;font-size:11px;font-weight:700;white-space:nowrap;
+  background:rgba(230,90,60,.15);border:1px solid rgba(230,90,60,.3);color:#f8a080;
+}
+.alert-item-badge.overdue{background:rgba(200,40,40,.18);border-color:rgba(200,40,40,.4);color:#ff8080;animation:pulse 1.5s ease infinite}
+.alert-item-badge.today{background:rgba(230,120,40,.15);border-color:rgba(230,120,40,.35);color:#ffc080}
+.alert-item-badge.soon{background:rgba(201,168,76,.12);border-color:rgba(201,168,76,.3);color:var(--gold2)}
+.alert-water-btn{
+  padding:7px 14px;border:1px solid rgba(100,180,240,.3);
+  background:rgba(80,140,220,.1);color:#90c0f8;border-radius:10px;
+  font-size:11px;font-family:'Cairo',sans-serif;cursor:pointer;font-weight:700;transition:all .2s;
+  white-space:nowrap;
+}
+.alert-water-btn:hover{background:rgba(80,140,220,.22)}
 
-/* floating leaves */
-.floating {
-  position: fixed;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.2;
-  animation: floatAnim 18s infinite linear;
+/* TABS */
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:26px;animation:fUp .6s .1s ease both}
+.tab-btn{
+  padding:20px 8px;text-align:center;cursor:pointer;border:none;
+  background:var(--card);backdrop-filter:blur(22px);
+  border:1px solid var(--border);border-radius:20px;
+  transition:all .3s;position:relative;overflow:hidden;
 }
-@keyframes floatAnim {
-  0% { transform: translateY(110vh) rotate(0deg) scale(0.6); opacity: 0; }
-  10% { opacity: 0.5; }
-  90% { opacity: 0.3; }
-  100% { transform: translateY(-15vh) rotate(420deg) scale(1.2); opacity: 0; }
+.tab-btn::after{content:'';position:absolute;bottom:0;left:15%;right:15%;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  opacity:0;transition:opacity .3s;border-radius:2px}
+.tab-btn:hover{transform:translateY(-4px);border-color:var(--border-gold)}
+.tab-btn.active{border-color:rgba(201,168,76,.45);background:rgba(201,168,76,.08)}
+.tab-btn.active::after{opacity:1}
+.tab-icon{font-size:26px;margin-bottom:7px;display:block}
+.tab-label{font-size:12px;color:rgba(168,201,127,.6);font-weight:700;letter-spacing:.3px}
+.tab-btn.active .tab-label{color:var(--gold2)}
+.tab-badge{
+  position:absolute;top:10px;left:10px;
+  background:#e55a3a;color:white;border-radius:50%;
+  width:18px;height:18px;font-size:10px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+  animation:pulse 1.5s ease infinite;
 }
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(.92)}}
 
-/* main container */
-.page {
-  position: relative;
-  z-index: 10;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 20px 24px 70px;
-}
+/* PANELS */
+.panel{display:none}
+.panel.active{display:block;animation:fIn .35s ease both}
 
-/* Glassmorphic cards */
-.glass-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--glass-border);
-  border-radius: 2rem;
-  transition: all 0.3s ease;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-}
+/* SECTION CARD */
+.sc{margin-bottom:22px;padding:30px 32px}
+.sc-title{display:flex;align-items:center;gap:13px;font-family:'Amiri',serif;font-size:24px;
+  color:var(--gold2);margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.sc-icon{width:40px;height:40px;background:linear-gradient(135deg,rgba(201,168,76,.18),rgba(168,201,127,.09));
+  border:1px solid var(--border-gold);border-radius:11px;
+  display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 
-/* hero */
-.hero {
-  text-align: center;
-  padding: 60px 20px 50px;
-  margin-bottom: 2rem;
+/* INPUTS */
+.sel-wrap{position:relative;margin-bottom:13px}
+.sel-wrap::after{content:'▾';position:absolute;left:16px;top:50%;
+  transform:translateY(-50%);color:var(--gold);font-size:14px;pointer-events:none}
+select,input[type=text]{
+  width:100%;padding:14px 18px 14px 42px;
+  background:rgba(255,255,255,.055);border:1px solid rgba(168,201,127,.18);
+  border-radius:14px;color:rgba(168,201,127,.92);
+  font-size:14px;font-family:'Cairo',sans-serif;
+  appearance:none;outline:none;transition:border-color .3s,background .3s;
 }
-.badge-glow {
-  display: inline-flex;
-  background: rgba(201, 168, 76, 0.12);
-  border: 1px solid rgba(201, 168, 76, 0.35);
-  padding: 6px 22px;
-  border-radius: 60px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 2px;
-  color: var(--gold-soft);
-  margin-bottom: 22px;
-  backdrop-filter: blur(4px);
-}
-.hero h1 {
-  font-family: 'Amiri', serif;
-  font-size: clamp(3.2rem, 12vw, 6rem);
-  background: linear-gradient(135deg, #FFF2CF, #E3C77A, #AF8F40);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  letter-spacing: -0.02em;
-  text-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-.hero-sub {
-  color: #b6d493;
-  font-weight: 300;
-  max-width: 500px;
-  margin: 18px auto 32px;
-  line-height: 1.7;
-}
-.stat-row {
-  display: flex;
-  justify-content: center;
-  gap: 3rem;
-  flex-wrap: wrap;
-  margin: 20px 0 30px;
-}
-.stat-block {
-  text-align: center;
-}
-.stat-num {
-  font-family: 'Amiri', serif;
-  font-size: 2.6rem;
-  font-weight: 800;
-  color: var(--gold-soft);
-  line-height: 1;
-}
-.stat-label {
-  font-size: 0.7rem;
-  color: #98b076;
-  letter-spacing: 0.5px;
-}
+input[type=text]{padding:13px 18px}
+select:focus,input:focus{border-color:rgba(201,168,76,.45);background:rgba(255,255,255,.08)}
+select option{background:#162a0e;color:#a8c97f}
+::placeholder{color:rgba(168,201,127,.3)}
 
-/* Tabs luxury */
-.tab-lux {
-  display: grid;
-  grid-template-columns: repeat(4,1fr);
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-.tab-btn-lux {
-  background: rgba(20, 30, 12, 0.6);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(168, 201, 127, 0.2);
-  border-radius: 1.5rem;
-  padding: 1rem 0.5rem;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.25s;
-  font-weight: 600;
-}
-.tab-btn-lux .tab-icon {
-  font-size: 1.8rem;
-  display: block;
-  margin-bottom: 6px;
-}
-.tab-btn-lux .tab-label {
-  font-size: 0.75rem;
-  color: #c0dd9a;
-}
-.tab-btn-lux.active {
-  background: rgba(201, 168, 76, 0.18);
-  border-color: rgba(201, 168, 76, 0.55);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.3);
-}
-.tab-btn-lux.active .tab-label {
-  color: var(--gold-light);
-  font-weight: 800;
-}
+/* BUTTONS */
+.btn{border:none;cursor:pointer;font-family:'Cairo',sans-serif;transition:all .25s;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.btn-primary{width:100%;padding:15px;border-radius:14px;
+  background:linear-gradient(135deg,#3d6128,#6a9a3a);
+  color:#e8f5d0;font-size:15px;font-weight:700;
+  box-shadow:0 8px 28px rgba(61,97,40,.42);letter-spacing:.4px}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 38px rgba(61,97,40,.58)}
+.btn-primary:active{transform:translateY(0)}
+.btn-gold{padding:15px 40px;border-radius:50px;
+  background:linear-gradient(135deg,var(--gold),#a8783a);
+  color:#1a2e0d;font-size:16px;font-weight:800;
+  box-shadow:0 10px 32px rgba(201,168,76,.38)}
+.btn-gold:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 18px 48px rgba(201,168,76,.52)}
+.btn-sm{padding:7px 16px;border-radius:10px;font-size:12px;font-weight:600;
+  background:rgba(168,201,127,.08);border:1px solid rgba(168,201,127,.22);
+  color:rgba(168,201,127,.8)}
+.btn-sm:hover{background:rgba(168,201,127,.16);border-color:rgba(168,201,127,.38)}
+.btn-del{padding:7px 13px;border-radius:10px;font-size:12px;
+  background:rgba(210,70,70,.08);border:1px solid rgba(210,70,70,.2);
+  color:rgba(255,110,110,.7)}
+.btn-del:hover{background:rgba(210,70,70,.2)}
+.btn-add-cat{width:100%;padding:9px 12px;border-radius:12px;font-size:12px;font-weight:700;
+  background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.22);
+  color:rgba(232,208,138,.8);margin-top:auto}
+.btn-add-cat:hover{background:rgba(201,168,76,.16);color:var(--gold2)}
 
-/* panels */
-.panel {
-  display: none;
-  animation: fadeUp 0.35s ease;
-}
-.panel.active-panel {
-  display: block;
-}
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+/* RESULT BOX */
+.rbox{margin-top:15px;padding:20px;
+  background:rgba(168,201,127,.06);border:1px solid rgba(168,201,127,.15);
+  border-radius:16px;text-align:center;color:rgba(168,201,127,.8);
+  font-size:15px;line-height:1.9;transition:all .4s}
+.rbox.lit{border-color:rgba(201,168,76,.32);background:rgba(201,168,76,.07);color:var(--gold2)}
+.rbox-date{font-family:'Amiri',serif;font-size:28px;display:block;margin-top:4px;color:var(--gold)}
 
-/* inner card */
-.inner-card {
-  padding: 28px 30px;
-  margin-bottom: 1.5rem;
+/* MY PLANTS */
+.mp-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:20px}
+.mp-count{background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.28);
+  color:var(--gold2);padding:5px 16px;border-radius:20px;font-size:12px;font-weight:700}
+.add-row{display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:22px;align-items:start}
+.add-row .sel-wrap{margin-bottom:0}
+.myp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.myp-card{
+  background:rgba(255,255,255,.05);border:1px solid var(--border);
+  border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px;
+  transition:all .25s;position:relative;overflow:hidden;
 }
-.section-title {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-family: 'Amiri', serif;
-  font-size: 1.8rem;
-  color: var(--gold-soft);
-  border-bottom: 1px solid rgba(168, 201, 127, 0.2);
-  padding-bottom: 16px;
-  margin-bottom: 24px;
-}
-.title-icon {
-  background: linear-gradient(145deg, rgba(201,168,76,0.15), rgba(90,130,40,0.1));
-  border-radius: 16px;
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.6rem;
-  border: 1px solid var(--glass-gold);
-}
+.myp-card::before{content:'';position:absolute;top:0;right:0;width:60%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(201,168,76,.25))}
+.myp-card.needs-water{border-color:rgba(230,90,60,.35);box-shadow:0 0 20px rgba(230,90,60,.1)}
+.myp-card:hover{transform:translateY(-4px);border-color:rgba(201,168,76,.28);box-shadow:0 16px 40px rgba(0,0,0,.3)}
+.myp-top{display:flex;align-items:flex-start;gap:12px}
+.myp-emoji{font-size:34px;line-height:1}
+.myp-info{flex:1;min-width:0}
+.myp-name{font-family:'Amiri',serif;font-size:19px;color:var(--gold2);margin-bottom:3px}
+.myp-sci{font-size:11px;color:rgba(168,201,127,.38);font-style:italic;margin-bottom:6px}
+.myp-row{display:flex;gap:6px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:10px;
+  font-size:10px;font-weight:700;
+  background:rgba(168,201,127,.08);border:1px solid rgba(168,201,127,.15);
+  color:rgba(168,201,127,.65)}
+.chip.gold{background:rgba(201,168,76,.09);border-color:rgba(201,168,76,.22);color:rgba(232,208,138,.75)}
+.myp-divider{height:1px;background:var(--border)}
+.myp-dates{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.myp-date-box{background:rgba(168,201,127,.05);border:1px solid var(--border);border-radius:12px;padding:10px 12px}
+.myp-date-lbl{font-size:10px;color:rgba(168,201,127,.38);letter-spacing:.5px;margin-bottom:3px}
+.myp-date-val{font-size:12px;color:rgba(168,201,127,.75);font-weight:600}
+.myp-status{text-align:center}
+.status-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:.3px}
+.sb-ok{background:rgba(80,180,80,.1);border:1px solid rgba(80,180,80,.22);color:#7fcc7f}
+.sb-soon{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);color:var(--gold2)}
+.sb-now{background:rgba(230,90,60,.1);border:1px solid rgba(230,90,60,.25);color:#f8a080;animation:pulse 1.5s ease infinite}
+.myp-actions{display:flex;gap:8px}
+.myp-actions .btn-sm,.myp-actions .btn-del{flex:1;justify-content:center}
+.empty-state{text-align:center;padding:55px 20px;color:rgba(168,201,127,.3);font-size:15px;line-height:2.2}
+.empty-ico{font-size:52px;display:block;margin-bottom:14px}
 
-/* inputs */
-.lux-select {
-  width: 100%;
-  padding: 14px 18px;
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(168, 201, 127, 0.35);
-  border-radius: 18px;
-  color: #eef5e0;
-  font-size: 0.9rem;
-  font-family: 'Cairo', sans-serif;
-  outline: none;
-  transition: 0.2s;
+/* SETTINGS PANEL */
+.settings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.setting-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:18px;padding:20px 22px}
+.setting-title{font-size:14px;color:rgba(168,201,127,.8);font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.toggle-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.toggle-label{font-size:13px;color:rgba(168,201,127,.6)}
+.toggle{position:relative;width:44px;height:24px;cursor:pointer}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-track{
+  position:absolute;inset:0;background:rgba(168,201,127,.15);
+  border:1px solid rgba(168,201,127,.2);border-radius:12px;transition:all .3s;
 }
-.lux-select:focus {
-  border-color: var(--gold-rich);
-  box-shadow: 0 0 0 2px rgba(201,168,76,0.3);
+.toggle input:checked + .toggle-track{background:rgba(61,97,40,.8);border-color:rgba(168,201,127,.4)}
+.toggle-thumb{
+  position:absolute;top:3px;right:3px;width:16px;height:16px;
+  background:rgba(168,201,127,.5);border-radius:50%;transition:all .3s;
 }
-.btn-primary {
-  background: linear-gradient(95deg, #416d25, #2a4d18);
-  border: none;
-  padding: 14px 20px;
-  border-radius: 40px;
-  font-weight: 800;
-  color: #fff3df;
-  width: 100%;
-  transition: all 0.2s;
-  font-size: 0.9rem;
+.toggle input:checked ~ .toggle-thumb{right:calc(100% - 19px);background:var(--pale)}
+.time-select-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.time-select-row label{font-size:12px;color:rgba(168,201,127,.55);min-width:90px}
+.time-input{flex:1;padding:8px 12px;background:rgba(255,255,255,.05);
+  border:1px solid rgba(168,201,127,.15);border-radius:10px;
+  color:rgba(168,201,127,.85);font-size:13px;font-family:'Cairo',sans-serif;outline:none;}
+.time-input:focus{border-color:rgba(201,168,76,.4)}
+.setting-hint{font-size:11px;color:rgba(168,201,127,.3);margin-top:8px;line-height:1.6}
+.perm-btn{
+  width:100%;padding:11px;border-radius:12px;margin-top:4px;
+  background:rgba(168,201,127,.08);border:1px solid rgba(168,201,127,.2);
+  color:rgba(168,201,127,.75);font-size:13px;font-family:'Cairo',sans-serif;
+  cursor:pointer;font-weight:700;transition:all .25s;
 }
-.btn-primary:hover {
-  transform: scale(0.98);
-  background: linear-gradient(95deg, #528f2c, #36681e);
-  box-shadow: 0 8px 22px rgba(0,0,0,0.3);
-}
+.perm-btn:hover{background:rgba(168,201,127,.16)}
+.perm-btn.granted{background:rgba(80,180,80,.1);border-color:rgba(80,180,80,.3);color:#7fcc7f}
 
-/* my plants grid */
-.plants-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1rem;
+/* WATERING PANEL */
+.water-info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.winfo{background:rgba(168,201,127,.05);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center}
+.winfo-val{font-family:'Amiri',serif;font-size:28px;color:var(--gold2)}
+.winfo-lbl{font-size:11px;color:rgba(168,201,127,.4);margin-top:3px;letter-spacing:.4px}
+.water-list{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.water-row{
+  display:flex;align-items:center;gap:12px;padding:14px 16px;
+  background:rgba(255,255,255,.04);border:1px solid var(--border);
+  border-radius:14px;transition:all .2s;
 }
-.plant-card {
-  background: rgba(15, 25, 8, 0.6);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(168, 201, 127, 0.2);
-  border-radius: 1.8rem;
-  padding: 1.2rem;
-  transition: all 0.3s;
-}
-.plant-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(201, 168, 76, 0.5);
-  box-shadow: 0 20px 28px -12px black;
-}
-.plant-header {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-.plant-emoji {
-  font-size: 2.8rem;
-}
-.plant-name {
-  font-family: 'Amiri', serif;
-  font-size: 1.3rem;
-  color: var(--gold-light);
-}
-.plant-sci {
-  font-size: 0.7rem;
-  color: #98ae7a;
-}
-.dates-row {
-  display: flex;
-  justify-content: space-between;
-  margin: 12px 0;
-  background: rgba(0,0,0,0.2);
-  border-radius: 24px;
-  padding: 8px 12px;
-}
-.badge-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 5px 12px;
-  border-radius: 60px;
-}
-.status-now { background: #9b2c1d30; border:1px solid #da7a60; color:#ffbc9a; }
-.status-soon { background: #c9a13b20; border:1px solid #c9a13b; color:#f3d37c; }
-.status-ok { background: #3a652520; border:1px solid #7da04b; color:#c0e0a0; }
-.action-btns {
-  display: flex;
-  gap: 8px;
-  margin-top: 12px;
-}
-.btn-sm {
-  background: rgba(200,210,150,0.08);
-  border: 1px solid rgba(168, 201, 127, 0.3);
-  padding: 8px 12px;
-  border-radius: 40px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  cursor: pointer;
-}
-.btn-danger {
-  background: rgba(180, 60, 40, 0.2);
-  border-color: #b45a4230;
-  color: #f0b090;
-}
+.water-row:hover{border-color:rgba(168,201,127,.25)}
+.water-row.urgent{border-color:rgba(230,90,60,.3);background:rgba(230,90,60,.05)}
+.water-row-emoji{font-size:24px}
+.water-row-info{flex:1}
+.water-row-name{font-size:14px;color:var(--gold2);font-weight:700}
+.water-row-date{font-size:11px;color:rgba(168,201,127,.45);margin-top:2px}
 
-/* catalog cards enhanced */
-.cat-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1.5rem;
-}
-.cat-item {
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(8px);
-  border-radius: 1.5rem;
-  border: 1px solid rgba(168, 201, 127, 0.2);
-  overflow: hidden;
-  transition: 0.25s;
-}
-.cat-item:hover {
-  transform: translateY(-5px);
-  border-color: var(--glass-gold);
-}
-.cat-head {
-  padding: 18px 18px 8px 18px;
-  background: linear-gradient(145deg, #1f3313, #0f1f08);
-}
-.cat-emoji-big {
-  font-size: 2.6rem;
-}
-.cat-difficulty {
-  display: flex;
-  gap: 4px;
-  margin: 6px 0;
-}
-.dot-diff {
-  width: 12px;
-  height: 12px;
-  border-radius: 20px;
-  background: #99b870;
-}
-.cat-body {
-  padding: 14px 18px 18px;
-}
-.meta-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 12px 0;
-  font-size: 0.7rem;
-}
-.meta-chip {
-  background: #2a421a;
-  padding: 4px 10px;
-  border-radius: 40px;
-  color: #cfeca5;
-}
-.cat-desc {
-  font-size: 0.75rem;
-  line-height: 1.5;
-  color: #bfdaa0;
-  margin: 10px 0;
-}
-.btn-add-sm {
-  background: var(--gold-ember);
-  border: none;
-  width: 100%;
-  padding: 8px;
-  border-radius: 30px;
-  font-weight: 800;
-  margin-top: 8px;
-  color: #1a2a0c;
-  transition: 0.2s;
-}
+/* CATALOG */
+.cat-toolbar{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;align-items:center}
+.cat-search-wrap{flex:1;min-width:180px;position:relative}
+.cat-search-wrap::before{content:'🔍';position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none}
+.cat-search-wrap input{padding:12px 38px 12px 16px}
+.filter-btns{display:flex;gap:6px;flex-wrap:wrap}
+.fbtn{padding:8px 14px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;
+  background:rgba(168,201,127,.07);border:1px solid var(--border);
+  color:rgba(168,201,127,.6);font-family:'Cairo',sans-serif;transition:all .2s}
+.fbtn:hover{border-color:rgba(168,201,127,.3)}
+.fbtn.on{background:rgba(201,168,76,.12);border-color:rgba(201,168,76,.35);color:var(--gold2)}
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(218px,1fr));gap:14px}
+.cat-card{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:20px;padding:0;overflow:hidden;display:flex;flex-direction:column;transition:all .25s}
+.cat-card:hover{transform:translateY(-5px);border-color:rgba(201,168,76,.28);box-shadow:0 18px 45px rgba(0,0,0,.28)}
+.cat-card-head{padding:22px 18px 16px;background:linear-gradient(160deg,rgba(168,201,127,.06) 0%,transparent 100%);border-bottom:1px solid var(--border)}
+.cat-emoji-wrap{width:58px;height:58px;border-radius:16px;background:linear-gradient(135deg,rgba(201,168,76,.12),rgba(168,201,127,.07));border:1px solid var(--border-gold);display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:12px}
+.cat-name{font-family:'Amiri',serif;font-size:18px;color:var(--gold2);margin-bottom:3px}
+.cat-sci{font-size:10px;color:rgba(168,201,127,.35);font-style:italic;margin-bottom:8px}
+.cat-quick{display:flex;gap:5px;flex-wrap:wrap}
+.cq{padding:3px 8px;border-radius:8px;font-size:9px;font-weight:700;background:rgba(168,201,127,.08);border:1px solid rgba(168,201,127,.14);color:rgba(168,201,127,.6)}
+.cat-card-body{padding:14px 18px;flex:1;display:flex;flex-direction:column;gap:10px}
+.info-rows{display:flex;flex-direction:column;gap:7px}
+.irow{display:flex;align-items:center;gap:8px;font-size:12px}
+.irow-icon{width:22px;text-align:center;font-size:14px;flex-shrink:0}
+.irow-label{color:rgba(168,201,127,.38);font-size:10px;width:68px;flex-shrink:0}
+.irow-val{color:rgba(168,201,127,.8);font-weight:600;flex:1}
+.cat-desc{font-size:12px;color:rgba(168,201,127,.5);line-height:1.7;border-top:1px solid var(--border);padding-top:10px}
+.cat-tips{margin-top:4px}
+.cat-tip{display:flex;align-items:flex-start;gap:7px;font-size:11px;color:rgba(168,201,127,.45);line-height:1.6;margin-bottom:4px}
+.cat-tip::before{content:'•';color:var(--gold);flex-shrink:0;margin-top:1px}
+.diff-bar{display:flex;gap:3px;align-items:center}
+.diff-dot{width:8px;height:8px;border-radius:50%}
 
-/* care tips expand */
-.care-tip-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px,1fr));
-  gap: 1.2rem;
-}
-.care-tip-card {
-  background: #16240db3;
-  border-radius: 1.5rem;
-  padding: 1.5rem;
-  border: 1px solid rgba(201,168,76,0.2);
-}
-.care-icon {
-  font-size: 2rem;
-  margin-bottom: 12px;
-}
-.care-title {
-  font-weight: 800;
-  font-size: 1.2rem;
-  color: var(--gold-soft);
-  margin-bottom: 8px;
-}
-.care-text {
-  font-size: 0.8rem;
-  line-height: 1.6;
-  color: #cbe3ae;
-}
+/* CARE */
+.care-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.care-card{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:20px;padding:22px 20px;transition:all .25s}
+.care-card:hover{transform:translateY(-4px);border-color:rgba(201,168,76,.25)}
+.care-ico-wrap{width:50px;height:50px;border-radius:14px;margin-bottom:13px;background:linear-gradient(135deg,rgba(201,168,76,.14),rgba(168,201,127,.07));border:1px solid var(--border-gold);display:flex;align-items:center;justify-content:center;font-size:24px}
+.care-title{font-family:'Amiri',serif;font-size:18px;color:var(--gold2);margin-bottom:8px}
+.care-body{font-size:12px;color:rgba(168,201,127,.55);line-height:1.85}
 
-/* modal new */
-.modal-lux {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(14px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  opacity: 0;
-  visibility: hidden;
-  transition: 0.25s;
-  padding: 1rem;
+/* CTA */
+.cta{padding:50px 40px;text-align:center;margin-bottom:26px;background:linear-gradient(150deg,rgba(201,168,76,.08),rgba(61,97,40,.14));border-color:rgba(201,168,76,.18)}
+.cta h2{font-family:'Amiri',serif;font-size:32px;color:var(--gold2);margin-bottom:8px}
+.cta p{color:rgba(168,201,127,.55);font-size:14px;margin-bottom:28px}
+
+/* FOOTER */
+footer{text-align:center;padding:28px;color:rgba(168,201,127,.25);font-size:12px;border-top:1px solid var(--border);letter-spacing:.5px}
+footer b{color:rgba(201,168,76,.45)}
+
+/* TOAST NOTIF */
+.toast{
+  position:fixed;bottom:28px;left:50%;
+  transform:translateX(-50%) translateY(16px);
+  background:linear-gradient(135deg,#3d6128,#243d18);
+  border:1px solid rgba(168,201,127,.28);color:#a8c97f;
+  padding:12px 26px;border-radius:40px;font-size:13px;
+  font-family:'Cairo',sans-serif;box-shadow:0 12px 44px rgba(0,0,0,.55);
+  z-index:9999;opacity:0;transition:all .38s;pointer-events:none;white-space:nowrap;max-width:90vw;
 }
-.modal-lux.open {
-  opacity: 1;
-  visibility: visible;
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.warn{background:linear-gradient(135deg,#7a2010,#4a1008);border-color:rgba(230,90,60,.4);color:#f8b090}
+.toast.info{background:linear-gradient(135deg,#1a3a6a,#0d2045);border-color:rgba(80,140,220,.35);color:#90c0f8}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:linear-gradient(160deg,#1e3812,#162a0e);border:1px solid rgba(201,168,76,.25);border-radius:28px;padding:32px;max-width:560px;width:100%;max-height:88vh;overflow-y:auto;transform:translateY(20px);transition:transform .3s;position:relative}
+.modal-overlay.open .modal{transform:translateY(0)}
+.modal-close{position:absolute;top:16px;left:16px;width:34px;height:34px;border-radius:50%;background:rgba(168,201,127,.08);border:1px solid var(--border);color:rgba(168,201,127,.6);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;font-family:sans-serif;transition:all .2s}
+.modal-close:hover{background:rgba(168,201,127,.16);color:#a8c97f}
+.modal-emoji{font-size:52px;text-align:center;margin-bottom:10px}
+.modal-name{font-family:'Amiri',serif;font-size:30px;color:var(--gold2);text-align:center;margin-bottom:4px}
+.modal-sci{font-size:12px;color:rgba(168,201,127,.35);text-align:center;font-style:italic;margin-bottom:20px}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.minfo{background:rgba(168,201,127,.05);border:1px solid var(--border);border-radius:14px;padding:13px 14px}
+.minfo-lbl{font-size:10px;color:rgba(168,201,127,.35);letter-spacing:.6px;margin-bottom:4px}
+.minfo-val{font-size:14px;color:rgba(168,201,127,.85);font-weight:700}
+.modal-desc{font-size:13px;color:rgba(168,201,127,.6);line-height:1.85;margin-bottom:18px;padding:14px;background:rgba(168,201,127,.04);border-radius:14px;border:1px solid var(--border)}
+.modal-tips-title{font-family:'Amiri',serif;font-size:18px;color:var(--gold2);margin-bottom:10px}
+.modal-tip{display:flex;gap:10px;font-size:12px;color:rgba(168,201,127,.55);line-height:1.7;margin-bottom:8px;padding:10px 12px;background:rgba(168,201,127,.04);border-radius:12px;border:1px solid var(--border)}
+.modal-tip-ico{font-size:16px;flex-shrink:0}
+
+/* RESPONSIVE */
+@media(max-width:700px){
+  .tabs{grid-template-columns:repeat(2,1fr)}
+  .hero h1{font-size:58px}
+  .sc{padding:20px 16px}
+  .water-info-grid{grid-template-columns:repeat(2,1fr)}
+  .add-row{grid-template-columns:1fr}
+  .modal-grid{grid-template-columns:1fr}
+  .cta{padding:32px 20px}
+  .alert-item{flex-wrap:wrap}
 }
-.modal-content {
-  max-width: 560px;
-  width: 100%;
-  max-height: 85vh;
-  overflow-y: auto;
-  background: linear-gradient(145deg, #1d2f12, #0f1c09);
-  border: 1px solid var(--glass-gold);
-  border-radius: 2rem;
-  padding: 2rem;
-  position: relative;
-}
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #5c7940;
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
-}
-.modal-detail-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.7rem;
-  margin: 1rem 0;
-}
-.modal-tip-list {
-  background: #172f0c40;
-  border-radius: 1rem;
-  padding: 12px;
-  margin-top: 12px;
-}
-.notif-toast {
-  position: fixed;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #1f2e14f0;
-  backdrop-filter: blur(8px);
-  border: 1px solid #c9a84c;
-  color: #ffe6b3;
-  padding: 10px 28px;
-  border-radius: 60px;
-  z-index: 1100;
-  font-weight: 600;
-  transition: 0.25s;
-  opacity: 0;
-  pointer-events: none;
-}
-.btn-gold-lux {
-  background: linear-gradient(100deg, #c9a13b, #a67c2e);
-  border: none;
-  padding: 12px 28px;
-  border-radius: 60px;
-  font-weight: 800;
-  color: #0b1f04;
-  transition: 0.2s;
-}
-@media (max-width: 700px) {
-  .tab-lux { gap: 0.6rem; }
-  .inner-card { padding: 20px 18px; }
-  .plants-grid { grid-template-columns: 1fr; }
+@media(max-width:440px){
+  .hero{padding:48px 14px 36px}
+  .hero-stats{gap:22px}
 }
 </style>
 </head>
 <body>
-<div class="orb-canvas" id="canvasOrbs"></div>
-<div class="glow-bg"></div>
-<div class="notif-toast" id="toastMsg">✨ تمت العملية</div>
 
-<div class="page">
-  <!-- Hero section -->
-  <div class="hero">
-    <div class="badge-glow">✦ واحة 3D NAS الذكية ✦</div>
-    <h1>3D NAS</h1>
-    <div class="hero-sub">رعاية ذكية بنبض أخضر — دليل متكامل، تذكيرات، ونباتات تنبض بالحياة</div>
-    <div class="stat-row">
-      <div class="stat-block"><div class="stat-num" id="totalPlantsStat">0</div><div class="stat-label">نباتاتي</div></div>
-      <div class="stat-block"><div class="stat-num" id="needWaterStat">0</div><div class="stat-label">تحتاج ري</div></div>
-      <div class="stat-block"><div class="stat-num">42+</div><div class="stat-label">دليل غني</div></div>
-    </div>
+<div class="bg-glow"></div>
+<div class="toast" id="toast"></div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    <div id="modal-content"></div>
   </div>
-  
-  <!-- Tabs -->
-  <div class="tab-lux">
-    <div class="tab-btn-lux active" data-tab="myplants"><span class="tab-icon">🪴</span><span class="tab-label">نباتاتي</span></div>
-    <div class="tab-btn-lux" data-tab="watering"><span class="tab-icon">💧</span><span class="tab-label">جدول الري</span></div>
-    <div class="tab-btn-lux" data-tab="catalog"><span class="tab-icon">📘</span><span class="tab-label">الموسوعة</span></div>
-    <div class="tab-btn-lux" data-tab="care"><span class="tab-icon">🌿</span><span class="tab-label">الرعاية الفائقة</span></div>
-  </div>
-  
-  <!-- Panel MyPlants -->
-  <div id="panel-myplants" class="panel active-panel">
-    <div class="glass-card inner-card">
-      <div class="section-title"><div class="title-icon">🌱</div> مجموعتي الخضراء</div>
-      <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px;">
-        <select id="addPlantSelect" class="lux-select" style="flex:2"><option value="">-- اختر نباتاً للإضافة --</option></select>
-        <button id="addPlantBtn" class="btn-primary" style="flex:1; width:auto; padding: 12px 20px;">➕ أضف</button>
-      </div>
-      <div id="myPlantsContainer" class="plants-grid"></div>
-      <div id="emptyPlaceholder" style="text-align:center; padding: 3rem; color:#98b078;">🌿 لم تضف أي نبات بعد، اختر من الموسوعة أو من القائمة أعلاه</div>
-    </div>
-  </div>
-  
-  <!-- Watering panel -->
-  <div id="panel-watering" class="panel">
-    <div class="glass-card inner-card">
-      <div class="section-title"><div class="title-icon">💧</div>مستشار الري الذكي</div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 24px;">
-        <div class="stat-block" style="background:#1d3112; border-radius: 1rem; padding: 0.8rem;"><div class="stat-num" id="waterTotal">0</div><div class="stat-label">إجمالي</div></div>
-        <div class="stat-block" style="background:#1d3112; border-radius: 1rem; padding: 0.8rem;"><div class="stat-num" id="waterNeeds">0</div><div class="stat-label">يحتاج ري</div></div>
-        <div class="stat-block" style="background:#1d3112; border-radius: 1rem; padding: 0.8rem;"><div class="stat-num" id="waterFine">0</div><div class="stat-label">بخير</div></div>
-      </div>
-      <select id="waterPlantSelect" class="lux-select" style="margin-bottom: 16px;"><option>-- حدد نبتة لحساب الموعد --</option></select>
-      <button id="calcWaterBtn" class="btn-primary">📅 احسب موعد الري القادم</button>
-      <div id="waterResultBox" class="glass-card" style="margin-top: 22px; padding: 18px; text-align: center; background: rgba(0,0,0,0.2); border-radius: 28px;"></div>
-    </div>
-  </div>
-  
-  <!-- catalog panel (الموسوعة) enhanced -->
-  <div id="panel-catalog" class="panel">
-    <div class="glass-card inner-card">
-      <div class="section-title"><div class="title-icon">📖</div>موسوعة النباتات (42 صنفاً)</div>
-      <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px;">
-        <input type="text" id="searchCatalog" placeholder="🔍 بحث بالاسم أو الاسم العلمي" class="lux-select" style="flex:2">
-        <div style="display: flex; gap: 6px;">
-          <button class="filt-btn active" data-diff="all">الكل</button>
-          <button class="filt-btn" data-diff="سهلة">سهلة</button>
-          <button class="filt-btn" data-diff="متوسطة">متوسطة</button>
-          <button class="filt-btn" data-diff="صعبة">خبيرة</button>
-        </div>
-      </div>
-      <div id="catalogGrid" class="cat-grid"></div>
-    </div>
-  </div>
-  
-  <!-- care panel luxury tips -->
-  <div id="panel-care" class="panel">
-    <div class="glass-card inner-card">
-      <div class="section-title"><div class="title-icon">🧘</div>دليل الرعاية المتقدم</div>
-      <div id="careTipsContainer" class="care-tip-grid"></div>
-    </div>
-  </div>
-  
-  <footer style="text-align: center; margin-top: 3rem; font-size: 0.7rem; color:#7c9a5a;">3D NAS © 2025 — تقنية لعالم أخضر ذكي</footer>
 </div>
 
-<!-- modal placeholder -->
-<div id="plantModal" class="modal-lux"><div class="modal-content" id="modalInner"></div></div>
+<div class="page">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">✦ &nbsp; مساعد النباتات الذكي &nbsp; ✦</div>
+  <h1>3D NAS</h1>
+  <p class="hero-tagline">عالَمك الأخضر في مكان واحد<br>اعتنِ بنباتاتك بذكاء وأناقة</p>
+  <div class="hero-stats">
+    <div class="hstat" onclick="showTab('myplants')">
+      <div class="hstat-num" id="stat-count">0</div><div class="hstat-lbl">نباتاتي</div>
+    </div>
+    <div class="hstat">
+      <div class="hstat-num">35</div><div class="hstat-lbl">نبتة في الدليل</div>
+    </div>
+    <div class="hstat" onclick="showTab('watering')">
+      <div class="hstat-num" id="stat-need">0</div><div class="hstat-lbl">تحتاج ري</div>
+    </div>
+    <div class="hstat" onclick="showTab('settings')">
+      <div class="hstat-num">🔔</div><div class="hstat-lbl">التنبيهات</div>
+    </div>
+  </div>
+  <div class="hero-rule">
+    <div class="hero-rule-line"></div><div class="hero-rule-dot">✦</div><div class="hero-rule-line"></div>
+  </div>
+</div>
+
+<!-- ALERT BANNER -->
+<div class="alert-banner" id="alert-banner">
+  <div class="alert-banner-header" onclick="toggleAlertList()">
+    <span class="alert-banner-icon">🚨</span>
+    <span class="alert-banner-title" id="alert-banner-title">نباتات تحتاج عنايتك!</span>
+    <button class="alert-toggle" id="alert-toggle-btn">إخفاء ▲</button>
+  </div>
+  <div class="alert-list" id="alert-list"></div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('myplants')">
+    <span class="tab-icon">🪴</span><span class="tab-label">نباتاتي</span>
+  </button>
+  <button class="tab-btn" onclick="showTab('watering')">
+    <span class="tab-icon">💧</span><span class="tab-label">جدول الري</span>
+  </button>
+  <button class="tab-btn" onclick="showTab('catalog')">
+    <span class="tab-icon">📖</span><span class="tab-label">دليل النباتات</span>
+  </button>
+  <button class="tab-btn" onclick="showTab('settings')">
+    <span class="tab-icon">🔔</span><span class="tab-label">التنبيهات</span>
+  </button>
+</div>
+
+<!-- PANEL: MY PLANTS -->
+<div class="panel active" id="panel-myplants">
+  <div class="sc glass">
+    <div class="mp-header">
+      <div class="sc-title" style="margin-bottom:0;border:none;padding:0">
+        <div class="sc-icon">🪴</div>نباتاتي
+      </div>
+      <span class="mp-count" id="my-count">0 نبتة</span>
+    </div>
+    <div style="height:16px"></div>
+    <div class="add-row">
+      <div class="sel-wrap"><select id="add-select"><option value="">— اختر نبتة لإضافتها —</option></select></div>
+      <button class="btn btn-primary" style="width:auto;padding:14px 26px" onclick="addMyPlant()">➕ إضافة</button>
+    </div>
+    <div class="myp-grid" id="myp-grid"></div>
+    <div class="empty-state" id="empty-state">
+      <span class="empty-ico">🌱</span>
+      مجموعتك فارغة حتى الآن<br>
+      <span style="font-size:12px;color:rgba(168,201,127,.2)">أضف نباتاتك من القائمة أعلاه أو من دليل النباتات</span>
+    </div>
+  </div>
+</div>
+
+<!-- PANEL: WATERING -->
+<div class="panel" id="panel-watering">
+  <div class="sc glass">
+    <div class="sc-title"><div class="sc-icon">💧</div>جدول الري</div>
+    <div class="water-info-grid">
+      <div class="winfo"><div class="winfo-val" id="wi-total">0</div><div class="winfo-lbl">إجمالي نباتاتي</div></div>
+      <div class="winfo"><div class="winfo-val" id="wi-need">0</div><div class="winfo-lbl">تحتاج ري</div></div>
+      <div class="winfo"><div class="winfo-val" id="wi-ok">0</div><div class="winfo-lbl">بخير</div></div>
+    </div>
+    <div class="sc-title" style="font-size:18px;margin-top:8px"><div class="sc-icon" style="width:32px;height:32px;font-size:14px">📅</div>مواعيد الري القادمة</div>
+    <div class="water-list" id="water-list">
+      <div style="text-align:center;padding:30px;color:rgba(168,201,127,.3);font-size:14px">لم تضف نباتات بعد 🌱</div>
+    </div>
+    <div style="height:22px"></div>
+    <div class="sc-title" style="font-size:18px"><div class="sc-icon" style="width:32px;height:32px;font-size:14px">🧮</div>حساب سريع</div>
+    <div class="sel-wrap"><select id="water-plant-select"><option value="">— اختر نبتة —</option></select></div>
+    <button class="btn btn-primary" onclick="calcWatering()">💧 احسب موعد الري</button>
+    <div class="rbox" id="water-result">اختر النبتة لحساب موعد الري القادم</div>
+  </div>
+</div>
+
+<!-- PANEL: CATALOG (with care merged) -->
+<div class="panel" id="panel-catalog">
+  <div class="sc glass">
+    <div class="sc-title"><div class="sc-icon">📖</div>دليل النباتات <span style="font-size:14px;color:rgba(168,201,127,.4);font-family:'Cairo',sans-serif;margin-right:8px">(35 نبتة)</span></div>
+    <div class="cat-toolbar">
+      <div class="cat-search-wrap"><input type="text" id="cat-search" placeholder="ابحث عن نبتة..." oninput="renderCatalog()"></div>
+      <div class="filter-btns">
+        <button class="fbtn on" onclick="setFilter('all',this)">الكل</button>
+        <button class="fbtn" onclick="setFilter('سهلة',this)">سهلة</button>
+        <button class="fbtn" onclick="setFilter('متوسطة',this)">متوسطة</button>
+        <button class="fbtn" onclick="setFilter('صعبة',this)">صعبة</button>
+      </div>
+    </div>
+    <div class="cat-grid" id="cat-grid"></div>
+  </div>
+</div>
+
+<!-- PANEL: SETTINGS / NOTIFICATIONS -->
+<div class="panel" id="panel-settings">
+  <div class="sc glass">
+    <div class="sc-title"><div class="sc-icon">🔔</div>إعدادات التنبيهات</div>
+
+    <div class="settings-grid">
+
+      <!-- Browser notifications -->
+      <div class="setting-card">
+        <div class="setting-title">🖥️ تنبيهات المتصفح</div>
+        <div class="toggle-row">
+          <span class="toggle-label">تفعيل الإشعارات</span>
+          <label class="toggle">
+            <input type="checkbox" id="notif-toggle" onchange="toggleBrowserNotif()">
+            <div class="toggle-track"></div>
+            <div class="toggle-thumb"></div>
+          </label>
+        </div>
+        <button class="perm-btn" id="perm-btn" onclick="requestPermission()">طلب إذن الإشعارات 🔔</button>
+        <p class="setting-hint">تلقّ إشعارات فعلية من المتصفح حتى لو الموقع مغلق. يتطلب منح الإذن مرة واحدة.</p>
+      </div>
+
+      <!-- Alert timing -->
+      <div class="setting-card">
+        <div class="setting-title">⏰ توقيت التذكير</div>
+        <div class="time-select-row">
+          <label>تذكير قبل</label>
+          <select class="time-input" id="remind-days" onchange="saveSettings()">
+            <option value="0">يوم الري نفسه</option>
+            <option value="1" selected>قبل يوم واحد</option>
+            <option value="2">قبل يومين</option>
+            <option value="3">قبل 3 أيام</option>
+          </select>
+        </div>
+        <div class="time-select-row">
+          <label>وقت الإشعار</label>
+          <input type="time" class="time-input" id="remind-time" value="08:00" onchange="saveSettings()">
+        </div>
+        <p class="setting-hint">سيتم تنبيهك في الوقت المحدد يومياً عند وجود نباتات تحتاج ري.</p>
+      </div>
+
+      <!-- Alert types -->
+      <div class="setting-card">
+        <div class="setting-title">📋 نوع التنبيهات</div>
+        <div class="toggle-row">
+          <span class="toggle-label">تنبيه الري العاجل 🚨</span>
+          <label class="toggle">
+            <input type="checkbox" id="alert-overdue" checked onchange="saveSettings();renderAll()">
+            <div class="toggle-track"></div><div class="toggle-thumb"></div>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">تنبيه ري اليوم 💧</span>
+          <label class="toggle">
+            <input type="checkbox" id="alert-today" checked onchange="saveSettings();renderAll()">
+            <div class="toggle-track"></div><div class="toggle-thumb"></div>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">تذكير مبكر ⚡</span>
+          <label class="toggle">
+            <input type="checkbox" id="alert-soon" checked onchange="saveSettings();renderAll()">
+            <div class="toggle-track"></div><div class="toggle-thumb"></div>
+          </label>
+        </div>
+        <p class="setting-hint">اختر أي التنبيهات تريد رؤيتها في شريط التنبيهات.</p>
+      </div>
+
+      <!-- Test & Status -->
+      <div class="setting-card">
+        <div class="setting-title">🧪 اختبار التنبيهات</div>
+        <div style="font-size:12px;color:rgba(168,201,127,.45);margin-bottom:14px;line-height:1.7" id="notif-status-text">
+          حالة الإشعارات: <span id="notif-perm-status" style="color:var(--gold2)">غير محدد</span>
+        </div>
+        <button class="perm-btn" onclick="sendTestNotif()">🔔 إرسال تنبيه تجريبي</button>
+        <button class="perm-btn" style="margin-top:8px" onclick="checkAndNotify()">🔄 فحص النباتات الآن</button>
+        <p class="setting-hint">اضغط لاختبار أن التنبيهات تعمل بشكل صحيح.</p>
+      </div>
+
+    </div>
+
+    <!-- Schedule summary -->
+    <div style="height:22px"></div>
+    <div class="sc-title" style="font-size:18px"><div class="sc-icon" style="width:32px;height:32px;font-size:14px">📆</div>جدول التنبيهات القادمة</div>
+    <div id="notif-schedule" style="display:flex;flex-direction:column;gap:8px">
+      <div style="text-align:center;padding:24px;color:rgba(168,201,127,.3);font-size:13px">لم تضف نباتات بعد 🌱</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta glass">
+  <h2>🛒 اكتشف عالم النباتات</h2>
+  <p>تسوّق أجمل النباتات المنزلية وملحقاتها في متجر 3D NAS</p>
+  <a href="https://3d-nas.com/ar" target="_blank" class="btn btn-gold">زيارة المتجر الرسمي &nbsp;←</a>
+</div>
+
+<footer>🌿 جميع الحقوق محفوظة &nbsp;<b>3D NAS</b>&nbsp; © 2025</footer>
+</div>
 
 <script>
-// ----------------------------- EXPANDED DATABASE (42 plants with extra care info)
-const PLANTS_DB = [
-  {name:"ساق البامبو", sci:"Dracaena sanderiana", emoji:"🎋", waterDays:5, light:"متوسط", temp:"18-30°", difficulty:"سهلة", origin:"أفريقيا", humidity:"عادي", toxicity:"غير سام", fertilizer:"شهري ربيع", desc:"نبتة الحظ والرخاء، تنمو في الماء أو التربة", tips:["تجنب الكلور","أزل الأصفر فوراً"]},
-  {name:"الزاميا", sci:"Zamioculcas zamiifolia", emoji:"🌿", waterDays:14, light:"خافت", temp:"15-28°", difficulty:"سهلة", origin:"شرق أفريقيا", humidity:"جاف", toxicity:"سام خفيف", fertilizer:"كل شهرين", desc:"لا تموت بسهولة، تخزن الماء بجذورها", tips:["ري قليل جداً","تتحمل الظل"]},
-  {name:"البوتس الذهبي", sci:"Epipremnum aureum", emoji:"🍃", waterDays:5, light:"خافت-ساطع", temp:"15-30°", difficulty:"سهلة", origin:"جزر سليمان", humidity:"متوسط", toxicity:"سام للحيوانات", fertilizer:"شهري", desc:"مثالي للمبتدئين ومنقي هواء ممتاز", tips:["يمكن أن ينمو في الماء","يخبرك بالعطش بأوراق ذابلة"]},
-  {name:"المونستيرا", sci:"Monstera deliciosa", emoji:"🌿", waterDays:7, light:"ساطع غير مباشر", temp:"18-30°", difficulty:"سهلة", origin:"أمريكا الوسطى", humidity:"عالي", toxicity:"سام", fertilizer:"كل 3 أسابيع", desc:"أيقونة التصميم، أوراقها تتشقق طبيعياً", tips:["امسح أوراقها","دعامة للتسلق"]},
-  {name:"السانسيفيريا", sci:"Sansevieria trifasciata", emoji:"🗡️", waterDays:14, light:"خافت-قوي", temp:"10-35°", difficulty:"سهلة", origin:"غرب أفريقيا", humidity:"جاف", toxicity:"سام خفيف", fertilizer:"نادر", desc:"نبتة الأكسجين الليلي، فائقة التحمل", tips:["لاتسقيها كثيراً","مثالية لغرفة النوم"]},
-  {name:"الفيكس المطاطي", sci:"Ficus elastica", emoji:"🌳", waterDays:7, light:"متوسط-ساطع", temp:"16-28°", difficulty:"سهلة", origin:"آسيا", humidity:"متوسط", toxicity:"سام", fertilizer:"شهري صيف", desc:"أوراق جلدية لامعة، شجرة داخلية فخمة", tips:["نظف الأوراق","قلل ري شتاء"]},
-  {name:"الليراتا", sci:"Ficus lyrata", emoji:"🎻", waterDays:7, light:"ساطع", temp:"18-28°", difficulty:"صعبة", origin:"غرب أفريقيا", humidity:"مرتفع", toxicity:"سام", fertilizer:"شهري", desc:"ملكة الديكور، أوراقها على شكل كمان", tips:["تجنب تحريكها كثيراً","حساسة للجفاف"]},
-  {name:"زنبق السلام", sci:"Spathiphyllum", emoji:"⚪", waterDays:7, light:"خافت", temp:"15-28°", difficulty:"سهلة", origin:"أمريكا", humidity:"عالي", toxicity:"سام", fertilizer:"كل 6 أسابيع", desc:"تذبل لتعطش، تنقي هواء ممتازة", tips:["الترهل يعني العطش","أزهار بيضاء أنيقة"]},
-  {name:"الكالاتيا", sci:"Calathea orbifolia", emoji:"🦚", waterDays:5, light:"متوسط خافت", temp:"18-27°", difficulty:"صعبة", origin:"البرازيل", humidity:"عالي جداً", toxicity:"غير سام", fertilizer:"خفيف شهري", desc:"نبتة الصلاة، أنماط ساحرة", tips:["ماء نقي خالي من الكلور","رطوبة عالية"]},
-  {name:"البونساي", sci:"Ficus retusa", emoji:"🎍", waterDays:3, light:"ساطع", temp:"12-25°", difficulty:"صعبة", origin:"شرق آسيا", humidity:"متوسط", toxicity:"سام خفيف", fertilizer:"أسبوعي", desc:"فن مصغر يحتاج صبراً", tips:["تقليم منتظم","ري يومي صيفاً"]},
-  {name:"البيبروميا", sci:"Peperomia obtusifolia", emoji:"🌊", waterDays:10, light:"متوسط", temp:"18-26°", difficulty:"سهلة", origin:"أمريكا الجنوبية", humidity:"عادي", toxicity:"آمن", fertilizer:"كل شهرين", desc:"أوراق سميكة لامعة، نبات صغير", tips:["تخزن الماء","لا تغمرها"]},
-  {name:"عصفور الجنة", sci:"Strelitzia reginae", emoji:"🐦", waterDays:7, light:"ساطع", temp:"18-28°", difficulty:"متوسطة", origin:"جنوب أفريقيا", humidity:"عادي", toxicity:"غير سام", fertilizer:"كل 3 أسابيع", desc:"زهرة برتقالية مدهشة", tips:["تحتاج ضوء شمس مباشر","تزهر بعد نضج"]},
-  {name:"الكروتون", sci:"Codiaeum", emoji:"🎨", waterDays:5, light:"ساطع", temp:"18-30°", difficulty:"متوسطة", origin:"آسيا", humidity:"عالي", toxicity:"سام", fertilizer:"شهري", desc:"ألوان قوس قزح بالأوراق", tips:["يحتاج ضوء وافر","يكره الانتقال"]},
-  {name:"الدراسينا", sci:"Dracaena marginata", emoji:"🌴", waterDays:10, light:"خافت-متوسط", temp:"15-28°", difficulty:"سهلة", origin:"مدغشقر", humidity:"منخفض", toxicity:"سام للقطط", fertilizer:"كل 6 أسابيع", desc:"نحيلة بأناقة حمراء", tips:["متسامحة","حساسة للفلورايد"]},
-  {name:"الشيفليرا", sci:"Schefflera", emoji:"☂️", waterDays:7, light:"متوسط", temp:"15-27°", difficulty:"سهلة", origin:"تايوان", humidity:"عادي", toxicity:"سام", fertilizer:"شهري", desc:"أوراق مروحية خضراء لامعة", tips:["قلّم لتكثيف","مقاومة"]},
-  {name:"الأنثوريوم", sci:"Anthurium", emoji:"❤️", waterDays:7, light:"متوسط", temp:"18-27°", difficulty:"متوسطة", origin:"كولومبيا", humidity:"عالي", toxicity:"سام", fertilizer:"كل 3 أسابيع", desc:"زهور حمراء شمعية تدوم طويلاً", tips:["رطوبة عالية","تجنب الري الزائد"]},
-  {name:"الأجلونيما", sci:"Aglaonema", emoji:"🍁", waterDays:10, light:"خافت", temp:"16-28°", difficulty:"سهلة", origin:"جنوب شرق آسيا", humidity:"عادي", toxicity:"سام", fertilizer:"كل 3 شهور", desc:"ألوان متعددة، تتحمل الظل", tips:["مثالية للمكتب","لا تسقِ بكثرة"]},
-  {name:"نخيل القطة", sci:"Chamaedorea", emoji:"🌴", waterDays:7, light:"خافت", temp:"18-27°", difficulty:"سهلة", origin:"المكسيك", humidity:"عالي", toxicity:"آمن", fertilizer:"شهري ربيع", desc:"نخلة صديقة للقطط", tips:["رش أوراقها باستمرار","تجنب أشعة مباشرة"]},
-  {name:"تراديسكانتيا", sci:"Tradescantia", emoji:"💜", waterDays:7, light:"متوسط", temp:"15-30°", difficulty:"سهلة", origin:"المكسيك", humidity:"عادي", toxicity:"آمن", fertilizer:"شهري", desc:"أرجواني متدلي سريع النمو", tips:["اقرص الأطراف لتكثيف","يتحمل التقليم"]},
-  {name:"فيلوديندرون", sci:"Philodendron", emoji:"💚", waterDays:7, light:"خافت-متوسط", temp:"16-28°", difficulty:"سهلة", origin:"أمريكا الجنوبية", humidity:"عادي", toxicity:"سام", fertilizer:"شهري", desc:"قلبي الأوراق، مثالي للمبتدئين", tips:["ينمو متسلقاً أو متدلياً","يمسح الأوراق"]},
-  {name:"الإشيفيريا", sci:"Echeveria", emoji:"🌵", waterDays:14, light:"ساطع", temp:"10-30°", difficulty:"سهلة", origin:"المكسيك", humidity:"جاف", toxicity:"آمن", fertilizer:"شهري ربيع", desc:"وردة حجرية عصارية", tips:["ري نادر","شمس مباشرة"]},
-  {name:"السنسيفيريا موون شاين", sci:"Sansevieria 'Moonshine'", emoji:"🌕", waterDays:14, light:"متوسط", temp:"15-30°", difficulty:"سهلة", origin:"أفريقيا", humidity:"جاف", toxicity:"سام", fertilizer:"ربع سنوي", desc:"لون فضي أخاذ", tips:["نادرة","ري قليل"]},
-  {name:"الكورديلين", sci:"Cordyline", emoji:"🌸", waterDays:7, light:"ساطع", temp:"18-28°", difficulty:"سهلة", origin:"أستراليا", humidity:"عالي", toxicity:"سام للقطط", fertilizer:"شهري", desc:"أوراق وردية وأرجوانية", tips:["لون يزداد بالضوء","تربة رطبة"]},
-  {name:"الرجلة الصبارية", sci:"Portulacaria", emoji:"🌿", waterDays:10, light:"ساطع", temp:"20-35°", difficulty:"سهلة", origin:"جنوب أفريقيا", humidity:"جاف", toxicity:"آمن", fertilizer:"نادر", desc:"عصارية صالحة للأكل", tips:["تأكل في السلطة","تتحمل الجفاف"]},
-  {name:"فيلوديندرون بيركينز", sci:"Philodendron 'Birkin'", emoji:"✨", waterDays:7, light:"متوسط", temp:"18-26°", difficulty:"سهلة", origin:"كولومبيا", humidity:"متوسط", toxicity:"سام", fertilizer:"شهري", desc:"عروق بيضاء فنية", tips:["نبتة نادرة وجميلة","ضوء غير مباشر"]},
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// PLANT DATABASE
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const PLANTS=[
+{name:'ساق البامبو',sci:'Dracaena sanderiana',emoji:'🎋',days:5,light:'ضوء متوسط',water:'متوسط',temp:'18–30°',diff:'سهلة',origin:'أفريقيا الوسطى',size:'صغيرة–متوسطة',soil:'تربة رطبة أو ماء',tags:['داخلية','فنغ شوي','سريعة'],desc:'نبتة أنيقة ترتبط بالحظ والرخاء في الثقافة الآسيوية. تنمو في التربة أو في الماء مباشرة.',tips:['تجنب المياه المكلورة','أزل الأوراق الصفراء فور ظهورها','لا تعرضها لأشعة الشمس المباشرة']},
+{name:'الزاميا',sci:'Zamioculcas zamiifolia',emoji:'🌴',days:14,light:'ضوء خافت',water:'قليل',temp:'15–28°',diff:'سهلة',origin:'أفريقيا الشرقية',size:'متوسطة',soil:'تربة جيدة التصريف',tags:['مقاومة','داخلية','مبتدئين'],desc:'من أصعب النباتات موتاً في العالم! جذورها الدرنية تخزن الماء لفترات طويلة.',tips:['الإفراط في الري هو أكبر خطر','تتحمل الإهمال أسابيع','تنقي الهواء من الزايلين']},
+{name:'إبرة الراعي',sci:'Sansevieria cylindrica',emoji:'🌵',days:14,light:'ضوء ساطع',water:'قليل جداً',temp:'15–35°',diff:'سهلة',origin:'أنغولا',size:'صغيرة–متوسطة',soil:'تربة صبار',tags:['صبار','مقاومة','هواء نقي'],desc:'أوراقها الأسطوانية تمنحها شكلاً هندسياً فريداً. تطلق الأكسجين حتى في الليل.',tips:['ري نادر جداً','ممتازة لغرف النوم','لا تسمح بتراكم الماء']},
+{name:'شجرة الفيل الملونة',sci:'Caladium bicolor',emoji:'🌈',days:7,light:'ضوء متوسط',water:'منتظم',temp:'18–27°',diff:'متوسطة',origin:'أمريكا الجنوبية',size:'صغيرة–متوسطة',soil:'تربة غنية رطبة',tags:['ملونة','استوائية','موسمية'],desc:'تبهر بألوانها من الأحمر والوردي والأبيض. تدخل في سبات شتوي طبيعي.',tips:['تحب الرطوبة العالية','السبات الشتوي طبيعي','تجنب المسودات']},
+{name:'نبات العنكبوت',sci:'Chlorophytum comosum',emoji:'🕸️',days:7,light:'ضوء خافت–متوسط',water:'منتظم',temp:'15–27°',diff:'سهلة',origin:'جنوب أفريقيا',size:'صغيرة–متوسطة',soil:'تربة عادية',tags:['معلقة','آمنة','مبتدئين'],desc:'من أكثر النباتات شعبية. تنتج فروعاً معلقة بها نباتات صغيرة يمكن زراعتها.',tips:['تتحمل الإهمال بامتياز','آمنة للقطط والكلاب','اقطع الفروع للتكثير']},
+{name:'تراديسكانتيا زبرينا',sci:'Tradescantia zebrina',emoji:'💜',days:7,light:'ضوء متوسط',water:'منتظم',temp:'15–30°',diff:'سهلة',origin:'المكسيك',size:'صغيرة–متوسطة',soil:'تربة خفيفة',tags:['ملونة','معلقة','سريعة النمو'],desc:'أوراق أرجوانية وفضية لامعة. سريعة النمو وتبدو خلّابة في أصص معلقة.',tips:['الضوء الأكثر = ألوان أجمل','اقطع الأطراف لتكثيف النمو','تنمو بسرعة مذهلة']},
+{name:'رجلة الصبار',sci:'Portulaca oleracea',emoji:'🌵',days:10,light:'ضوء ساطع',water:'قليل',temp:'20–35°',diff:'سهلة',origin:'البحر المتوسط',size:'صغيرة',soil:'تربة رملية',tags:['صبار','صالحة للأكل','مقاومة'],desc:'أوراقها وسيقانها صالحة للأكل وغنية بأوميغا-3. تتحمل الجفاف بامتياز.',tips:['أوراقها صالحة للأكل','تحتاج 4-6 ساعات شمس','تجف سريعاً في تربة جيدة']},
+{name:'البوتس',sci:'Epipremnum aureum',emoji:'🪴',days:5,light:'ضوء خافت–متوسط',water:'منتظم',temp:'15–30°',diff:'سهلة',origin:'جزر المحيط الهادئ',size:'متسلقة',soil:'تربة عادية',tags:['مبتدئين','داخلية','متسلقة'],desc:'الرفيق المثالي لكل مبتدئ. تنمو في أي مكان تقريباً وتنقي الهواء.',tips:['تستطيع النمو في الماء فقط','أوراق صفراء = تحتاج ماء','مؤشر حي لاحتياجاتها']},
+{name:'البيبروميا',sci:'Peperomia obtusifolia',emoji:'🍃',days:10,light:'ضوء متوسط',water:'متوسط',temp:'18–26°',diff:'سهلة',origin:'أمريكا الجنوبية',size:'صغيرة',soil:'تربة خفيفة',tags:['صغيرة','متنوعة','داخلية'],desc:'عائلة تضم أكثر من 1000 نوع. مثالية للمكاتب والأماكن الصغيرة.',tips:['سماد كل شهرين يكفي','تتحمل الجفاف أكثر من الري','من أفضل نباتات المكاتب']},
+{name:'بيبروميا راين دروب',sci:'Peperomia polybotrya',emoji:'💚',days:10,light:'ضوء متوسط',water:'متوسط',temp:'18–27°',diff:'سهلة',origin:'أمريكا الجنوبية',size:'صغيرة–متوسطة',soil:'تربة خفيفة',tags:['مميزة','قلبية','داخلية'],desc:'أوراق لامعة على شكل قطرة المطر. من أكثر النباتات انتشاراً على السوشيال ميديا.',tips:['ضوء ساطع غير مباشر','تجنب الري الزائد','لا تحتاج أصيصاً كبيراً']},
+{name:'نخيل القطة',sci:'Chamaedorea elegans',emoji:'🌴',days:7,light:'ضوء خافت',water:'منتظم',temp:'18–27°',diff:'سهلة',origin:'المكسيك',size:'متوسطة',soil:'تربة طينية',tags:['آمن للحيوانات','داخلية','أنيقة'],desc:'نخلة صغيرة آمنة تماماً للقطط والكلاب. تضفي أجواءً استوائية فاخرة.',tips:['آمن 100% للحيوانات','تحتاج رطوبة عالية','تنمو ببطء لكن تعيش طويلاً']},
+{name:'الأنثوريوم',sci:'Anthurium andraeanum',emoji:'❤️',days:7,light:'ضوء متوسط',water:'منتظم',temp:'18–27°',diff:'متوسطة',origin:'كولومبيا',size:'متوسطة',soil:'تربة خثية',tags:['مزهرة','فاخرة','ملونة'],desc:'زهوره اللامعة كالشمع تدوم أشهراً. رمز للضيافة في ثقافات عديدة.',tips:['الزهرة ليست بتلة بل ورقة','يزهر أكثر في أصيص ممتلئ','تجنب الشمس المباشرة']},
+{name:'السينغونيوم',sci:'Syngonium podophyllum',emoji:'🌸',days:7,light:'ضوء خافت–متوسط',water:'منتظم',temp:'16–28°',diff:'سهلة',origin:'أمريكا الوسطى',size:'صغيرة–متوسطة',soil:'تربة طينية',tags:['متسلقة','ملونة','مبتدئين'],desc:'أوراقها تتغير شكلاً مع النضج من قلبية إلى مفصصة. ألوان من الأخضر للوردي.',tips:['تتسلق بدعامة','تتحمل إضاءة منخفضة','اقطع الأطراف لتكثيفها']},
+{name:'الدراسينا',sci:'Dracaena marginata',emoji:'🌱',days:10,light:'ضوء خافت–متوسط',water:'قليل',temp:'15–28°',diff:'سهلة',origin:'مدغشقر',size:'متوسطة–كبيرة',soil:'تربة خفيفة',tags:['داخلية','مقاومة','هواء نقي'],desc:'شجرة داخلية أنيقة بأوراق مخططة بالأحمر. فعّالة في تنقية الهواء.',tips:['تتحمل نسيان الري','أطراف بنية = فلور زائد','تعيش عشرات السنين']},
+{name:'ألوكاسيا أذن الفيل',sci:'Alocasia macrorrhiza',emoji:'🐘',days:7,light:'ضوء ساطع غير مباشر',water:'منتظم',temp:'18–30°',diff:'متوسطة',origin:'جنوب شرق آسيا',size:'كبيرة',soil:'تربة رطبة',tags:['استوائية','فاخرة','ضخمة'],desc:'أوراقها الضخمة تشبه أذن الفيل — قد يصل طولها لمتر كامل!',tips:['تحتاج رطوبة عالية جداً','السبات الشتوي طبيعي','تصريف جيد ضروري']},
+{name:'فيلوديندرون القمرية',sci:'Philodendron domesticum',emoji:'🌙',days:7,light:'ضوء خافت–متوسط',water:'منتظم',temp:'16–28°',diff:'سهلة',origin:'أمريكا الجنوبية',size:'متوسطة',soil:'تربة خثية',tags:['داخلية','متسلقة','أنيقة'],desc:'أوراق قلبية لامعة. تتسلق بشكل جميل أو تتدلى بأناقة.',tips:['تتحمل الإضاءة المنخفضة','جميلة في سلة معلقة','مسح الأوراق يجعلها تلمع']},
+{name:'الكروتون',sci:'Codiaeum variegatum',emoji:'🎨',days:5,light:'ضوء ساطع',water:'منتظم',temp:'18–30°',diff:'متوسطة',origin:'جنوب شرق آسيا',size:'متوسطة',soil:'تربة طينية غنية',tags:['ملونة','استوائية','فاخرة'],desc:'ألوان مذهلة تجمع الأصفر والأحمر والبرتقالي. تبدو كلوحة فنية حية.',tips:['الضوء أكثر = ألوان أجمل','تكره الانتقال','سقوط الأوراق عند نقلها طبيعي']},
+{name:'دراسينا ريفلكسا',sci:'Dracaena reflexa',emoji:'🍀',days:10,light:'ضوء متوسط',water:'قليل–متوسط',temp:'15–28°',diff:'سهلة',origin:'مدغشقر',size:'متوسطة–كبيرة',soil:'تربة خفيفة',tags:['مقاومة','داخلية','أنيقة'],desc:'جذعها المنحني وأوراقها الداكنة يمنحانها مظهراً فريداً. تتحمل الإهمال.',tips:['مثالية للمكاتب','نمو بطيء ولا تحتاج تقليماً','تجنب الكلور في الماء']},
+{name:'دراسينا فراجرانس',sci:'Dracaena fragrans',emoji:'🌾',days:10,light:'ضوء خافت–متوسط',water:'قليل',temp:'15–27°',diff:'سهلة',origin:'أفريقيا الاستوائية',size:'متوسطة–كبيرة',soil:'تربة خفيفة',tags:['معطرة','هواء نقي','داخلية'],desc:'تنتج أزهاراً بيضاء ذات عطر حلو نادراً. من أقوى نباتات تنقية الهواء.',tips:['الإزهار نادر ومميز','تزيل ثاني أكسيد الكربون','الأوراق السفلية تسقط طبيعياً']},
+{name:'اليوكا',sci:'Yucca elephantipes',emoji:'🌴',days:14,light:'ضوء ساطع',water:'قليل جداً',temp:'7–27°',diff:'سهلة',origin:'أمريكا الوسطى',size:'كبيرة',soil:'تربة رملية',tags:['صحراوية','مقاومة','شجرة'],desc:'شجرة صحراوية بأوراق خنجرية. تتحمل الجفاف الشديد وتنتج أزهاراً بيضاء.',tips:['من أكثر النباتات تحملاً للجفاف','تحتاج شمساً مباشرة','انتبه للحواف الحادة']},
+{name:'فيكس ليراتا',sci:'Ficus lyrata',emoji:'🎸',days:7,light:'ضوء ساطع غير مباشر',water:'منتظم',temp:'18–28°',diff:'صعبة',origin:'أفريقيا الاستوائية',size:'كبيرة',soil:'تربة طينية غنية',tags:['شجرة','فاخرة','تصميم'],desc:'ملكة النباتات الداخلية وأيقونة الديكور. أوراق ضخمة على شكل الكمان.',tips:['تكره الانتقال','تتساقط أوراقها إذا أُزيلت','نظّف أوراقها من الغبار']},
+{name:'الفيكس المطاطي',sci:'Ficus elastica',emoji:'🌳',days:7,light:'ضوء متوسط–ساطع',water:'منتظم',temp:'15–28°',diff:'سهلة',origin:'جنوب شرق آسيا',size:'متوسطة–كبيرة',soil:'تربة طينية',tags:['شجرة','داخلية','كلاسيكية'],desc:'أوراق داكنة لامعة كالجلد. تنمو لتصبح شجرة داخلية ضخمة فاخرة.',tips:['امسح الأوراق بقطعة رطبة','تنمو بسرعة في الصيف','يمكن تشكيل جذعها صغيرة']},
+{name:'زنبق السلام',sci:'Spathiphyllum wallisii',emoji:'☮️',days:7,light:'ضوء خافت',water:'منتظم',temp:'15–28°',diff:'سهلة',origin:'أمريكا الاستوائية',size:'صغيرة–متوسطة',soil:'تربة رطبة',tags:['مزهرة','هواء نقي','مبتدئين'],desc:'زهور بيضاء ترمز للسلام. من أقوى نباتات تنقية الهواء.',tips:['تترهل حين تعطش','تزهر أكثر في ضوء منخفض','تنظف الهواء من الأمونيا']},
+{name:'الشيفليرا',sci:'Schefflera arboricola',emoji:'🌂',days:7,light:'ضوء متوسط',water:'منتظم',temp:'15–27°',diff:'سهلة',origin:'تايوان',size:'متوسطة–كبيرة',soil:'تربة طينية',tags:['شجرة','داخلية','أنيقة'],desc:'أوراق مروحية تشبه شجرة مطر مصغرة. تنمو بسرعة جيدة.',tips:['قلّمها للتحكم في الحجم','ترش الأوراق بالماء','تسقط أوراقها في البرد المفاجئ']},
+{name:'الإشيفيريا',sci:'Echeveria spp.',emoji:'🌸',days:14,light:'ضوء ساطع',water:'قليل',temp:'10–30°',diff:'سهلة',origin:'المكسيك',size:'صغيرة',soil:'تربة صبار',tags:['عصارية','صغيرة','جميلة'],desc:'وردة حجرية بأشكال هندسية وألوان من الأخضر للأزرق والوردي.',tips:['4-6 ساعات شمس يومياً','الإفراط في الري يقتلها','إذا امتدت تحتاج ضوءاً أكثر']},
+{name:'الأجلونيما',sci:'Aglaonema commutatum',emoji:'🍁',days:10,light:'ضوء خافت',water:'قليل–متوسط',temp:'16–28°',diff:'سهلة',origin:'جنوب شرق آسيا',size:'صغيرة–متوسطة',soil:'تربة جيدة التصريف',tags:['ملونة','مقاومة','داخلية'],desc:'ألوان متنوعة من الأحمر للوردي والأبيض. من أقوى النباتات تحملاً للظروف القاسية.',tips:['تتحمل الإهمال التام','الأوراق الداكنة أكثر تحملاً للظل','سماد كل 2-3 أشهر']},
+{name:'البونساي',sci:'Bonsai (أنواع متعددة)',emoji:'🌳',days:3,light:'ضوء ساطع',water:'يومي تقريباً',temp:'تعتمد على النوع',diff:'صعبة',origin:'الصين واليابان',size:'صغيرة–متوسطة',soil:'تربة بونساي خاصة',tags:['فنية','نادرة','ياباني'],desc:'فن شرقي عريق يحوّل الأشجار لتحف فنية. كل بونساي نتاج سنوات من الصبر.',tips:['تحقق من التربة يومياً','التقليم ضروري للحفاظ على الشكل','يحتاج راحة شتوية']},
+{name:'الديفنباخيا',sci:'Dieffenbachia seguine',emoji:'🌿',days:7,light:'ضوء متوسط',water:'منتظم',temp:'16–28°',diff:'سهلة',origin:'أمريكا الجنوبية',size:'متوسطة–كبيرة',soil:'تربة طينية',tags:['داخلية','كبيرة','مخططة'],desc:'أوراق ضخمة مخططة بالأبيض أو الأصفر. سريعة النمو ومثالية لملء الزوايا.',tips:['عصيرها مهيّج — اغسل يديك','تحتاج أصيصاً أكبر سنوياً','تتحمل الإضاءة المنخفضة']},
+{name:'السانسيفيريا',sci:'Sansevieria trifasciata',emoji:'🗡️',days:14,light:'ضوء خافت–ساطع',water:'قليل جداً',temp:'10–35°',diff:'سهلة',origin:'أفريقيا الغربية',size:'متوسطة',soil:'تربة صبار',tags:['مبتدئين','مقاومة','أكسجين ليلي'],desc:'تلقّب بـ"نبتة الأم الحماة". تطلق الأكسجين ليلاً مما يجعلها مثالية لغرف النوم.',tips:['تعيش مع الإهمال أسابيع','أفضل نبتة لغرف النوم','قطّع أوراقها للتكثير']},
+{name:'الكالاتيا',sci:'Calathea spp.',emoji:'🦚',days:5,light:'ضوء خافت–متوسط',water:'منتظم',temp:'18–27°',diff:'صعبة',origin:'البرازيل',size:'صغيرة–متوسطة',soil:'تربة رطبة',tags:['استوائية','فاخرة','نابضة'],desc:'نبتة الصلاة — أوراقها ترتفع ليلاً وتنخفض نهاراً. نقوشها كلوحة فنية.',tips:['تكره المياه المكلورة','تحتاج رطوبة عالية جداً','أطراف بنية = هواء جاف']},
+{name:'المونستيرا',sci:'Monstera deliciosa',emoji:'🌿',days:7,light:'ضوء متوسط–ساطع',water:'منتظم',temp:'18–30°',diff:'سهلة',origin:'أمريكا الوسطى',size:'كبيرة',soil:'تربة طينية',tags:['استوائية','شهيرة','ضخمة'],desc:'أيقونة تصميم الداخل. ثقوبها وشقوقها الطبيعية تمنحها جمالاً استثنائياً.',tips:['الثقوب تظهر مع الضوء الكافي','دعامة خشبية لأوراق أكبر','امسح الأوراق بانتظام']},
+{name:'فيلوديندرون إيروبيسنس',sci:'Philodendron erubescens',emoji:'💎',days:7,light:'ضوء خافت–متوسط',water:'منتظم',temp:'16–28°',diff:'سهلة',origin:'كولومبيا',size:'متوسطة–كبيرة',soil:'تربة خثية',tags:['نادرة','ملكية','داخلية'],desc:'أوراق خضراء داكنة مع عروق حمراء جذابة. من أكثر الفيلوديندرون طلباً.',tips:['تتحمل إضاءة منخفضة','تسلق بدعامة لأوراق أضخم','نادرة في الأسواق']},
+{name:'الكورديلين',sci:'Cordyline fruticosa',emoji:'🌺',days:7,light:'ضوء متوسط–ساطع',water:'منتظم',temp:'18–28°',diff:'سهلة',origin:'جنوب شرق آسيا',size:'متوسطة',soil:'تربة طينية',tags:['ملونة','استوائية','زينة'],desc:'أوراق تتدرج من الأخضر للأحمر الغامق والبنفسجي حسب الصنف.',tips:['الضوء الأكثر = ألوان أجمل','تحب الري المنتظم','تتحمل الشمس تدريجياً']},
+{name:'سانسيفيريا مون شاين',sci:'Sansevieria "Moonshine"',emoji:'🌕',days:14,light:'ضوء متوسط',water:'قليل جداً',temp:'15–30°',diff:'سهلة',origin:'أفريقيا الغربية',size:'متوسطة',soil:'تربة صبار',tags:['فضية','نادرة','مقاومة'],desc:'نوع نادر بأوراق فضية-خضراء فاتحة تبدو كضوء القمر. أجمل من السانسيفيريا العادية.',tips:['نادرة وقيمة','مقاومة للإهمال','ألوانها تبرز في الإضاءة الخافتة']},
+{name:'عصفور الجنة الأبيض',sci:'Strelitzia nicolai',emoji:'🤍',days:7,light:'ضوء ساطع',water:'منتظم',temp:'18–30°',diff:'متوسطة',origin:'جنوب أفريقيا',size:'كبيرة جداً',soil:'تربة طينية غنية',tags:['ضخمة','فاخرة','مزهرة'],desc:'أوراق ضخمة فضفاضة تمنح الفضاء شعوراً استوائياً رحباً وفخامة استثنائية.',tips:['يحتاج أصيصاً كبيراً جداً','ازل الأوراق القديمة','يزهر بعد 4-5 سنوات']},
 ];
-// expanding to 42 by adding copies with slight rename? but fine, we have 23 distinct + we can add more dynamically to reach 42? I'll add more manually
-const extraPlants = [
-  {name:"الرافليس (أوركيد)", sci:"Phalaenopsis", emoji:"🦋", waterDays:7, light:"متوسط", temp:"18-28°", difficulty:"متوسطة", origin:"آسيا", humidity:"عالي", toxicity:"آمن", fertilizer:"كل أسبوعين", desc:"زهور تدوم شهور", tips:["جذور هوائية","ماء نقي"]},
-  {name:"الببروميا ريندروب", sci:"Peperomia polybotrya", emoji:"💧", waterDays:10, light:"متوسط", temp:"18-27°", difficulty:"سهلة", origin:"أمريكا الجنوبية", humidity:"عادي", toxicity:"آمن", fertilizer:"كل شهرين", desc:"ورقة على شكل قطرة", tips:["تجنب الإفراط في الري","مثالية للمكاتب"]},
-  {name:"الدراسينا العطرية", sci:"Dracaena fragrans", emoji:"🌾", waterDays:10, light:"خافت", temp:"15-27°", difficulty:"سهلة", origin:"أفريقيا", humidity:"متوسط", toxicity:"سام", fertilizer:"ربع سنوي", desc:"أزهار نادرة عطرة", tips:["تنقية هواء","سقاية معتدلة"]},
-  {name:"كالاتيا ميداليون", sci:"Calathea veitchiana", emoji:"🎖️", waterDays:5, light:"خافت", temp:"18-26°", difficulty:"صعبة", origin:"الإكوادور", humidity:"عالي جداً", toxicity:"آمن", fertilizer:"شهري خفيف", desc:"أنماط مميزة", tips:["ماء مقطر","رذاذ يومي"]},
-];
-const FULL_PLANTS = [...PLANTS_DB, ...extraPlants];
-for(let i=0; i<FULL_PLANTS.length; i++) if(!FULL_PLANTS[i].waterDays) FULL_PLANTS[i].waterDays=7;
-// final 42+ plants
-while(FULL_PLANTS.length<42) FULL_PLANTS.push({...FULL_PLANTS[0], name:"نبتة فاخرة", sci:"Exotica"});
-const PLANTS = FULL_PLANTS.slice(0,42);
 
-// storage state
-let myPlants = JSON.parse(localStorage.getItem('3dnas_plants') || '[]');
-function saveStorage() { localStorage.setItem('3dnas_plants', JSON.stringify(myPlants)); }
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// STATE
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let myPlants=JSON.parse(localStorage.getItem('myP3DNAS')||'[]');
+let settings=JSON.parse(localStorage.getItem('settings3DNAS')||JSON.stringify({
+  browserNotif:false, remindDays:1, remindTime:'08:00',
+  alertOverdue:true, alertToday:true, alertSoon:true
+}));
+let catFilter='all';
+let alertCollapsed=false;
 
-// helpers dates
-function addDays(date, days) { let d = new Date(date); d.setDate(d.getDate()+days); return d.toISOString().slice(0,10); }
-function getToday() { return new Date().toISOString().slice(0,10); }
-function daysUntilNext(nextDate) { if(!nextDate) return 999; let today = new Date(); today.setHours(0,0,0,0); let n = new Date(nextDate); n.setHours(0,0,0,0); return Math.floor((n-today)/(24*3600000)); }
+function save(){localStorage.setItem('myP3DNAS',JSON.stringify(myPlants))}
+function saveSettings(){
+  settings.remindDays=parseInt(document.getElementById('remind-days').value);
+  settings.remindTime=document.getElementById('remind-time').value;
+  settings.alertOverdue=document.getElementById('alert-overdue').checked;
+  settings.alertToday=document.getElementById('alert-today').checked;
+  settings.alertSoon=document.getElementById('alert-soon').checked;
+  localStorage.setItem('settings3DNAS',JSON.stringify(settings));
+  scheduleLocalNotifications();
+}
 
-// update stats & ui
-function refreshUI() {
-  document.getElementById('totalPlantsStat').innerText = myPlants.length;
-  const needCount = myPlants.filter(p => daysUntilNext(p.nextWater) <= 0).length;
-  document.getElementById('needWaterStat').innerText = needCount;
-  document.getElementById('waterTotal').innerText = myPlants.length;
-  document.getElementById('waterNeeds').innerText = needCount;
-  document.getElementById('waterFine').innerText = myPlants.length - needCount;
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// PARTICLES
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+['🍃','🌿','🍀','🌱','✦'].forEach((e,i)=>{
+  const d=document.createElement('div');
+  d.className='ptcl';d.textContent=e;
+  d.style.cssText=`right:${6+i*18}%;font-size:${12+i*2}px;animation-duration:${16+i*4}s;animation-delay:${i*3}s`;
+  document.body.appendChild(d);
+});
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// TOAST
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let toastTimer=null;
+function showToast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.className='toast '+(type||'');
+  t.textContent=msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// DATE HELPERS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function fmtDate(s){
+  if(!s)return'—';
+  return new Date(s).toLocaleDateString('ar-SA',{day:'numeric',month:'short'});
+}
+function daysUntil(s){
+  if(!s)return null;
+  const t=new Date();t.setHours(0,0,0,0);
+  const n=new Date(s);n.setHours(0,0,0,0);
+  return Math.round((n-t)/86400000);
+}
+function statusBadge(d){
+  if(d===null)return'<span class="status-badge sb-ok">—</span>';
+  if(d<0)return`<span class="status-badge sb-now">🚨 متأخر ${Math.abs(d)} يوم</span>`;
+  if(d===0)return'<span class="status-badge sb-now">💧 اليوم!</span>';
+  if(d<=2)return`<span class="status-badge sb-soon">⚡ بعد ${d} أيام</span>`;
+  return`<span class="status-badge sb-ok">✓ بعد ${d} يوماً</span>`;
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ALERT BANNER
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function renderAlertBanner(){
+  const banner=document.getElementById('alert-banner');
+  const list=document.getElementById('alert-list');
+  const title=document.getElementById('alert-banner-title');
+  const tabBadge=document.querySelector('.tab-badge');
+
+  // collect alerts
+  const alerts=[];
+  myPlants.forEach((e,i)=>{
+    const p=PLANTS[e.plantIdx];
+    const d=daysUntil(e.next);
+    if(d===null)return;
+    if(d<0 && settings.alertOverdue) alerts.push({e,i,p,d,type:'overdue'});
+    else if(d===0 && settings.alertToday) alerts.push({e,i,p,d,type:'today'});
+    else if(d<=parseInt(settings.remindDays||1) && d>0 && settings.alertSoon) alerts.push({e,i,p,d,type:'soon'});
+  });
+
+  // tab badge
+  if(tabBadge){tabBadge.style.display=alerts.length?'flex':'none';tabBadge.textContent=alerts.length>9?'!':alerts.length}
+
+  // hero stat color
+  const needEl=document.getElementById('stat-need');
+  const urgentCount=myPlants.filter(e=>{const d=daysUntil(e.next);return d!==null&&d<=0}).length;
+  if(needEl){needEl.classList.toggle('alert-num',urgentCount>0)}
+
+  if(!alerts.length){banner.classList.remove('show');return}
+  banner.classList.add('show');
+  title.textContent=`${alerts.length} نبتة تحتاج عنايتك!`;
+  list.innerHTML='';
+  alerts.forEach(({e,i,p,d,type})=>{
+    const div=document.createElement('div');
+    div.className='alert-item';
+    let badge='',badgeClass='';
+    if(type==='overdue'){badge=`متأخر ${Math.abs(d)} يوم`;badgeClass='overdue'}
+    else if(type==='today'){badge='اليوم!';badgeClass='today'}
+    else{badge=`بعد ${d} أيام`;badgeClass='soon'}
+    div.innerHTML=`
+      <span class="alert-item-emoji">${p.emoji}</span>
+      <div class="alert-item-info">
+        <div class="alert-item-name">${p.name}</div>
+        <div class="alert-item-sub">آخر ري: ${fmtDate(e.last)} &nbsp;·&nbsp; كل ${p.days} أيام</div>
+      </div>
+      <span class="alert-item-badge ${badgeClass}">${badge}</span>
+      <button class="alert-water-btn" onclick="waterFromAlert(${i})">💧 ريت الآن</button>
+    `;
+    list.appendChild(div);
+  });
+  if(alertCollapsed) list.classList.add('collapsed');
+}
+
+function toggleAlertList(){
+  alertCollapsed=!alertCollapsed;
+  document.getElementById('alert-list').classList.toggle('collapsed',alertCollapsed);
+  document.getElementById('alert-toggle-btn').textContent=alertCollapsed?'عرض ▼':'إخفاء ▲';
+}
+
+function waterFromAlert(i){
+  const p=PLANTS[myPlants[i].plantIdx];
+  const today=new Date().toISOString().split('T')[0];
+  const next=new Date();next.setDate(next.getDate()+p.days);
+  myPlants[i].last=today;myPlants[i].next=next.toISOString().split('T')[0];
+  save();renderAll();
+  showToast(`💧 تم ري ${p.emoji} ${p.name}`);
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// BROWSER NOTIFICATIONS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function updatePermStatus(){
+  const s=document.getElementById('notif-perm-status');
+  const btn=document.getElementById('perm-btn');
+  if(!('Notification' in window)){
+    if(s)s.textContent='غير مدعوم في هذا المتصفح';
+    return;
+  }
+  const p=Notification.permission;
+  if(s){
+    if(p==='granted'){s.textContent='✅ مفعّل';s.style.color='#7fcc7f'}
+    else if(p==='denied'){s.textContent='🚫 محظور';s.style.color='#f88'}
+    else{s.textContent='⏳ في الانتظار';s.style.color=getComputedStyle(document.documentElement).getPropertyValue('--gold2')}
+  }
+  if(btn){
+    btn.classList.toggle('granted',p==='granted');
+    btn.textContent=p==='granted'?'✅ الإذن ممنوح — شكراً!':'طلب إذن الإشعارات 🔔';
+  }
+}
+
+function requestPermission(){
+  if(!('Notification' in window)){showToast('⚠️ المتصفح لا يدعم الإشعارات','warn');return}
+  Notification.requestPermission().then(p=>{
+    updatePermStatus();
+    if(p==='granted'){
+      settings.browserNotif=true;
+      document.getElementById('notif-toggle').checked=true;
+      localStorage.setItem('settings3DNAS',JSON.stringify(settings));
+      showToast('✅ تم منح إذن الإشعارات!');
+      sendBrowserNotif('مرحباً! 🌿','تنبيهات 3D NAS مفعّلة. سنذكّرك بري نباتاتك في الوقت المناسب.');
+    } else {
+      showToast('⚠️ لم يتم منح الإذن — تحقق من إعدادات المتصفح','warn');
+    }
+  });
+}
+
+function toggleBrowserNotif(){
+  settings.browserNotif=document.getElementById('notif-toggle').checked;
+  localStorage.setItem('settings3DNAS',JSON.stringify(settings));
+  if(settings.browserNotif && Notification.permission!=='granted') requestPermission();
+}
+
+function sendBrowserNotif(title,body){
+  if(Notification.permission==='granted'){
+    try{new Notification(title,{body,icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🌿</text></svg>'})}catch(e){}
+  }
+}
+
+function sendTestNotif(){
+  if(Notification.permission==='granted'){
+    sendBrowserNotif('🌿 تنبيه تجريبي من 3D NAS','هذا اختبار للتأكد من أن التنبيهات تعمل بشكل صحيح!');
+    showToast('✅ تم إرسال الإشعار التجريبي');
+  } else {
+    showToast('⚠️ الإذن غير ممنوح — اضغط "طلب إذن الإشعارات" أولاً','warn');
+  }
+}
+
+function checkAndNotify(){
+  const urgent=myPlants.filter(e=>{const d=daysUntil(e.next);return d!==null&&d<=0});
+  const soon=myPlants.filter(e=>{const d=daysUntil(e.next);return d!==null&&d>0&&d<=parseInt(settings.remindDays||1)});
+  if(urgent.length){
+    const names=urgent.slice(0,3).map(e=>PLANTS[e.plantIdx].name).join('، ');
+    sendBrowserNotif(`🚨 ${urgent.length} نبتة تحتاج ري الآن!`,names+(urgent.length>3?` وأكثر...`:''));
+    showToast(`🚨 ${urgent.length} نبتة تحتاج ري الآن!`,'warn');
+  } else if(soon.length){
+    const names=soon.slice(0,2).map(e=>PLANTS[e.plantIdx].name).join('، ');
+    sendBrowserNotif(`⚡ تذكير: ${soon.length} نبتة تحتاج ري قريباً`,names);
+    showToast(`⚡ ${soon.length} نبتة تحتاج ري قريباً`,'info');
+  } else {
+    showToast('✅ جميع نباتاتك بخير الآن!');
+  }
+}
+
+function scheduleLocalNotifications(){
+  // Use localStorage to track last notification time
+  const key='lastNotifDate3DNAS';
+  const today=new Date().toISOString().split('T')[0];
+  const last=localStorage.getItem(key);
+  if(last===today)return; // already notified today
+  const [h,m]=(settings.remindTime||'08:00').split(':').map(Number);
+  const now=new Date();
+  const target=new Date();target.setHours(h,m,0,0);
+  const ms=target-now;
+  if(ms>0 && ms<86400000){
+    setTimeout(()=>{
+      localStorage.setItem(key,today);
+      checkAndNotify();
+    },ms);
+  }
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// NOTIFICATION SCHEDULE (settings panel)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function renderNotifSchedule(){
+  const el=document.getElementById('notif-schedule');
+  if(!el)return;
+  if(!myPlants.length){
+    el.innerHTML='<div style="text-align:center;padding:24px;color:rgba(168,201,127,.3);font-size:13px">لم تضف نباتات بعد 🌱</div>';
+    return;
+  }
+  // sort by next watering
+  const sorted=[...myPlants].sort((a,b)=>new Date(a.next)-new Date(b.next)).slice(0,10);
+  el.innerHTML='';
+  sorted.forEach(e=>{
+    const p=PLANTS[e.plantIdx];const d=daysUntil(e.next);
+    const remindDate=new Date(e.next);remindDate.setDate(remindDate.getDate()-parseInt(settings.remindDays||1));
+    const remindStr=remindDate.toLocaleDateString('ar-SA',{weekday:'short',day:'numeric',month:'short'});
+    const nextStr=new Date(e.next).toLocaleDateString('ar-SA',{weekday:'short',day:'numeric',month:'short'});
+    const urgent=d!==null&&d<=0;
+    const div=document.createElement('div');
+    div.className='water-row'+(urgent?' urgent':'');
+    div.innerHTML=`
+      <span class="water-row-emoji">${p.emoji}</span>
+      <div class="water-row-info">
+        <div class="water-row-name">${p.name}</div>
+        <div class="water-row-date">موعد الري: ${nextStr} &nbsp;·&nbsp; 🔔 تنبيه: ${remindStr}</div>
+      </div>
+      ${statusBadge(d)}
+    `;
+    el.appendChild(div);
+  });
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// HERO & WATERING STATS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function updateStats(){
+  const need=myPlants.filter(e=>{const d=daysUntil(e.next);return d!==null&&d<=0}).length;
+  document.getElementById('stat-count').textContent=myPlants.length;
+  document.getElementById('stat-need').textContent=need;
+  const needEl=document.getElementById('stat-need');
+  if(needEl)needEl.classList.toggle('alert-num',need>0);
+  document.getElementById('my-count').textContent=myPlants.length+' نبتة';
+  document.getElementById('wi-total').textContent=myPlants.length;
+  document.getElementById('wi-need').textContent=need;
+  document.getElementById('wi-ok').textContent=myPlants.length-need;
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// WATERING LIST
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function renderWaterList(){
+  const el=document.getElementById('water-list');
+  if(!el)return;
+  if(!myPlants.length){
+    el.innerHTML='<div style="text-align:center;padding:30px;color:rgba(168,201,127,.3);font-size:14px">لم تضف نباتات بعد 🌱</div>';
+    return;
+  }
+  const sorted=[...myPlants].map((e,origIdx)=>({...e,origIdx})).sort((a,b)=>new Date(a.next)-new Date(b.next));
+  el.innerHTML='';
+  sorted.forEach(e=>{
+    const p=PLANTS[e.plantIdx];const d=daysUntil(e.next);
+    const urgent=d!==null&&d<=0;
+    const ds=new Date(e.next).toLocaleDateString('ar-SA',{weekday:'long',day:'numeric',month:'long'});
+    const div=document.createElement('div');
+    div.className='water-row'+(urgent?' urgent':'');
+    div.innerHTML=`
+      <span class="water-row-emoji">${p.emoji}</span>
+      <div class="water-row-info">
+        <div class="water-row-name">${p.name}</div>
+        <div class="water-row-date">${ds}</div>
+      </div>
+      ${statusBadge(d)}
+      <button class="alert-water-btn" onclick="waterPlant(${e.origIdx})">💧 ريت</button>
+    `;
+    el.appendChild(div);
+  });
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// MY PLANTS GRID
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function renderMyPlants(){
+  const grid=document.getElementById('myp-grid');
+  const empty=document.getElementById('empty-state');
+  grid.innerHTML='';
+  if(!myPlants.length){empty.style.display='block';updateStats();return}
+  empty.style.display='none';
+  myPlants.forEach((e,i)=>{
+    const p=PLANTS[e.plantIdx];const d=daysUntil(e.next);
+    const needsWater=d!==null&&d<=0;
+    const card=document.createElement('div');
+    card.className='myp-card'+(needsWater?' needs-water':'');
+    card.innerHTML=`
+      <div class="myp-top">
+        <div class="myp-emoji">${p.emoji}</div>
+        <div class="myp-info">
+          <div class="myp-name">${p.name}</div>
+          <div class="myp-sci">${p.sci}</div>
+          <div class="myp-row">
+            <span class="chip">💧 كل ${p.days} أيام</span>
+            <span class="chip gold">${p.light}</span>
+            <span class="chip">${p.origin.split(' ')[0]}</span>
+          </div>
+        </div>
+      </div>
+      <div class="myp-divider"></div>
+      <div class="myp-dates">
+        <div class="myp-date-box"><div class="myp-date-lbl">آخر ري</div><div class="myp-date-val">${fmtDate(e.last)}</div></div>
+        <div class="myp-date-box"><div class="myp-date-lbl">الري القادم</div><div class="myp-date-val">${fmtDate(e.next)}</div></div>
+      </div>
+      <div class="myp-status">${statusBadge(d)}</div>
+      <div class="myp-actions">
+        <button class="btn btn-sm" onclick="waterPlant(${i})">💧 ريت الآن</button>
+        <button class="btn btn-sm" style="flex:none;padding:7px 10px" onclick="openModal(${e.plantIdx})">📋</button>
+        <button class="btn btn-del" onclick="removePlant(${i})">🗑</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateStats();
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// RENDER ALL
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function renderAll(){
   renderMyPlants();
-  renderSelects();
+  renderAlertBanner();
+  renderWaterList();
+  renderNotifSchedule();
 }
-function renderMyPlants() {
-  const container = document.getElementById('myPlantsContainer');
-  const emptyDiv = document.getElementById('emptyPlaceholder');
-  if(!myPlants.length) { container.innerHTML=''; emptyDiv.style.display='block'; return; }
-  emptyDiv.style.display='none';
-  container.innerHTML = myPlants.map((p, idx) => {
-    const plant = PLANTS[p.plantId];
-    if(!plant) return '';
-    const daysLeft = daysUntilNext(p.nextWater);
-    let statusClass = 'status-ok';
-    let statusText = `✔️ بعد ${daysLeft} يوم`;
-    if(daysLeft<=0) { statusClass='status-now'; statusText=`🚨 متأخر ${-daysLeft} يوم`; }
-    else if(daysLeft<=2) { statusClass='status-soon'; statusText=`⚡ بعد ${daysLeft} يوم`; }
-    return `<div class="plant-card"><div class="plant-header"><div class="plant-emoji">${plant.emoji}</div><div><div class="plant-name">${plant.name}</div><div class="plant-sci">${plant.sci}</div></div></div>
-    <div class="dates-row"><span>💧 آخر ري: ${p.lastWater}</span><span>📅 القادم: ${p.nextWater}</span></div>
-    <div class="badge-status ${statusClass}">${statusText}</div>
-    <div class="action-btns"><button class="btn-sm" onclick="waterPlantNow(${idx})">💧 سقِّ الآن</button><button class="btn-sm" onclick="showModalPlant(${p.plantId})">📘 تفاصيل</button><button class="btn-sm btn-danger" onclick="removePlant(${idx})">🗑 حذف</button></div></div>`;
-  }).join('');
-}
-function waterPlantNow(idx) {
-  const plant = PLANTS[myPlants[idx].plantId];
-  const today = getToday();
-  const nextWater = addDays(new Date(), plant.waterDays);
-  myPlants[idx].lastWater = today;
-  myPlants[idx].nextWater = nextWater;
-  saveStorage(); refreshUI(); showToast(`✅ تم ري ${plant.name}، الري القادم بعد ${plant.waterDays} أيام`);
-}
-function removePlant(idx) { myPlants.splice(idx,1); saveStorage(); refreshUI(); showToast(`🗑 تم الحذف`); }
-function addPlantById(plantId) { if(myPlants.some(p=>p.plantId===plantId)){ showToast('🌿 النبتة موجودة بالفعل'); return; } const today=getToday(); const next=addDays(new Date(), PLANTS[plantId].waterDays); myPlants.push({plantId, lastWater:today, nextWater:next}); saveStorage(); refreshUI(); showToast(`✨ تمت إضافة ${PLANTS[plantId].name}`); }
-function renderSelects() { 
-  const addSel = document.getElementById('addPlantSelect'); addSel.innerHTML='<option value="">-- اختر نبتة للإضافة --</option>'+PLANTS.map((p,i)=>`<option value="${i}">${p.emoji} ${p.name} (ري كل ${p.waterDays} أيام)</option>`).join('');
-  const waterSel = document.getElementById('waterPlantSelect'); waterSel.innerHTML='<option value="">-- اختر نبتة --</option>'+PLANTS.map((p,i)=>`<option value="${i}">${p.emoji} ${p.name}</option>`).join('');
-}
-function calcWatering() { let val = document.getElementById('waterPlantSelect').value; if(val===''){ showToast('اختر نبتة'); return; } let idx = parseInt(val); let p = PLANTS[idx]; let nextDate = addDays(new Date(), p.waterDays); document.getElementById('waterResultBox').innerHTML=`<span style="font-size:1.1rem;">💧 ${p.emoji} ${p.name}</span><br>موعد الري القادم: <strong style="color:#f3db9a; font-size:1.4rem;">${new Date(nextDate).toLocaleDateString('ar-EG')}</strong><br><span style="font-size:0.75rem;">عدد الأيام: ${p.waterDays} يوماً</span>`; }
-// catalog rendering
-let currentDiff='all'; let searchTerm='';
-function renderCatalog() { let filtered = PLANTS.filter((p,i)=>(currentDiff==='all'||p.difficulty===currentDiff) && (searchTerm===''||p.name.includes(searchTerm)||p.sci.toLowerCase().includes(searchTerm.toLowerCase()))); document.getElementById('catalogGrid').innerHTML=filtered.map((p,i)=>{ let origIdx = PLANTS.findIndex(pl=>pl.name===p.name); return `<div class="cat-item"><div class="cat-head"><div class="cat-emoji-big">${p.emoji}</div><div class="plant-name">${p.name}</div><div class="plant-sci">${p.sci}</div><div class="cat-difficulty">${p.difficulty==='سهلة'?'🟢':(p.difficulty==='متوسطة'?'🟡':'🔴')} ${p.difficulty}</div></div><div class="cat-body"><div class="meta-row"><span class="meta-chip">💧 ${p.waterDays} أيام</span><span class="meta-chip">☀️ ${p.light}</span><span class="meta-chip">🌡️ ${p.temp}</span></div><div class="cat-desc">${p.desc || 'نبتة رائعة لمنزلك'}</div><div class="meta-row">💡 ${p.tips[0] || 'نصيحة: تسميد معتدل'}</div><button class="btn-add-sm" onclick="addPlantById(${PLANTS.findIndex(pl=>pl.name===p.name)})">➕ أضف لمجموعتي</button></div></div>`; }).join(''); }
-function setupFilters() { document.querySelectorAll('.filt-btn').forEach(btn=>{ btn.onclick=()=>{ document.querySelectorAll('.filt-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); currentDiff=btn.getAttribute('data-diff'); renderCatalog(); } }); document.getElementById('searchCatalog').addEventListener('input', (e)=>{ searchTerm=e.target.value; renderCatalog(); }); }
-function showModalPlant(id) { let p = PLANTS[id]; document.getElementById('modalInner').innerHTML=`<div class="modal-header"><h3 style="color:#e6cf7a;">${p.emoji} ${p.name}</h3><button onclick="closeModal()" style="background:none; border:none; color:white; font-size:1.5rem;">✖</button></div><div><i>${p.sci}</i></div><div class="modal-detail-grid"><div>💧 الري: كل ${p.waterDays} يوم</div><div>☀️ الإضاءة: ${p.light}</div><div>🌡️ الحرارة: ${p.temp}</div><div>💧 الرطوبة: ${p.humidity || 'متوسطة'}</div><div>⚡ الصعوبة: ${p.difficulty}</div><div>🐾 السمية: ${p.toxicity || 'معلومات متاحة'}</div></div><div class="modal-tip-list"><strong>🍃 نصائح فاخرة:</strong><ul>${p.tips.map(t=>`<li>✨ ${t}</li>`).join('')}</ul><button class="btn-gold-lux" style="margin-top:12px; width:100%;" onclick="addPlantById(${id}); closeModal();">إضافة للمجموعة</button></div>`; document.getElementById('plantModal').classList.add('open'); }
-function closeModal() { document.getElementById('plantModal').classList.remove('open'); }
-function showToast(msg) { let t = document.getElementById('toastMsg'); t.innerText=msg; t.style.opacity='1'; setTimeout(()=>t.style.opacity='0', 2500); }
-// care tips panels
-function renderCare() { let tipsArr=[ {icon:"💧",title:"الري المثالي",text:"اسقِ عندما تجف التربة السطحية. كثير من النباتات تفضل الجفاف الخفيف بين الريات."}, {icon:"☀️",title:"الضوء الحكيم",text:"ضوء ساطع غير مباشر هو الأفضل. تجنب الشمس الحارقة المباشرة."}, {icon:"🌱",title:"التسميد الفاخر",text:"استخدم سماد سائل متوازن مرة شهرياً خلال الربيع والصيف."}, {icon:"🪴",title:"إعادة التأصيص",text:"كل 1-2 سنة، أعد تأصيص نباتاتك بتربة غنية وخصبة."}, {icon:"🧹",title:"التنظيف الدوري",text:"امسح أوراق النباتات بقطعة قماش رطبة لتعزيز التمثيل الضوئي."}, {icon:"🐛",title:"مكافحة الآفات",text:"استخدم زيت النيم أو الصابون الحشري فور رؤية الحشرات."} ]; document.getElementById('careTipsContainer').innerHTML=tipsArr.map(t=>`<div class="care-tip-card"><div class="care-icon">${t.icon}</div><div class="care-title">${t.title}</div><div class="care-text">${t.text}</div></div>`).join(''); }
-// tab switching
-function switchTabs(tabId){ document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active-panel')); document.getElementById(`panel-${tabId}`).classList.add('active-panel'); document.querySelectorAll('.tab-btn-lux').forEach(btn=>btn.classList.remove('active')); document.querySelector(`.tab-btn-lux[data-tab="${tabId}"]`).classList.add('active'); if(tabId==='catalog') renderCatalog(); if(tabId==='care') renderCare(); }
-document.querySelectorAll('.tab-btn-lux').forEach(btn=>{ btn.addEventListener('click',()=>switchTabs(btn.getAttribute('data-tab'))); });
-document.getElementById('addPlantBtn').addEventListener('click',()=>{ let val=document.getElementById('addPlantSelect').value; if(val!=='') addPlantById(parseInt(val)); else showToast('اختر نبتة'); });
-document.getElementById('calcWaterBtn').addEventListener('click',calcWatering);
 
-// initial render
-renderSelects();
-refreshUI();
-renderCare();
-setupFilters();
-renderCatalog();
-window.addPlantById = addPlantById; window.waterPlantNow = waterPlantNow; window.removePlant = removePlant; window.showModalPlant = showModalPlant; window.closeModal = closeModal;
-// floating particles
-setInterval(()=>{ let leaf=document.createElement('div'); leaf.className='floating'; leaf.innerHTML=['🍃','🌿','🍂','✨'][Math.floor(Math.random()*4)]; leaf.style.cssText=`left:${Math.random()*100}%; animation-duration:${12+Math.random()*15}s; opacity:${0.2+Math.random()*0.3}; font-size:${12+Math.random()*22}px;`; document.body.appendChild(leaf); setTimeout(()=>leaf.remove(),20000); },3000);
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ADD / WATER / REMOVE
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function addMyPlant(){
+  const s=document.getElementById('add-select');
+  const idx=parseInt(s.value);
+  if(isNaN(idx)||s.value===''){showToast('⚠️ اختر نبتة أولاً','warn');return}
+  if(myPlants.find(e=>e.plantIdx===idx)){showToast('🌿 النبتة موجودة بالفعل في مجموعتك');return}
+  const today=new Date().toISOString().split('T')[0];
+  const next=new Date();next.setDate(next.getDate()+PLANTS[idx].days);
+  myPlants.push({plantIdx:idx,last:today,next:next.toISOString().split('T')[0]});
+  save();renderAll();
+  showToast(`✅ تمت إضافة ${PLANTS[idx].emoji} ${PLANTS[idx].name}`);
+  s.value='';
+}
+function waterPlant(i){
+  const p=PLANTS[myPlants[i].plantIdx];
+  const today=new Date().toISOString().split('T')[0];
+  const next=new Date();next.setDate(next.getDate()+p.days);
+  myPlants[i].last=today;myPlants[i].next=next.toISOString().split('T')[0];
+  save();renderAll();
+  showToast(`💧 تم ري ${p.emoji} ${p.name} — الري القادم بعد ${p.days} أيام`);
+}
+function removePlant(i){
+  const p=PLANTS[myPlants[i].plantIdx];
+  myPlants.splice(i,1);save();renderAll();
+  showToast(`🗑 تم حذف ${p.name} من مجموعتك`,'warn');
+}
+function addFromCatalog(idx){
+  if(myPlants.find(e=>e.plantIdx===idx)){showToast('🌿 النبتة موجودة بالفعل في مجموعتك');return}
+  const today=new Date().toISOString().split('T')[0];
+  const next=new Date();next.setDate(next.getDate()+PLANTS[idx].days);
+  myPlants.push({plantIdx:idx,last:today,next:next.toISOString().split('T')[0]});
+  save();renderAll();
+  showToast(`✅ تمت إضافة ${PLANTS[idx].emoji} ${PLANTS[idx].name} لمجموعتك`);
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// SELECTS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function populateSelects(){
+  ['add-select','water-plant-select'].forEach(id=>{
+    const el=document.getElementById(id);const v=el.value;
+    while(el.options.length>1)el.remove(1);
+    PLANTS.forEach((p,i)=>el.add(new Option(`${p.emoji} ${p.name} — كل ${p.days} أيام`,i)));
+    el.value=v;
+  });
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// WATERING CALC
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function calcWatering(){
+  const s=document.getElementById('water-plant-select');
+  const idx=parseInt(s.value);
+  if(isNaN(idx)||s.value===''){showToast('⚠️ اختر نبتة أولاً','warn');return}
+  const p=PLANTS[idx];
+  const next=new Date();next.setDate(next.getDate()+p.days);
+  const ds=next.toLocaleDateString('ar-SA',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const b=document.getElementById('water-result');
+  b.classList.add('lit');
+  b.innerHTML=`🌱 موعد الري القادم لـ ${p.emoji} ${p.name}<br><span class="rbox-date">${ds}</span>`;
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// CATALOG
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function diffDots(d){
+  const map={سهلة:1,متوسطة:2,صعبة:3};const n=map[d]||1;let h='';
+  for(let i=1;i<=3;i++)h+=`<span class="diff-dot" style="background:${i<=n?'rgba(201,168,76,.7)':'rgba(168,201,127,.15)'}"></span>`;
+  return h;
+}
+function renderCatalog(){
+  const q=(document.getElementById('cat-search').value||'').trim();
+  const grid=document.getElementById('cat-grid');grid.innerHTML='';let shown=0;
+  PLANTS.forEach((p,i)=>{
+    if(catFilter!=='all'&&p.diff!==catFilter)return;
+    if(q&&!p.name.includes(q)&&!p.sci.toLowerCase().includes(q.toLowerCase()))return;
+    shown++;const c=document.createElement('div');c.className='cat-card';
+    c.innerHTML=`
+      <div class="cat-card-head">
+        <div class="cat-emoji-wrap">${p.emoji}</div>
+        <div class="cat-name">${p.name}</div>
+        <div class="cat-sci">${p.sci}</div>
+        <div class="cat-quick">
+          <span class="cq">💧 ${p.days}ي</span><span class="cq">${p.light}</span>
+          <span class="cq">${p.diff}</span><span class="cq">🌡 ${p.temp}</span>
+        </div>
+      </div>
+      <div class="cat-card-body">
+        <div class="info-rows">
+          <div class="irow"><span class="irow-icon">🌍</span><span class="irow-label">الموطن</span><span class="irow-val">${p.origin}</span></div>
+          <div class="irow"><span class="irow-icon">📏</span><span class="irow-label">الحجم</span><span class="irow-val">${p.size}</span></div>
+          <div class="irow"><span class="irow-icon">🪣</span><span class="irow-label">التربة</span><span class="irow-val">${p.soil}</span></div>
+          <div class="irow"><span class="irow-icon">⭐</span><span class="irow-label">الصعوبة</span><span class="irow-val"><div class="diff-bar">${diffDots(p.diff)}&nbsp;${p.diff}</div></span></div>
+        </div>
+        <div class="cat-desc">${p.desc}</div>
+        <div class="cat-tips">${p.tips.slice(0,2).map(t=>`<div class="cat-tip">${t}</div>`).join('')}</div>
+        <button class="btn btn-add-cat" onclick="addFromCatalog(${i})">➕ أضف لنباتاتي</button>
+      </div>`;
+    grid.appendChild(c);
+  });
+  if(!shown)grid.innerHTML='<div style="padding:40px;text-align:center;color:rgba(168,201,127,.3);grid-column:1/-1">لا توجد نتائج 🌿</div>';
+}
+function setFilter(f,btn){
+  catFilter=f;
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');renderCatalog();
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// MODAL
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function openModal(idx){
+  const p=PLANTS[idx];
+  document.getElementById('modal-content').innerHTML=`
+    <div class="modal-emoji">${p.emoji}</div>
+    <div class="modal-name">${p.name}</div>
+    <div class="modal-sci">${p.sci}</div>
+    <div class="modal-grid">
+      <div class="minfo"><div class="minfo-lbl">💧 الري</div><div class="minfo-val">كل ${p.days} أيام</div></div>
+      <div class="minfo"><div class="minfo-lbl">☀️ الإضاءة</div><div class="minfo-val">${p.light}</div></div>
+      <div class="minfo"><div class="minfo-lbl">🌡️ الحرارة</div><div class="minfo-val">${p.temp}</div></div>
+      <div class="minfo"><div class="minfo-lbl">💦 الماء</div><div class="minfo-val">${p.water}</div></div>
+      <div class="minfo"><div class="minfo-lbl">🌍 الموطن</div><div class="minfo-val">${p.origin}</div></div>
+      <div class="minfo"><div class="minfo-lbl">📏 الحجم</div><div class="minfo-val">${p.size}</div></div>
+      <div class="minfo"><div class="minfo-lbl">🪣 التربة</div><div class="minfo-val">${p.soil}</div></div>
+      <div class="minfo"><div class="minfo-lbl">⭐ الصعوبة</div><div class="minfo-val">${p.diff}</div></div>
+    </div>
+    <div class="modal-desc">${p.desc}</div>
+    <div class="modal-tips-title">💡 نصائح العناية</div>
+    ${p.tips.map(t=>`<div class="modal-tip"><span class="modal-tip-ico">🌿</span>${t}</div>`).join('')}
+    <div style="height:8px"></div>
+    <button class="btn btn-primary" onclick="addFromCatalog(${idx});closeModalDirect()" style="margin-top:6px">➕ أضف لنباتاتي</button>
+  `;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(e){if(e.target===document.getElementById('modal-overlay'))closeModalDirect()}
+function closeModalDirect(){document.getElementById('modal-overlay').classList.remove('open')}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// TABS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function showTab(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  const idx=['myplants','watering','catalog','settings'].indexOf(id);
+  if(idx>=0)document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+  if(id==='settings'){renderNotifSchedule();updatePermStatus()}
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// INIT
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function init(){
+  populateSelects();
+  renderCatalog();
+  renderAll();
+
+  // Add tab badge element to first tab
+  const firstTab=document.querySelector('.tab-btn');
+  if(firstTab&&!firstTab.querySelector('.tab-badge')){
+    const badge=document.createElement('span');
+    badge.className='tab-badge';badge.style.display='none';
+    firstTab.appendChild(badge);
+  }
+
+  // Restore settings UI
+  document.getElementById('notif-toggle').checked=!!settings.browserNotif;
+  document.getElementById('remind-days').value=settings.remindDays||1;
+  document.getElementById('remind-time').value=settings.remindTime||'08:00';
+  document.getElementById('alert-overdue').checked=settings.alertOverdue!==false;
+  document.getElementById('alert-today').checked=settings.alertToday!==false;
+  document.getElementById('alert-soon').checked=settings.alertSoon!==false;
+
+  updatePermStatus();
+  scheduleLocalNotifications();
+
+  // Auto-check on load
+  setTimeout(()=>{
+    const urgent=myPlants.filter(e=>{const d=daysUntil(e.next);return d!==null&&d<0});
+    if(urgent.length>0 && settings.browserNotif && Notification.permission==='granted'){
+      const names=urgent.slice(0,2).map(e=>PLANTS[e.plantIdx].name).join('، ');
+      sendBrowserNotif(`🚨 ${urgent.length} نبتة تحتاج ري عاجل!`,names+(urgent.length>2?'...':''));
+    }
+  },2000);
+}
+init();
 </script>
 </body>
 </html>
