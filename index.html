@@ -4,196 +4,198 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>3D NAS | مساعد النباتات الذكي</title>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --g1:#0d1f07;--g2:#162a0e;--g3:#1e3812;
-  --forest:#2d4a1e;--moss:#3d6128;--sage:#5a8a38;
-  --mint:#8fc45a;--pale:#c2df9a;
-  --gold:#c9a84c;--gold2:#e8d08a;--gold3:#f5e4a8;
-  --card:rgba(255,255,255,.055);
-  --border:rgba(168,201,127,.13);
-  --border-gold:rgba(201,168,76,.28);
-  --danger:rgba(230,90,60,.15);
-  --danger-border:rgba(230,90,60,.4);
+  /* ألوان الهوية المستوحاة مباشرة من اللوقو */
+  --bg-logo: #fcfbfa; /* نفس درجة الأوف وايت الورقي في خلفية الشعار */
+  --nas-green: #7FA043; /* الأخضر العشبي المميز لكلمة NAS والورقة */
+  --charcoal-dark: #33383B; /* الرمادي الفحمي الداكن لجسم اللوقو الرئيسي */
+  
+  --panel-bg: #ffffff;
+  --text-main: var(--charcoal-dark);
+  --text-muted: #5a6164;
+  --border-subtle: rgba(51,56,59,0.1);
+  --border-nas: rgba(127,160,67,0.3);
+  --card-shadow: 0 8px 24px rgba(51,56,59,0.04);
+  --danger: rgba(230,90,60,0.05);
+  --danger-text: #b83214;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:'Cairo',sans-serif;background:var(--g1);overflow-x:hidden;min-height:100vh;color:#e0f0cc}
+body{font-family:'Cairo',sans-serif;background:var(--bg-logo);overflow-x:hidden;min-height:100vh;color:var(--text-main)}
 
-.bg-glow{
-  position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:
-    radial-gradient(ellipse 70% 50% at 15% 25%,rgba(58,100,30,.28) 0%,transparent 60%),
-    radial-gradient(ellipse 50% 70% at 85% 75%,rgba(35,70,20,.32) 0%,transparent 55%),
-    radial-gradient(ellipse 80% 80% at 50% 50%,var(--g1) 30%,var(--g2) 100%);
+/* ANIMATED LEAVES BACKGROUND */
+.bg-container {
+  position: fixed;inset: 0;z-index: 0;pointer-events: none;overflow: hidden;
+  background: var(--bg-logo);
 }
-.ptcl{position:fixed;pointer-events:none;z-index:1;opacity:0;animation:rise linear infinite}
-@keyframes rise{
-  0%{transform:translateY(100vh) rotate(0deg) scale(.5);opacity:0}
-  8%{opacity:.18}88%{opacity:.1}
-  100%{transform:translateY(-10vh) rotate(720deg) scale(1);opacity:0}
+.ptcl{
+  position:absolute;pointer-events:none;z-index:1;opacity:0;
+  animation:floatAround linear infinite; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.03));
 }
-.page{position:relative;z-index:2;max-width:1140px;margin:0 auto;padding:28px 18px 80px}
+@keyframes floatAround{
+  0%{transform:translateY(105vh) translateX(0) rotate(0deg);opacity:0}
+  10%{opacity:0.35}
+  90%{opacity:0.35}
+  100%{transform:translateY(-10vh) translateX(40px) rotate(360deg);opacity:0}
+}
 
-/* HERO */
-.hero{text-align:center;padding:68px 30px 40px;margin-bottom:10px;animation:fDown .9s ease both}
-@keyframes fDown{from{opacity:0;transform:translateY(-28px)}to{opacity:1;transform:translateY(0)}}
-@keyframes fIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+.page{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:30px 20px 80px}
+
+/* HERO SECTION */
+.hero{text-align:center;padding:40px 20px 20px;margin-bottom:15px;animation:fDown .8s ease both}
+@keyframes fDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
 
 .hero-eyebrow{
-  display:inline-flex;align-items:center;gap:9px;
-  background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.3);
-  color:var(--gold2);padding:7px 22px;border-radius:40px;
-  font-size:12px;letter-spacing:2.5px;font-weight:700;margin-bottom:28px;
+  display:inline-flex;align-items:center;
+  background:rgba(127,160,67,0.1);border:1px solid var(--border-nas);
+  color:var(--nas-green);padding:6px 20px;border-radius:50px;
+  font-size:13px;font-weight:700;margin-bottom:15px;
 }
 .hero h1{
-  font-family:'Amiri',serif;font-size:clamp(56px,10vw,96px);
-  line-height:.95;letter-spacing:3px;margin-bottom:14px;
-  background:linear-gradient(150deg,var(--gold3) 0%,var(--pale) 40%,var(--gold) 80%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  font-size: clamp(45px, 7vw, 65px);
+  font-weight: 900; line-height: 1; margin-bottom: 15px;
+  color: var(--charcoal-dark);
+  letter-spacing: -1px;
 }
-.hero-tagline{font-size:16px;color:rgba(168,201,127,.65);font-weight:300;max-width:420px;margin:0 auto 30px;line-height:1.9}
+.hero h1 span{
+  color: var(--nas-green);
+}
+.hero-tagline{font-size:15px;color:var(--text-muted);font-weight:400;max-width:500px;margin:0 auto 25px;line-height:1.7}
 
-.hero-rule{display:flex;align-items:center;gap:14px;max-width:280px;margin:0 auto 40px}
-.hero-rule-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.35),transparent)}
-.hero-rule-dot{color:var(--gold);font-size:14px}
-
-/* GLASS */
-.glass{background:var(--card);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:1px solid var(--border);border-radius:26px}
-
-/* SECTION CARD */
-.sc{margin-bottom:22px;padding:30px 32px}
-.sc-title{display:flex;align-items:center;gap:13px;font-family:'Amiri',serif;font-size:26px;
-  color:var(--gold2);margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
-.sc-icon{width:40px;height:40px;background:linear-gradient(135deg,rgba(201,168,76,.18),rgba(168,201,127,.09));
-  border:1px solid var(--border-gold);border-radius:11px;
-  display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+/* BOX STYLES (MATCHING LOGO STROKE) */
+.panel{
+  background:var(--panel-bg);
+  border:2px solid var(--charcoal-dark); /* حواف صلبة مستوحاة من خطوط اللوقو */
+  border-radius:20px;
+  box-shadow:var(--card-shadow);
+}
 
 /* QUICK SELECTOR BOX */
 .quick-box {
-  background: rgba(255,255,255,.03);
-  border: 1px dashed var(--border-gold);
-  border-radius: 20px;
+  background: #ffffff;
+  border: 2px dashed var(--nas-green);
   padding: 24px;
   margin-bottom: 30px;
   text-align: center;
 }
 .quick-box p {
   font-size: 15px;
-  color: var(--gold2);
-  margin-bottom: 14px;
-  font-weight: 600;
+  color: var(--charcoal-dark);
+  margin-bottom: 12px;
+  font-weight: 700;
 }
 
 /* INPUTS */
-.sel-wrap{position:relative;max-width:500px;margin:0 auto}
+.sel-wrap{position:relative;max-width:450px;margin:0 auto}
 .sel-wrap::after{content:'▾';position:absolute;left:16px;top:50%;
-  transform:translateY(-50%);color:var(--gold);font-size:14px;pointer-events:none}
+  transform:translateY(-50%);color:var(--nas-green);font-size:16px;pointer-events:none}
 select,input[type=text]{
-  width:100%;padding:14px 18px 14px 42px;
-  background:rgba(255,255,255,.055);border:1px solid rgba(168,201,127,.18);
-  border-radius:14px;color:rgba(168,201,127,.92);
+  width:100%;padding:12px 16px 12px 40px;
+  background:#ffffff;border:2px solid var(--charcoal-dark);
+  border-radius:12px;color:var(--text-main);
   font-size:14px;font-family:'Cairo',sans-serif;
-  appearance:none;outline:none;transition:border-color .3s,background .3s;
+  appearance:none;outline:none;transition:all .25s;
 }
-input[type=text]{padding:13px 18px}
-select:focus,input:focus{border-color:rgba(201,168,76,.45);background:rgba(255,255,255,.08)}
-select option{background:#162a0e;color:#a8c97f}
-::placeholder{color:rgba(168,201,127,.3)}
+input[type=text]{padding:12px 16px}
+select:focus,input:focus{border-color:var(--nas-green);box-shadow: 0 0 0 4px rgba(127,160,67,0.15)}
 
-/* BUTTONS */
-.btn{border:none;cursor:pointer;font-family:'Cairo',sans-serif;transition:all .25s;display:inline-flex;align-items:center;justify-content:center;gap:7px}
-.btn-primary{width:100%;padding:13px;border-radius:14px;
-  background:linear-gradient(135deg,#3d6128,#6a9a3a);
-  color:#e8f5d0;font-size:14px;font-weight:700}
-.btn-primary:hover{transform:translateY(-1px);background:linear-gradient(135deg,#466f2e,#76ab42)}
-.btn-gold{padding:15px 40px;border-radius:50px;
-  background:linear-gradient(135deg,var(--gold),#a8783a);
-  color:#1a2e0d;font-size:16px;font-weight:800;
-  box-shadow:0 10px 32px rgba(201,168,76,.38);text-decoration:none}
-.btn-gold:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 18px 48px rgba(201,168,76,.52)}
+/* SECTION CARD */
+.sc{margin-bottom:25px;padding:30px}
+.sc-title{display:flex;align-items:center;gap:12px;font-size:22px;font-weight:800;
+  color:var(--charcoal-dark);margin-bottom:25px;padding-bottom:14px;border-bottom:2px solid var(--border-subtle)}
+.sc-icon{width:38px;height:38px;background:rgba(127,160,67,0.1);
+  border:1px solid var(--border-nas);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 
 /* CATALOG */
-.cat-toolbar{display:flex;gap:10px;margin-bottom:22px;flex-wrap:wrap;align-items:center}
-.cat-search-wrap{flex:1;min-width:180px;position:relative}
+.cat-toolbar{display:flex;gap:12px;margin-bottom:25px;flex-wrap:wrap;align-items:center}
+.cat-search-wrap{flex:1;min-width:200px;position:relative}
 .cat-search-wrap::before{content:'🔍';position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none}
 .cat-search-wrap input{padding:12px 38px 12px 16px}
-.filter-btns{display:flex;gap:6px;flex-wrap:wrap}
-.fbtn{padding:8px 14px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;
-  background:rgba(168,201,127,.07);border:1px solid var(--border);
-  color:rgba(168,201,127,.6);font-family:'Cairo',sans-serif;transition:all .2s}
-.fbtn:hover{border-color:rgba(168,201,127,.3)}
-.fbtn.on{background:rgba(201,168,76,.12);border-color:rgba(201,168,76,.35);color:var(--gold2)}
-.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
-.cat-card{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:20px;padding:0;overflow:hidden;display:flex;flex-direction:column;transition:all .25s;cursor:pointer}
-.cat-card:hover{transform:translateY(-5px);border-color:rgba(201,168,76,.28);box-shadow:0 18px 45px rgba(0,0,0,.28)}
-.cat-card-head{padding:22px 18px 16px;background:linear-gradient(160deg,rgba(168,201,127,.06) 0%,transparent 100%);border-bottom:1px solid var(--border)}
-.cat-emoji-wrap{width:58px;height:58px;border-radius:16px;background:linear-gradient(135deg,rgba(201,168,76,.12),rgba(168,201,127,.07));border:1px solid var(--border-gold);display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:12px}
-.cat-name{font-family:'Amiri',serif;font-size:20px;color:var(--gold2);margin-bottom:3px}
-.cat-sci{font-size:11px;color:rgba(168,201,127,.35);font-style:italic;margin-bottom:8px}
-.cat-quick{display:flex;gap:5px;flex-wrap:wrap}
-.cq{padding:3px 8px;border-radius:8px;font-size:10px;font-weight:700;background:rgba(168,201,127,.08);border:1px solid rgba(168,201,127,.14);color:rgba(168,201,127,.65)}
-.cat-card-body{padding:16px 18px;flex:1;display:flex;flex-direction:column;gap:12px}
-.cat-desc{font-size:12px;color:rgba(168,201,127,.6);line-height:1.75;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.filter-btns{display:flex;gap:8px;flex-wrap:wrap}
+.fbtn{padding:8px 16px;border-radius:30px;font-size:13px;font-weight:700;cursor:pointer;
+  background:#ffffff;border:2px solid var(--border-subtle);
+  color:var(--text-muted);font-family:'Cairo',sans-serif;transition:all .2s}
+.fbtn:hover{border-color:var(--charcoal-dark);color:var(--charcoal-dark)}
+.fbtn.on{background:var(--nas-green);border-color:var(--nas-green);color:#ffffff}
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:20px}
 
-.diff-bar{display:flex;gap:3px;align-items:center}
+.cat-card{
+  background:#ffffff;border:2px solid var(--charcoal-dark);border-radius:16px;
+  overflow:hidden;display:flex;flex-direction:column;transition:all .25s;cursor:pointer;
+}
+.cat-card:hover{transform:translateY(-4px);border-color:var(--nas-green);box-shadow:0 10px 25px rgba(127,160,67,0.15)}
+.cat-card-head{padding:20px 18px 15px;background:linear-gradient(180deg, var(--bg-logo) 0%, transparent 100%);border-bottom:1px solid var(--border-subtle)}
+.cat-emoji-wrap{width:50px;height:50px;border-radius:12px;background:#ffffff;border:2px solid var(--border-subtle);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:10px}
+.cat-name{font-weight:800;font-size:18px;color:var(--charcoal-dark);margin-bottom:2px}
+.cat-sci{font-size:12px;color:var(--text-muted);font-style:italic;margin-bottom:10px}
+.cat-quick{display:flex;gap:6px;flex-wrap:wrap}
+.cq{padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;background:rgba(51,56,59,0.05);color:var(--charcoal-dark)}
+.cat-card-body{padding:15px 18px;flex:1;display:flex;flex-direction:column;gap:12px}
+.cat-desc{font-size:13px;color:var(--text-muted);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+.diff-bar{display:flex;gap:4px;align-items:center}
 .diff-dot{width:8px;height:8px;border-radius:50%}
 
-/* CTA */
-.cta{padding:50px 40px;text-align:center;margin-bottom:26px;background:linear-gradient(150deg,rgba(201,168,76,.08),rgba(61,97,40,.14));border-color:rgba(201,168,76,.18)}
-.cta h2{font-family:'Amiri',serif;font-size:32px;color:var(--gold2);margin-bottom:8px}
-.cta p{color:rgba(168,201,127,.55);font-size:14px;margin-bottom:28px}
+/* CTA BOX */
+.cta{padding:40px;text-align:center;margin-bottom:25px;background:linear-gradient(135deg,#ffffff, var(--bg-logo));}
+.cta h2{font-size:28px;font-weight:900;color:var(--charcoal-dark);margin-bottom:8px}
+.cta p{color:var(--text-muted);font-size:14px;margin-bottom:20px}
+
+.btn{border:none;cursor:pointer;font-family:'Cairo',sans-serif;transition:all .25s;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn-nas{
+  padding:14px 40px;border-radius:12px;
+  background:var(--nas-green);border:2px solid var(--charcoal-dark);
+  color:#ffffff;font-size:15px;font-weight:800;box-shadow:0 6px 0 var(--charcoal-dark);text-decoration:none;
+}
+.btn-nas:hover{transform:translateY(-2px);box-shadow:0 8px 0 var(--charcoal-dark)}
+.btn-nas:active{transform:translateY(2px);box-shadow:0 2px 0 var(--charcoal-dark)}
 
 /* FOOTER */
-footer{text-align:center;padding:28px;color:rgba(168,201,127,.25);font-size:12px;border-top:1px solid var(--border);letter-spacing:.5px}
-footer b{color:rgba(201,168,76,.45)}
+footer{text-align:center;padding:25px;color:var(--text-muted);font-size:13px;border:2px solid var(--charcoal-dark);background:#ffffff;margin-top:40px;border-radius:16px}
+footer b{color:var(--nas-green)}
 
-/* MODAL */
-.modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
+/* MODAL WINDOW */
+.modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(51,56,59,0.4);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
 .modal-overlay.open{opacity:1;pointer-events:all}
-.modal{background:linear-gradient(160deg,#1e3812,#11220a);border:1px solid rgba(201,168,76,.3);border-radius:28px;padding:32px;max-width:640px;width:100%;max-height:90vh;overflow-y:auto;transform:translateY(20px);transition:transform .3s;position:relative}
+.modal{background:#ffffff;border:3px solid var(--charcoal-dark);border-radius:24px;padding:30px;max-width:620px;width:100%;max-height:85vh;overflow-y:auto;transform:translateY(15px);transition:transform .3s;position:relative}
 .modal-overlay.open .modal{transform:translateY(0)}
-.modal-close{position:absolute;top:16px;left:16px;width:34px;height:34px;border-radius:50%;background:rgba(168,201,127,.08);border:1px solid var(--border);color:rgba(168,201,127,.6);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;font-family:sans-serif;transition:all .2s}
-.modal-close:hover{background:rgba(168,201,127,.16);color:#a8c97f}
-.modal-emoji{font-size:56px;text-align:center;margin-bottom:10px}
-.modal-name{font-family:'Amiri',serif;font-size:32px;color:var(--gold2);text-align:center;margin-bottom:4px}
-.modal-sci{font-size:13px;color:rgba(168,201,127,.35);text-align:center;font-style:italic;margin-bottom:24px}
+.modal-close{position:absolute;top:16px;left:16px;width:32px;height:32px;border-radius:50%;background:#ffffff;border:2px solid var(--charcoal-dark);color:var(--charcoal-dark);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;font-weight:bold}
+.modal-close:hover{background:var(--nas-green);color:#ffffff}
+.modal-emoji{font-size:55px;text-align:center;margin-bottom:8px}
+.modal-name{font-weight:900;font-size:26px;color:var(--charcoal-dark);text-align:center;margin-bottom:2px}
+.modal-sci{font-size:14px;color:var(--text-muted);text-align:center;font-style:italic;margin-bottom:20px}
 
-.modal-section-title{font-family:'Amiri',serif;font-size:19px;color:var(--gold3);margin:18px 0 10px;padding-right:8px;border-right:3px solid var(--gold)}
+.modal-section-title{font-weight:800;font-size:15px;color:var(--charcoal-dark);margin:18px 0 10px;padding-right:8px;border-right:4px solid var(--nas-green)}
 
-/* GRID INFO */
-.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.minfo{background:rgba(168,201,127,.05);border:1px solid var(--border);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.minfo{background:var(--bg-logo);border:2px solid var(--border-subtle);border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px}
 .minfo-ico{font-size:20px}
 .minfo-text{flex:1}
-.minfo-lbl{font-size:10px;color:rgba(168,201,127,.4);letter-spacing:.6px}
-.minfo-val{font-size:13px;color:rgba(168,201,127,.9);font-weight:700}
+.minfo-lbl{font-size:11px;color:var(--text-muted);font-weight:700}
+.minfo-val{font-size:13px;color:var(--charcoal-dark);font-weight:800;margin-top:1px}
 
-.modal-desc{font-size:13px;color:rgba(168,201,127,.7);line-height:1.85;padding:14px;background:rgba(168,201,127,.03);border-radius:14px;border:1px solid var(--border);text-align:justify}
+.modal-desc{font-size:13.5px;color:var(--charcoal-dark);line-height:1.7;padding:12px;background:#ffffff;border-radius:12px;border:2px solid var(--border-subtle)}
 
-/* BULLET LISTS */
 .modal-list {display:flex;flex-direction:column;gap:8px}
-.modal-item{display:flex;gap:10px;font-size:12.5px;color:rgba(168,201,127,.7);line-height:1.7;padding:10px 12px;background:rgba(255,255,255,.02);border-radius:12px;border:1px solid var(--border)}
-.modal-item-ico{font-size:16px;flex-shrink:0}
+.modal-item{display:flex;gap:10px;font-size:13px;color:var(--charcoal-dark);line-height:1.6;padding:10px 12px;background:#ffffff;border-radius:12px;border:2px solid var(--border-subtle)}
+.modal-item-ico{font-size:15px;flex-shrink:0}
 
-/* DANGER BOX */
-.danger-box{background:var(--danger);border:1px dashed var(--danger-border);border-radius:14px;padding:14px}
-.danger-item{display:flex;gap:10px;font-size:12.5px;color:#f8a080;line-height:1.7;margin-bottom:6px}
-.danger-item:last-child{margin-bottom:0}
+.danger-box{background:var(--danger);border:2px dashed var(--danger-text);border-radius:12px;padding:12px}
+.danger-item{display:flex;gap:10px;font-size:13px;color:var(--danger-text);line-height:1.6;font-weight:600}
 
-/* RESPONSIVE */
 @media(max-width:700px){
-  .hero h1{font-size:52px}
-  .sc{padding:20px 16px}
+  .hero h1{font-size:38px}
+  .sc{padding:20px}
   .modal-grid{grid-template-columns:1fr}
-  .cta{padding:32px 20px}
 }
 </style>
 </head>
 <body>
 
-<div class="bg-glow"></div>
+<div class="bg-container" id="bg-leaves"></div>
 
 <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
   <div class="modal">
@@ -205,186 +207,386 @@ footer b{color:rgba(201,168,76,.45)}
 <div class="page">
 
 <div class="hero">
-  <div class="hero-eyebrow">✦ &nbsp; دليل العناية بالنباتات الذكي &nbsp; ✦</div>
-  <h1>3D NAS</h1>
-  <p class="hero-tagline">موسوعتك الشاملة للعناية بنباتاتك الداخلية.<br>اختر نبتة واكتشف أسرار نموها واحتياجاتها.</p>
-  <div class="hero-rule">
-    <div class="hero-rule-line"></div><div class="hero-rule-dot">✦</div><div class="hero-rule-line"></div>
-  </div>
+  <div class="hero-eyebrow">🌿 دليل العناية بالنباتات الداخلية التفاعلي</div>
+  <h1>3D <span>NAS</span></h1>
+  <p class="hero-tagline">دليلك المتكامل للعناية بـ 35 نوعاً من أشهر وأجمل النباتات لتضمن بقاء بيئتك خضراء ومستدامة.</p>
 </div>
 
-<div class="quick-box glass">
-  <p>🔍 الوصول السريع: اختر نبتة من القائمة لعرض دليل العناية فوراً:</p>
+<div class="quick-box panel">
+  <p>🔍 اختيار سريع: تصفح تفاصيل أي نبتة مباشرة من القائمة:</p>
   <div class="sel-wrap">
     <select id="quick-plant-select" onchange="if(this.value!=='') openModal(this.value)">
-      <option value="">— اختر نبتة لاستكشافها —</option>
+      <option value="">— اختر النبتة المطلوبة هنا —</option>
     </select>
   </div>
 </div>
 
-<div class="sc glass">
-  <div class="sc-title"><div class="sc-icon">📖</div>دليل وعائلات النباتات <span id="cat-count-badge" style="font-size:14px;color:rgba(168,201,127,.4);margin-right:8px"></span></div>
+<div class="sc panel">
+  <div class="sc-title"><div class="sc-icon">📖</div>مكتبة النباتات المتكاملة <span id="cat-count-badge" style="font-size:14px;color:var(--text-muted);margin-right:8px;font-weight:normal"></span></div>
   
   <div class="cat-toolbar">
     <div class="cat-search-wrap">
-      <input type="text" id="cat-search" placeholder="ابحث باسم النبتة العربي أو العلمي..." oninput="renderCatalog()">
+      <input type="text" id="cat-search" placeholder="ابحث باسم النبتة (مثال: بوتس، زاميا، سانسيفيريا...)" oninput="renderCatalog()">
     </div>
     <div class="filter-btns">
-      <button class="fbtn on" onclick="setFilter('all',this)">الكل</button>
+      <button class="fbtn on" onclick="setFilter('all',this)">الكل (35)</button>
       <button class="fbtn" onclick="setFilter('سهلة',this)">سهلة العناية</button>
-      <button class="fbtn" onclick="setFilter('متوسطة',this)">متوسطة الصعوبة</button>
-      <button class="fbtn" onclick="setFilter('صعبة',this)">تحتاج محترفين</button>
+      <button class="fbtn" onclick="setFilter('متوسطة',this)">متوسطة</button>
+      <button class="fbtn" onclick="setFilter('صعبة',this)">محترفين</button>
     </div>
   </div>
 
   <div class="cat-grid" id="cat-grid"></div>
 </div>
 
-<div class="cta glass">
-  <h2>🛒 اكتشف عالم النباتات المميزة</h2>
-  <p>تسوّق أجمل النباتات المنزلية وملحقاتها الفاخرة في متجر 3D NAS</p>
-  <a href="https://3d-nas.com/ar" target="_blank" class="btn btn-gold">زيارة المتجر الرسمي &nbsp;←</a>
+<div class="cta panel">
+  <h2>🛒 تسوق نباتاتك المفضلة الآن</h2>
+  <p>اطلب عينات فاخرة من هذه النباتات مباشرة عبر متجرنا الإلكتروني الرسمي</p>
+  <a href="https://3d-nas.com/ar" target="_blank" class="btn btn-nas">زيارة متجر 3D NAS</a>
 </div>
 
-<footer>🌿 جميع الحقوق محفوظة &nbsp;<b>3D NAS</b>&nbsp; © 2026</footer>
+<footer>جميع الحقوق محفوظة &nbsp;<b>3D NAS</b>&nbsp; © 2026</footer>
 </div>
 
 <script>
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// RICH PLANT DATABASE
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// COMPLETE DATABASE (35 PLANTS)
 const PLANTS=[
   {
-    name:'ساق البامبو',
-    sci:'Dracaena sanderiana',
-    emoji:'🎋',
-    diff:'سهلة',
-    temp:'18–30°م (تكره البرد المفاجئ)',
-    light:'إضاءة متوسطة غير مباشرة (تحترق بالشمس المباشرة)',
-    desc:'نبتة أنيقة ومشهورة ترتبط بالحظ والرخاء في الثقافة الآسيوية، تتميز بقدرتها الفائقة على العيش في الماء مباشرة أو التربة.',
-    water_schedule:'مرة كل 5-7 أيام (إذا كانت في تربة) أو تغيير الماء كل أسبوع (إذا كانت في فازة).',
-    fertilizer_schedule:'قطرات من سماد سائل مخفف جداً مرة كل شهر في الصيف والربيع فقط.',
-    pruning_schedule:'تقليم الأوراق الجافة أو الصفراء من الأسفل فوراً، وقص الأطراف التالفة بمقص معقم.',
-    care_methods:[
-      'يفضل استخدام مياه مقطرة أو مياه حنفية مسبقة الغليان وتركت لتبخر الكلور.',
-      'عند زراعتها بالماء، تأكد أن الماء يغطي الجذور بارتفاع بضعة سنتيمترات فقط وليس الساق بالكامل.'
-    ],
-    killers:[
-      '🚫 مياه الحنفية المليئة بالكلور والفلورايد تتسبب في اصفرار الساق وموتها.',
-      '🚫 أشعة الشمس المباشرة تحرق الأوراق تماماً في ساعات قليلة.',
-      '🚫 تعفن الجذور بسبب عدم تغيير الماء لفترات طويلة وتراكم الطحالب.'
-    ]
+    name:'ساق البامبو', sci:'Dracaena sanderiana', emoji:'🎋', diff:'سهلة', temp:'18–30°م', light:'إضاءة متوسطة غير مباشرة',
+    desc:'نبتة مائية شهيرة تنمو في الفازات الزجاجية بالماء أو التربة وترتبط بجلب الطاقة الإيجابية والخطوط العصرية.',
+    water_schedule:'تغيير الماء كل 7 أيام بالكامل، أو ري التربة عند الجفاف.',
+    fertilizer_schedule:'قطرات مخففة جداً من السماد السائل مرة كل شهر.',
+    pruning_schedule:'قص الأوراق الصفراء السفلية دورياً بمقص معقم.',
+    care_methods:['استخدم دائماً مياه خالية من الكلور (مقطرة أو معبأة).','تجنب غمر الساق بالكامل في الماء، الجذور فقط تكفي.'],
+    killers:['🚫 المياه المليئة بالكلور الفلورايد تنخر الساق وتصفّر الأوراق.','🚫 ترك الماء راكداً دون تغيير لأسابيع يربّي الفطريات الطحلبية القاتلة.']
   },
   {
-    name:'الزاميا (نبتة الجواهر)',
-    sci:'Zamioculcas zamiifolia',
-    emoji:'🌴',
-    diff:'سهلة',
-    temp:'15–28°م (تتحمل تقلبات حرارة الغرفة بامتياز)',
-    light:'إضاءة من خافتة جداً إلى متوسطة (تتحمل زوايا الغرف المظلمة)',
-    desc:'واحدة من أقوى نباتات الزينة الداجنة وأكثرها تحملاً للإهمال. تمتلك أوراقاً شمعية داكنة وجذوراً درنية تخزن كميات هائلة من المياه.',
-    water_schedule:'قليلة جداً؛ مرة كل 14-20 يوماً. يجب ترك التربة تجف تماماً بنسبة 100% قبل الري التالي.',
-    fertilizer_schedule:'سماد متعادل (NPK) مخفف مرة كل شهرين خلال مواسم النمو المعتدلة.',
-    pruning_schedule:'نادراً ما تحتاج لتقليم، فقط أزل الغبار عن الأوراق بقطعة قماش ناعمة للحفاظ على لمعانها وتنفسها.',
-    care_methods:[
-      'ازرعها في تربة خفيفة جيدة التصريف جداً (مثل البيرلايت والبيتموس).',
-      'تجنب وضعها في أصيص كبير جداً لا يتناسب مع حجمها لتفادي بقاء الماء في التربة لفترة طويلة.'
-    ],
-    killers:[
-      '🚫 الإفراط في الري (العدو الأول للزاميا) يؤدي لتعفن الجذور الفوري واصفرار الأوراق وسقوطها.',
-      '🚫 التربة الثقيلة التي تحتفظ بالماء ولا تصرفه.'
-    ]
+    name:'الزاميا', sci:'Zamioculcas zamiifolia', emoji:'🌿', diff:'سهلة', temp:'15–30°م', light:'خافتة إلى متوسطة الجودة',
+    desc:'تعد نبتة الزاميا من أصلب النباتات وأكثرها تحملاً لقلة الضوء وللجفاف بفضل أوراقها الشمعية وجذورها الدرنية الحافظة للمياه.',
+    water_schedule:'كل 15-20 يوماً؛ لا تسقِ إلا عند جفاف التربة تماماً.',
+    fertilizer_schedule:'مرة كل شهرين في فصلي الربيع والصيف.',
+    pruning_schedule:'تنظيف الأوراق بخرقة مبللة لإزالة الغبار المحجوب.',
+    care_methods:['تحتاج تربة خفيفة جيدة التصريف مثل بيتموس وبيرلايت.','تزدهر في الأماكن المغلقة المعتدلة.'],
+    killers:['🚫 الإفراط في الري كفيل بتعفين الجذور الدرنية كلياً في وقت قصير.','🚫 وضعها تحت أشعة الشمس المباشرة الحارقة يحرق أوراقها الداكنة البراقة.']
   },
   {
-    name:'البوتس (قلب عبد الوهاب)',
-    sci:'Epipremnum aureum',
-    emoji:'🪴',
-    diff:'سهلة',
-    temp:'15–30°م (مثالية للأجواء الداخلية الدافئة)',
-    light:'إضاءة متوسطة إلى خافتة (الضوء الجيد يبرز تموجات الأوراق الذهبية)',
-    desc:'النبتة الصديقة للمبتدئين. نبتة متسلقة أو متدلية سريعة النمو، وتعتبر من أفضل النباتات تنقيةً للهواء الداخلي من السموم.',
-    water_schedule:'انتظام ري معتدل؛ كل 5-7 أيام عند جفاف أول 2-3 سم من سطح التربة.',
-    fertilizer_schedule:'مرة كل شهر بمسحوق أو سائل سماد ورقي لتشجيع كثافة الأوراق وسرعة تمددها.',
-    pruning_schedule:'قص الفروع الطويلة والزائدة لتشجيع النبتة على النمو بشكل كثيف من المنتصف، ويمكن تجذير الأجزاء المقطوعة بالماء بسهولة.',
-    care_methods:[
-      'تتجاوب بشكل ممتاز مع الرش الورقي بالرذاذ في الصيف.',
-      'يمكن تركها تتدلى من الرفوف أو تسلقها على عمود من الطحالب (Moos pole).'
-    ],
-    killers:[
-      '🚫 إغراق التربة بالماء بدون تصريف يجعل السيقان طرية وسوداء.',
-      '🚫 البرد الشديد والتكييف الموجه مباشرة عليها يوقف نموها ويجعد أوراقها.'
-    ]
+    name:'إبرة الراعي', sci:'Pelargonium', emoji:'🌸', diff:'متوسطة', temp:'15–25°م', light:'إضاءة ساطعة إلى شمس مباشرة خفيفة',
+    desc:'تُعرف أيضاً بالجيرانيوم، نبتة مزهرة جميلة ذات رائحة عطرية مميزة وألوان زاهية، يمكن تربيتها داخلياً قرب النوافذ الكبيرة.',
+    water_schedule:'ري معتدل عند جفاف السطح العلوي للتربة بعمق 3 سم.',
+    fertilizer_schedule:'سماد غني بالبوتاسيوم لتحفيز التزهير مرة كل أسبوعين في الربيع.',
+    pruning_schedule:'إزالة الزهور الذابلة فوراً لتحفيز خروج زهور جديدة وقوية.',
+    care_methods:['احرص على تهوية المكان بشكل مستمر لتفادي الرطوبة الراكدة.','توفير أقصى قدر من الإضاءة لتشجيع البراعم.'],
+    killers:['🚫 قلة الإضاءة تمنع التزهير تماماً وتجعل السيقان طويلة وضعيفة وهشة.','🚫 رش الماء على الأوراق والزهور يسبب عفن البوتريتيس الرمادي.']
   },
   {
-    name:'فيكس ليراتا (تين ورق الكمان)',
-    sci:'Ficus lyrata',
-    emoji:'🎸',
-    diff:'صعبة',
-    temp:'18–28°م (حساسة جداً للتيارات الباردة والحرارة المفاجئة)',
-    light:'إضاءة ساطعة جداً قوية بدون شمس مباشرة.',
-    desc:'ملكة الديكور ونبتة المصممين. تتميز بأوراقها الكبيرة الصلبة التي تشبه آلة الكمان الموسيقية، تعطي فخامة استثنائية للمكان لكنها تتطلب عناية دقيقة.',
-    water_schedule:'ري منتظم حذر؛ كل 7-10 أيام. اسقها بغزارة عندما يجف السطح العلوي للتربة تماماً وتأكد من خروج الماء من الأسفل.',
-    fertilizer_schedule:'سماد غني بالنيتروجين مرة كل شهر في الربيع والصيف.',
-    pruning_schedule:'تقليم الأوراق السفلية المتضررة، وقص القمة النامية إذا كنت ترغب في تحفيز الشجرة على التفريع الجانبي.',
-    care_methods:[
-      'اكره ما عندها تغيير مكانها بشكل مستمر، اختر لها زاوية مناسبة وابقها فيها.',
-      'امسح الأوراق الضخمة بقطعة قماش مبللة مرة أسبوعياً لأن الغبار المتراكم يمنع عملية البناء الضوئي.'
-    ],
-    killers:[
-      '🚫 تحريك النبتة ونقلها المتكرر من مكان لآخر يصيبها بالصدمة ويتسبب في تساقط أوراقها بالكامل.',
-      '🚫 الإفراط في الري يسبب بقعاً بنية داكنة قبيحة على حواف الأوراق الضخمة ثم سقوطها.',
-      '🚫 الإضاءة الضعيفة تؤدي لضمور الأوراق وصغر حجم النموات الجديدة.'
-    ]
+    name:'شجرة الفيل الملونة', sci:'Portulacaria afra variegata', emoji:'🌳', diff:'سهلة', temp:'18–35°م', light:'ساطعة جداً إلى شمس مباشرة خفيفة',
+    desc:'عصارية رائعة شبيهة بالبونساي، سيقانها حمراء داكنة وأوراقها الصغيرة مبرقشة بالأخضر والأبيض الكريمي الفاخر.',
+    water_schedule:'ري شحيح؛ عند جفاف التربة بالكامل وعميقاً (مرة كل 10-12 يوماً).',
+    fertilizer_schedule:'مرة في الربيع والصيف بسماد عصاريات مخفف.',
+    pruning_schedule:'يمكن تقليمها وتشكيلها كشجرة بونساي مصغرة بانتظام.',
+    care_methods:['تحتاج إناء فخاري لتصريف الرطوبة الزائدة بسلاسة.','توفير تهوية ممتازة لبيئتها المحيطة.'],
+    killers:['🚫 بقاء الجذور في تربة طينية رطبة غير متجددة يتسبب في تساقط أوراقها فجأة.','🚫 الظلام التام يسرع من فقدان تلوينها المبرقش وتتحول لرمادي باهت.']
   },
   {
-    name:'الألوفيرا / العصاريات',
-    sci:'Aloe barbadensis miller',
-    emoji:'🌵',
-    diff:'سهلة',
-    temp:'15–35°م (تتحمل الحرارة العالية ببراعة)',
-    light:'إضاءة ساطعة إلى شمس مباشرة خفيفة (تفضل عتبات النوافذ المشمسة)',
-    desc:'نبتة طبية وعصارية رائعة، تحتوي أوراقها السميكة على جل الصبار الشهير المستعمل للعناية بالبشرة والترطيب.',
-    water_schedule:'تباعد الفترات؛ كل 10-14 يوماً. اسقِ فقط عند جفاف التربة بشكل كامل وعميق.',
-    fertilizer_schedule:'نادراً ما تحتاج؛ مرة واحدة في بداية الربيع بسماد مخصص للصبارات.',
-    pruning_schedule:'فصل الفسائل الصغيرة (الخلفات) التي تنمو بجانب النبتة الأم ونقلها لأصص جديدة لعدم زحام الأصيص.',
-    care_methods:[
-      'استخدم أصيصاً فخارياً (طينياً) لأنه يساعد على تبخر الرطوبة الزائدة وحماية الجذور.',
-      'التربة يجب أن تحتوي على نسبة عالية من الرمل والبيرلايت.'
-    ],
-    killers:[
-      '🚫 تجمع المياه الراكدة في قلب النبتة أو أسفل الأصيص يسبب تعفن القاعدة الفوري والمفاجئ.',
-      '🚫 الإضاءة الضعيفة جداً تجعل الأوراق نحيلة، مرتخية وباهتة اللون.'
-    ]
+    name:'نبات العنكبوت', sci:'Chlorophytum comosum', emoji:'🕷️', diff:'سهلة', temp:'16–28°م', light:'متوسطة إلى ساطعة غير مباشرة',
+    desc:'نبتة متدلية سريعة التكاثر، تنتج بلابل صغيرة تتدلى كالعناكب الصغيرة، وتمتلك قدرة خارقة على تنقية أجواء المنزل.',
+    water_schedule:'مرة أسبوعياً بشكل متزن عند جفاف نصف التربة تقريباً.',
+    fertilizer_schedule:'سماد متعادل السوائل مرة شهرياً في فترات النمو.',
+    pruning_schedule:'قص الأطراف البنية الجافة للأوراق للحفاظ على المظهر المتناسق.',
+    care_methods:['تنجح بامتياز في السلال المعلقة على الحوائط.','تقبل الفصل وتفريد الخلفات بسهولة لتكثيرها.'],
+    killers:['🚫 المياه الغنية بالأملاح والفلورايد تسبب جفافاً وبقعاً داكنة في أطراف الأوراق.','🚫 الإغراق المائي المتواصل يفسد جذورها اللحمية البيضاء.']
+  },
+  {
+    name:'تراديسكانتيا زبرينا', sci:'Tradescantia zebrina', emoji:'🧬', diff:'سهلة', temp:'18–26°م', light:'ساطعة غير مباشرة للحفاظ على الألوان',
+    desc:'نبتة المكحلة ذات الأوراق المخططة باللونين الفضي والبنفسجي الساحر، سريعة المظهر والنمو وتتدلى بروعة فائقة.',
+    water_schedule:'كل 5-7 أيام عند جفاف سطح التربة بالتساوي.',
+    fertilizer_schedule:'تسميد خفيف مرة شهرياً بالربيع والصيف.',
+    pruning_schedule:'قرص القمم النامية دورياً لجعل النبتة تنمو بكثافة وتفرع ممتلئ.',
+    care_methods:['الضوء الساطع ضروري وإلا فقدت ألوانها البنفسجية وتحولت للأخضر الباهت.','تتكاثر بالقص والعقل المباشر بالماء في أيام.'],
+    killers:['🚫 قلة الضوء تجعل المسافات بين الأوراق طويلة جداً وشكل الساق هزيلاً وعارياً.','🚫 تعفن قاعدة السيقان عند ريها بكثافة فوق الأوراق مباشرة.']
+  },
+  {
+    name:'رجلة الصبار', sci:'Portulacaria afra', emoji:'🪴', diff:'سهلة', temp:'15–35°م', light:'ساطعة جداً إلى شمس مباشرة',
+    desc:'وتسمى أيضاً "شجرة اليشم القزمة"، نبتة عصارية متينة ذات أوراق خضراء دائرية صغيرة تخزن المياه وجذع خشبي المظهر.',
+    water_schedule:'مرة كل أسبوعين تقريباً عند جفاف التربة تماماً.',
+    fertilizer_schedule:'تسميد منخفض القوة في الصيف فقط.',
+    pruning_schedule:'التقليم مفيد جداً للتحكم بفرع الشجرة وتشكيل مظهرها الديكوري.',
+    care_methods:['اضمن وجود ثقوب تصريف واسعة أسفل حوض الزراعة.','تتحمل جفاف الهواء والطقس الدافئ بامتياز.'],
+    killers:['🚫 الري الزائد يؤدي لتساقط الأوراق وهي خضراء طرية وتعفن الساق الخشبية.']
+  },
+  {
+    name:'البوتس', sci:'Epipremnum aureum', emoji:'🍃', diff:'سهلة', temp:'15–30°م', light:'متوسطة إلى خافتة مقبولة',
+    desc:'أكثر النباتات الداخلية شعبية حول العالم، تمتاز بأوراقها القلبية المنسدلة وقدرتها على البقاء حية في مختلف الظروف.',
+    water_schedule:'كل 5-7 أيام عند جفاف أول 3 سم من التربة.',
+    fertilizer_schedule:'مرة كل شهر بسماد متعادل لزيادة الحجم والكثافة الورقية.',
+    pruning_schedule:'قص الفروع الطويلة وإعادة غرسها لتكثيف قلب الأصيص.',
+    care_methods:['تحب الرش برذاذ الماء من وقت لآخر لرفع الرطوبة.','مثالية للمكاتب والمنازل والممرات.'],
+    killers:['🚫 غمر التربة بالطين الراكد دون تصريف يقتل النبتة ويعفن فروعها.','🚫 التيارات الهوائية الباردة الشديدة المنبعثة من مكيفات الهواء مباشرة تذبلها.']
+  },
+  {
+    name:'البيبروميا', sci:'Peperomia', emoji:'🌱', diff:'سهلة', temp:'18–25°م', light:'متوسطة إلى ساطعة غير مباشرة',
+    desc:'عائلة نباتية ضخمة تتميز بأوراقها السميكة المكتنزة المتنوعة الأشكال والألوان، رائعة لأسطح المكاتب والأرفف الصغيرة.',
+    water_schedule:'ري معتدل متزن عند جفاف التربة بشكل شبه كامل كالعصاريات.',
+    fertilizer_schedule:'سماد مخفف جداً مرة كل شهر بالربيع.',
+    pruning_schedule:'تنظيف الأوراق الميتة بانتظام للمحافظة على الشكل العام للنبتة.',
+    care_methods:['لا تحتاج لأصص ضخمة لأن مجموعها الجذري صغير وصغير جداً.','تفضل الرطوبة المتوسطة والجو الدافئ.'],
+    killers:['🚫 الإفراط بالماء يذيب الأوراق والسيقان من القاع مباشرة لضعف البنية اللحمية للخلية.']
+  },
+  {
+    name:'بيبروميا راين دروب', sci:'Peperomia polybotrya', emoji:'💧', diff:'سهلة', temp:'18–26°م', light:'إضاءة ساطعة مرشحة غير مباشرة',
+    desc:'تتميز بأوراقها اللامعة الضخمة التي تشبه قطرة المطر المتساقطة، تعطي مظهراً هندسياً وبصرياً فريداً وحديثاً.',
+    water_schedule:'كل 7-10 أيام؛ دع التربة تجف جيداً قبل تكرار العملية.',
+    fertilizer_schedule:'تسميد متعادل خفيف في فترات النشاط بالربيع والصيف.',
+    pruning_schedule:'إزالة الأوراق القديمة التالفة بأسفل الساق.',
+    care_methods:['امسح سطح الورقة بانتظام لمنع الأتربة من إطفاء لمعتها الطبيعية الكريستالية.'],
+    killers:['🚫 المياه الزائدة تسبب بقعاً مائية منتفخة أسفل الأوراق تتسبب في تلفها وسقوطها.']
+  },
+  {
+    name:'نخيل القطة', sci:'Chamaedorea cataractarum', emoji:'🌴', diff:'متوسطة', temp:'18–27°م', light:'ساطعة غير مباشرة (تكره الظلام الداكن)',
+    desc:'نبات نخيل كثيف ومنخفض يضفي لمسة استوائية رائعة للصالات والمجالس بفضل سعفه الأخضر الممتد الجذاب.',
+    water_schedule:'تحب التربة الرطبة باستمرار؛ ري معتدل دون تغريق بمجرد جفاف السطح الخارجي.',
+    fertilizer_schedule:'مرة كل شهر شهرياً بسماد سائل متوازن طوال فترات الصيف والربيع.',
+    pruning_schedule:'قص السعف السفلي القديم إذا تحول كلياً للون البني الجاف.',
+    care_methods:['تحتاج رطوبة جوية عالية؛ يفضل وضعها قرب جهاز ترطيب أو بخاخ ماء.'],
+    killers:['🚫 جفاف التربة التام لفترة طويلة يجعل السعف يتحول للبني ويموت النخيل سريعاً.','🚫 استخدام ملمعات الأوراق الكيميائية التجارية يسد ثغور سعف النخيل تماماً.']
+  },
+  {
+    name:'الأنثوريوم', sci:'Anthurium amnicola', emoji:'❤️', diff:'متوسطة', temp:'18–28°م', light:'ساطعة غير مباشرة (الضوء يضمن التزهير)',
+    desc:'وتسمى "زهرة الفلامنجو"، مشهورة بقناباتها الشمعية الحمراء أو الوردية اللامعة التي تظل مزهرة لفترات طويلة جداً بالمنزل.',
+    water_schedule:'كل 5-7 أيام عند جفاف أول 2 سم من التربة العلوية المتماسكة.',
+    fertilizer_schedule:'سماد غني بالفوسفور مخصص للزهور كل أسبوعين بالربيع والصيف لضمان استمرار الدفع الزهري.',
+    pruning_schedule:'قص الحوامل الزهرية الجافة من الأسفل فور ذبول الزهور لعدم إجهاد النبتة.',
+    care_methods:['تحب الرطوبة المرتفعة وتربة جيدة التهوية مثل خلطات الأوركيد المفتوحة.'],
+    killers:['🚫 قلة الضوء توقف إنتاج الزهور تماماً وتتحول النبتة لأوراق خضراء باهتة فقط.','🚫 بقاء الماء الراكد بأسفل الأصيص يعفن الجذور اللحمية الحساسة.']
+  },
+  {
+    name:'السينغونيوم', sci:'Syngonium podophyllum', emoji:'🏹', diff:'سهلة', temp:'16–28°م', light:'متوسطة إلى ساطعة غير مباشرة تبرز خطوطها',
+    desc:'نبتة رأس السهم، تمتاز بأوراقها المتباينة الأشكال والملونة بالوردي أو الأبيض، تنمو بشكل متسلق أو متراكم كثيف وممتع.',
+    water_schedule:'ري منتظم عند جفاف سطح التربة (كل 5-7 أيام تقريباً).',
+    fertilizer_schedule:'تسميد متعادل مرة كل شهر خلال فترات النشاط النامي.',
+    pruning_schedule:'تقليم الفروع الطويلة المتسلقة إذا كنت تفضل بقاءها بهيئة شجيرة ملمومة وكثيفة.',
+    care_methods:['تتأقلم مع الرطوبة العادية للمنازل لكنها تعشق رذاذ المياه الورقي.'],
+    killers:['🚫 جفاف التربة الشديد والمطول يجعل الأوراق تلتوي وتجف حوافها الرقيقة كالمحترقة.']
+  },
+  {
+    name:'الدراسينا', sci:'Dracaena', emoji:'🪵', diff:'سهلة', temp:'18–28°م', light:'متوسطة غير مباشرة وتتحمل الإضاءة الأقل',
+    desc:'عائلة شجرية داخلية قوية البنية، سيقانها خشبية عمودية تنتهي بتيجان من الأوراق الشريطية المدببة الأنيقة والمنسقة.',
+    water_schedule:'ري متباعد؛ عند جفاف نصف الأصيص تماماً (كل 10-14 يوماً).',
+    fertilizer_schedule:'مرة كل شهرين بسماد خفيف القوة والتركيز.',
+    pruning_schedule:'تنظيف الأوراق السفلية الهابطة دورياً لتعرية الساق الخشبية الجمالية.',
+    care_methods:['حساسة جداً للأملاح، يفضل سقيها بمياه مرشحة نقية.'],
+    killers:['🚫 تجمع المياه الزائدة في قاع الأصيص يصيب أطراف أوراقها باللون الأسود المتفحم ثم العفن التام.']
+  },
+  {
+    name:'ألوكاسيا أذن الفيل', sci:'Alocasia', emoji:'🐘', diff:'صعبة', temp:'18–26°م', light:'ساطعة قوية جداً مرشحة وغير مباشرة',
+    desc:'نبتة دراماتيكية ساحرة بأوراقها الضخمة وعروقها البارزة الأخاذة، تعتبر قطعة فنية حية لكنها تتطلب وعياً بمتطلباتها.',
+    water_schedule:'ري متزن دقيق؛ ابق التربة رطبة بخفة ولا تدعها تجف كلياً ولا تغرقها بالطين.',
+    fertilizer_schedule:'تسميد منتظم مرة كل أسبوعين بسماد مخفف جداً في الربيع والصيف.',
+    pruning_schedule:'إزالة الأوراق القديمة المتدلية لفسح المجال لخروج الأوراق العملاقة الجديدة.',
+    care_methods:['تحتاج رطوبة جوية فائقة العلو (فوق 60%) وإلا ذبلت وسقطت أوراقها سريعا.','تدخل فترة سكون في الشتاء البارد يقل فيها نموها.'],
+    killers:['🚫 انخفاض الرطوبة وجفاف الهواء يتسبب في جفاف الأوراق وهجوم العناكب الحمراء القاتلة عليها.','🚫 البرد القارس أقل من 15°م يدمر درنات النبتة.']
+  },
+  {
+    name:'فيلوديندرون القمرية', sci:'Philodendron Birkin', emoji:'👑', diff:'سهلة', temp:'18–28°م', light:'ساطعة غير مباشرة لإظهار الخطوط الكريستالية',
+    desc:'وتعرف بـ "بيركين"، تمتاز بأوراقها الجلدية الداكنة المزينة بخطوط بيضاء كريمية غاية في الدقة والجمال الهندسي المتميز.',
+    water_schedule:'كل 7-10 أيام؛ عند جفاف أول 3-4 سم من سطح التربة بشكل تام.',
+    fertilizer_schedule:'مرة شهرياً بسماد نباتات داخلية عام متوازن الفوائد.',
+    pruning_schedule:'لا تحتاج لتقليم مستمر، امسح أوراقها برفق للمحافظة على تنفسها المفتوح.',
+    care_methods:['كلما زادت الإضاءة الساطعة (دون شمس مباشرة) زادت خطوطها البيضاء جمالاً وتألقاً.'],
+    killers:['🚫 قلة الضوء تجعل الأوراق الجديدة تخرج خضراء داكنة تماماً بدون أي خطوط بيضاء مميزة.']
+  },
+  {
+    name:'الكروتون', sci:'Codiaeum variegatum', emoji:'🍂', diff:'متوسطة', temp:'18–29°م', light:'ساطعة جداً (تحب بعض أشعة الشمس الخفيفة المباشرة)',
+    desc:'نبتة نارية الألوان تتألق أوراقها بمزيج خلاب من الأحمر، الأصفر، البرتقالي والأخضر، تضفي بهجة استوائية فريدة للمكان.',
+    water_schedule:'منتظم؛ حافظ على رطوبة التربة دون إغراق وتجنب جفافها التام.',
+    fertilizer_schedule:'تسميد متعادل مرة شهرياً في فصلي الربيع والصيف المعتدل.',
+    pruning_schedule:'قص السيقان الطويلة لتحفيز النمو الجانبي الكثيف الممتد.',
+    care_methods:['اكره ما عندها تغيير مكانها أو تعرضها لتيارات هواء بارد مفاجئ تسبب صدمة.','امسح الأوراق بانتظام لتعزيز تشرّب الضوء الساطع.'],
+    killers:['🚫 نقل النبتة المتكرر أو البرودة الشديدة يجبرها على إسقاط أوراقها الملونة بالكامل في أيام قليلة.']
+  },
+  {
+    name:'دراسينا ريفلكسا', sci:'Dracaena reflexa', emoji:'🎋', diff:'سهلة', temp:'18–27°م', light:'متوسطة إلى ساطعة غير مباشرة للحفاظ على الحواف',
+    desc:'وتسمى أيضاً "أغنية الهند"، تمتاز بأوراقها الشريطية ذات الحواف الصفراء الزاهية التي تنعكس وتلتوي بشكل فني فريد.',
+    water_schedule:'ري متباعد معتدل عند جفاف التربة بعمق 5 سم (كل 10 أيام).',
+    fertilizer_schedule:'تسميد خفيف القوة مرة كل شهرين في مواسم الدفء.',
+    pruning_schedule:'يمكن قص القمة النامية لتشجيع الساق على التفرع لعدة رؤوس جمالية.',
+    care_methods:['تتحمل جفاف الهواء الداخلي بشكل أفضل من بقية النباتات لكنها تفضل التوازن.'],
+    killers:['🚫 التغريق المستمر وقلة الصريف يصيب الجذور بالعفن والأوراق بالاصفرار والسقوط المباشر.']
+  },
+  {
+    name:'دراسينا فراجرانس', sci:'Dracaena fragrans', emoji:'🪵', diff:'سهلة', temp:'16–26°م', light:'إضاءة معتدلة إلى متوسطة بعيداً عن النوافذ الحارة',
+    desc:'وتسمى "نبتة الذرة" لشبه أوراقها بنبتة الذرة، سيقانها سميكة خشبية قوية وتتحمل الظروف المكتبية والمنزلية الشائعة.',
+    water_schedule:'اسقِ فقط عند جفاف التربة تماماً بنسبة كبيرة (مرة كل أسبوعين تقريباً).',
+    fertilizer_schedule:'مرة واحدة في بداية الربيع والصيف تكفيها.',
+    pruning_schedule:'تنظيف دائم للأوراق السفلية التي تجف طبيعياً بتقدم عمر النبتة.',
+    care_methods:['امسح الغبار عن الأوراق الشريطية العريضة دورياً بقطعة مبللة بالماء النقي.'],
+    killers:['🚫 الري الزائد يؤدي لترهل الساق الخشبية وتصبح طرية وتفوح منها رائحة غير مرغوبة للتعفن.']
+  },
+  {
+    name:'اليوكا', sci:'Yucca gigantea', emoji:'🌵', diff:'سهلة', temp:'15–35°م', light:'ساطعة جداً ويُفضل شمس مباشرة',
+    desc:'شجرة صحراوية الأصل شديدة الصلابة، ذات جذوع خشبية سميكة وأوراق مروحية حادة مدببة، ممتازة للأماكن المفتوحة المضيئة.',
+    water_schedule:'قليلة جداً؛ ري متباعد عند جفاف كامل تربة الأصيص (مرة كل أسبوعين إلى ثلاثة أسابيع).',
+    fertilizer_schedule:'تسميد مخفف مرتين في السنة كحد أقصى طوال فترات الصيف والربيع.',
+    pruning_schedule:'قص الأوراق السفلى الهابطة بمقص حاد وحذر من أطرافها الحادة السكين.',
+    care_methods:['ضعها في أكثر زوايا الصالة إضاءة وشمس نافذة وتجنب الغرف المعتمة تماماً.'],
+    killers:['🚫 كثرة ري التربة مع قلة الإضاءة تدمر اليوكا تماماً وتجعل الجذع الخشبي يتعفن بالكامل من الداخل.']
+  },
+  {
+    name:'فيكس ليراتا (شجرة الكمان)', sci:'Ficus lyrata', emoji:'🎸', diff:'صعبة', temp:'18–28°م', light:'ساطعة جداً غير مباشرة قوية العيار',
+    desc:'ملكة الديكور الداخلي الفخم، أوراقها جلدية ضخمة تشبه آلة الكمان الموسيقية، تمنح المكان فخامة استثنائية معمارية.',
+    water_schedule:'ري دقيق؛ عند جفاف السطح العلوي للتربة بعمق 3-5 سم تماماً وبشكل حقيقي.',
+    fertilizer_schedule:'سماد غني بالنيتروجين مرة شهرياً في الربيع والصيف لتحفيز الأوراق.',
+    pruning_schedule:'مسح الغبار أسبوعياً بقطعة قماش مبللة ناعمة لتمكين الورقة الضخمة من امتصاص الضوء.',
+    care_methods:['ثبتها في مكانها وتجنب نقلها المستمر لأنها تصاب بصدمة المكان وتسقط أوراقها بسرعة.'],
+    killers:['🚫 الإفراط في الري يظهر بقعاً بنية داكنة قبيحة على حواف الأوراق تمتد لتسقط الورقة بالكامل.']
+  },
+  {
+    name:'الفيكس المطاطي', sci:'Ficus elastica', emoji:'🌳', diff:'سهلة', temp:'16–29°م', light:'ساطعة غير مباشرة إلى متوسطة مقبولة',
+    desc:'نبتة الكاوتشوك، تمتاز بأوراقها الكبيرة السميكة ذات اللمعة الشديدة والألوان المتنوعة مثل الأخضر الداكن أو البرغندي الأسود.',
+    water_schedule:'ري معتدل؛ كل 7-10 أيام بعد جفاف الثلث العلوي من أصيص التربة.',
+    fertilizer_schedule:'تسميد سائل متعادل القوة والعيار مرة كل شهر في مواسم النمو والنشاط.',
+    pruning_schedule:'عند قص أي فرع ستفرز مادة لبنية بيضاء (لاتكس)، امسحها فوراً وقص لتشجيع التفرع الشجري.',
+    care_methods:['امسح أوراقها بانتظام للحفاظ على المظهر اللامع البراق الحصري لها.'],
+    killers:['🚫 التربة الغدقة المغمورة بالمياه الراكدة تتسبب في اصفرار وسقوط الأوراق السفلية دفعة واحدة بشكل متسارع.']
+  },
+  {
+    name:'زنبق السلام', sci:'Spathiphyllum', emoji:'🕊️', diff:'سهلة', temp:'18–26°م', light:'متوسطة إلى خافتة (الضوء الجيد يحفز الزهور البيضاء)',
+    desc:'وتسمى "الشراع الأبيض"، نبتة ممتازة للمنازل والمكاتب، ذات أوراق خضراء غنية وزهور بيضاء شبيهة بالأشرعة، وتنبهك فوراً عند العطش.',
+    water_schedule:'كل 4-6 أيام؛ عندما تبدأ أوراقها بالانحناء والارتخاء الخفيف كعلامة واضحة على طلب الماء.',
+    fertilizer_schedule:'تسميد خفيف ربع القوة مرة كل شهر في مواسم النشاط الزهري.',
+    pruning_schedule:'قص سيقان الزهور التي تتحول للون الأخضر أو البني من قاع النبتة مباشرة.',
+    care_methods:['تعشق الرطوبة العالية ورش رذاذ الماء على أوراقها الخضراء بانتظام ترحيباً بالنمو الجديد.'],
+    killers:['🚫 جفاف التربة التام والطويل يؤدي لموت الجذور، كما أن التكييف المباشر يجفف حواف أشرعتها البيضاء الرقيقة.']
+  },
+  {
+    name:'الشيفليرا', sci:'Schefflera arboricola', emoji:'☂️', diff:'سهلة', temp:'15–28°م', light:'إضاءة ساطعة غير مباشرة (تتحمل الضوء المتوسط البسيط)',
+    desc:'وتُعرف بـ "نبتة المظلة" لأن وريقاتها الصغيرة تتجمع على شكل مظلة دائرية، نبتة شجرية مبهجة وسريعة الامتداد الطولي.',
+    water_schedule:'ري متزن; كل 7 أيام عند جفاف أول 3 سم من سطح التربة العلوي للأصيص.',
+    fertilizer_schedule:'مرة كل شهر بسماد متعادل متوازن العناصر الغذائية.',
+    pruning_schedule:'قرص القمم النامية للتحكم بالارتفاع وتشجيع النبتة على الامتلاء العرضي.',
+    care_methods:['تفضل الأجواء الدافئة المستقرة جيدة التهوية والبعيدة عن تيارات الهواء البارد.'],
+    killers:['🚫 الإفراط في الري يؤدي لتساقط الأوراق وهي خضراء بالكامل وتعرية السيقان الطولية لتصبح عارية.']
+  },
+  {
+    name:'الإشيفيريا', sci:'Echeveria', emoji:'🌹', diff:'سهلة', temp:'15–35°م', light:'ساطعة جداً مع شمس مباشرة بضع ساعات يومياً',
+    desc:'عصارية رائعة تنمو على شكل وردة دائرية مدمجة بألوان مخملية ساحرة تتراوح بين الأخضر والأزرق الباستيل والرمادي الفاخر.',
+    water_schedule:'شحيحة جداً؛ ري فقط عند جفاف التربة تماماً بنسبة 100% (كل 15-20 يوماً).',
+    fertilizer_schedule:'نادراً ما تحتاج، نصف الجرعة مرة واحدة في أوائل الربيع.',
+    pruning_schedule:'إزالة الوريقات السفلية الجافة بلطف للحفاظ على نظافة الهيكل الدائري وعنقه.',
+    care_methods:['اسقِ التربة مباشرة وتجنب سكب الماء في قلب الوردة لعدم تجميع الرطوبة المعفنة.'],
+    killers:['🚫 تجمع مياه الري في قلب الوردة الدائري يؤدي لتعفن النبتة وذوبان أوراقها اللحمية في أيام قليلة.']
+  },
+  {
+    name:'الأجلونيما', sci:'Aglaonema', emoji:'🌿', diff:'سهلة', temp:'16–26°م', light:'خافتة إلى متوسطة (تتحمل قلة الضوء ببراعة)',
+    desc:'النبتة المفضلة للأماكن قليلة الإضاءة، أوراقها مبرقشة بنقوش رائعة تتنوع بين الفضي، الأبيض، والأخضر الجذاب الساحر.',
+    water_schedule:'ري معتدل متباعد؛ كل 8-12 يوماً بعد جفاف نصف الأصيص العلوي للتربة.',
+    fertilizer_schedule:'تسميد خفيف القوة والجرعة مرة كل شهرين في مواسم الدفء.',
+    pruning_schedule:'مستندات مسح أوراقها بقطعة قماش ناعمة لإزالة الأتربة المتراكمة دورياً.',
+    care_methods:['تتحمل جفاف الهواء والبيئات الداخلية جافة التهوية بمرونة تامة وعالية جداً.'],
+    killers:['🚫 الري الزائد يؤدي لتعفن السيقان اللحمية وااصفرار الأوراق بكثافة من الأسفل للأعلى.']
+  },
+  {
+    name:'البونساي', sci:'Bonsai', emoji:'🌳', diff:'صعبة', temp:'18–28°م', light:'ساطعة جداً قوية ومباشرة خفيفة قرب النوافذ',
+    desc:'أشجار مصغرة تحاكي الأشجار الكبيرة في الطبيعة عبر فن التقليم الياباني، تتطلب مهارة واهتماماً مستمراً بتفاصيل بيئتها.',
+    water_schedule:'يومي أو شبه يومي بحسب حجم الأصيص الصغير؛ ري بمجرد جفاف السطح العلوي مباشرة دون تأخير.',
+    fertilizer_schedule:'تسميد دوري متخصص مخفف جداً طوال مواسم النمو (كل أسبوعين).',
+    pruning_schedule:'تقليم الأوراق والسيقان بانتظام دوري صارم للمحافظة على الشكل الشجري المصغر الفني.',
+    care_methods:['تحتاج لمراقبة يومية للتربة لأن أصص البونساي ضحلة وتجف المياه فيها بسرعة فائقة وعالية.'],
+    killers:['🚫 نسيان ري البونساي وجفاف تربتها تماماً ليوم أو يومين كفيل بموت الشجرة القزمة المصغرة فورا.']
+  },
+  {
+    name:'الديفنباخيا', sci:'Dieffenbachia', emoji:'🌿', diff:'متوسطة', temp:'18–26°م', light:'متوسطة إلى ساطعة غير مباشرة بعيداً عن حرق الشمس',
+    desc:'نبتة ذات أوراق عريضة ضخمة مزينة بنقوش بيضاء وكريمية ساحرة، تعطي مظهراً استوائياً كثيفاً وممتلئاً للزوايا الفارغة.',
+    water_schedule:'كل 7 أيام تقريباً بعد جفاف أول 3-4 سم من سطح التربة كلياً.',
+    fertilizer_schedule:'تسميد متعادل العناصر مرة واحدة شهرياً طوال فصلي الربيع والصيف.',
+    pruning_schedule:'إزالة الأوراق المتضررة بحذر مع غسل اليدين فوراً لسمية عصارتها النباتية.',
+    care_methods:['عصارة النبتة سامة عند المضغ، لذا يجب وضعها بعيداً عن متناول الأطفال والحيوانات الأليفة.'],
+    killers:['🚫 المياه الزائدة المفرطة التي تسبب تعفن السيقان السميكة وتحولها لنسيج طري مائي تالف.']
+  },
+  {
+    name:'السانسيفيريا', sci:'Sansevieria trifasciata', emoji:'🐍', diff:'سهلة', temp:'12–35°م', light:'من خافتة جداً إلى شمس مباشرة (تتأقلم مع كل شيء)',
+    desc:'وتسمى "نبتة الثعبان" أو "لسان الحماة"، نبتة حديدية لا تموت تقريباً، تمتاز بأوراقها العمودية الصلبة وقدرتها الفائقة على تصفية السموم.',
+    water_schedule:'قليلة جداً؛ ري كل 15-25 يوماً فقط عند جفاف تربة الأصيص بالكامل وبعمق جاف.',
+    fertilizer_schedule:'مرة واحدة في الربيع بنصف التركيز المعتاد تكفيها العام بأكمله.',
+    pruning_schedule:'نادراً ما تحتاج لعناية، فقط امسح الأوراق الشريطية العمودية من الأتربة بانتظام.',
+    care_methods:['مثالية لغرف النوم لأنها تطلق الأكسجين في ساعات الليل المتأخرة عكس بقية النباتات.'],
+    killers:['🚫 الإفراط بالماء وكثرة السقاية تسبب ذوبان الأوراق من القاعدة وتعفن الجذور كلياً.']
+  },
+  {
+    name:'الكالاتيا', sci:'Calathea', emoji:'🎨', diff:'صعبة', temp:'18–24°م', light:'متوسطة غير مباشرة (تكره الضوء الساطع الحارق)',
+    desc:'وتسمى "النبتة المصلية" لأن أوراقها ترتفع لأعلى بالليل وتنغلق، أوراقها مرسومة كلوحة فنية ملونة بالبنفسجي والأخضر الفاخر.',
+    water_schedule:'ري منتظم دقيق بمياه مقطرة؛ ابق التربة رطبة بخفة باستمرار ودون تغريق طيني.',
+    fertilizer_schedule:'تسميد خفيف ربع القوة مرة كل شهر بالربيع والصيف.',
+    pruning_schedule:'قص الأوراق الجافة تماماً من قاع السيقان للحفاظ على جمالية المظهر العام اللامع.',
+    care_methods:['تتطلب رطوبة جوية عالية جداً (أعلى من 60%) وتربة خفيفة ومياه خالية تماماً من الأملاح والكلور.'],
+    killers:['🚫 جفاف الهواء الداخلي المنبعث من المكيفات ومياه الحنفية المليئة بالكلور يسبب جفافاً فورياً للأوراق وموتها.']
+  },
+  {
+    name:'المونستيرا', sci:'Monstera deliciosa', emoji:'🧀', diff:'سهلة', temp:'18–30°م', light:'ساطعة غير مباشرة إلى متوسطة الجودة والعيار',
+    desc:'وتسمى "القفص الصدري"، نبتة استوائية مذهلة ذات أوراق ضخمة مثقبة بشكل طبيعي ساحر، تعطي روحاً حية للمكان وسريعة التمدد.',
+    water_schedule:'كل 7 أيام عند جفاف الجزء العلوي من التربة تماماً وبعمق جاف واضح.',
+    fertilizer_schedule:'تسميد متعادل مرة كل شهر بالربيع والصيف لتحفيز خروج أوراق عملاقة وثقوب متناسقة.',
+    pruning_schedule:'تحتاج لعمود طحالب (Moos Pole) لتتسلق عليه وجذورها الهوائية يمكن توجيهها لداخل أصيص التربة.',
+    care_methods:['امسح الأوراق الكبيرة بخرقة ناعمة مبللة دورياً لتنفس ونضارة النبتة الدائمة.'],
+    killers:['🚫 الري الزائد المفرط يسبب اصفراراً واسعاً بالأوراق وبقعاً سوداء فطرية على أطراف ثقوبها الجمالية.']
+  },
+  {
+    name:'فيلوديندرون إيروبيسنس', sci:'Philodendron erubescens', emoji:'🍁', diff:'سهلة', temp:'18–27°م', light:'ساطعة إلى متوسطة غير مباشرة مرشحة بعناية',
+    desc:'نبتة متسلقة رائعة تمتاز بسيقانها الحمراء الداكنة وأوراقها الجلدية التي تخرج بلون أحمر نحاسي مذهل قبل أن تتحول للأخضر.',
+    water_schedule:'كل 7 أيام عند جفاف السطح العلوي للتربة بعمق 3 سم تقريباً.',
+    fertilizer_schedule:'مرة شهرياً بسماد نباتات ورقية عام ومتوازن.',
+    pruning_schedule:'تقليم دوري للفروع الطويلة الزائدة للتحكم بالنمو المتسلق العمودي.',
+    care_methods:['توفير دعامة أو عمود تسلق يساعد أوراقها على الزيادة في الحجم والامتداد المتناسق.'],
+    killers:['🚫 قلة الإضاءة تفقدها اللون النحاسي الجذاب المتميز وتجعل الأوراق صغيرة ومتباعدة بشكل هزيل وباهت.']
+  },
+  {
+    name:'الكورديلين', sci:'Cordyline fruticosa', emoji:'🥀', diff:'متوسطة', temp:'18–28°م', light:'ساطعة غير مباشرة قوية (الضوء يبرز ألوانها الوردية النارية)',
+    desc:'نبتة ملكية مذهلة تمتاز بأوراقها الشريطية الطويلة ذات الألوان الوردية والأرجوانية الصارخة التي تعطي تبايناً لونياً رائعاً بالمجموع المجموع البصري.',
+    water_schedule:'منتظم؛ حافظ على التربة رطبة قليلاً ودع السطح يجف تماماً قبل الري التالي.',
+    fertilizer_schedule:'تسميد سائل متعادل مرة كل شهر في فترات النمو النشط الدفء.',
+    pruning_schedule:'أزل الأوراق السفلية القديمة الجافة للمحافظة على مظهر التيجان الملونة العلوية النضرة.',
+    care_methods:['حساسة جداً للمياه المالحة؛ اسقها دائماً بمياه عذبة مرشحة لتجنب جفاف حواف الأوراق الوردية.'],
+    killers:['🚫 المياه القاسية المليئة بالأملاح والكلور والري الزائد المفرط يذيب جذورها الرقيقة ويميت التاج العلوي.']
+  },
+  {
+    name:'سانسيفيريا مون شاين', sci:'Sansevieria Moonshine', emoji:'🌙', diff:'سهلة', temp:'15–35°م', light:'من خافتة جداً إلى ساطعة (الضوء يبرز لونها الفضي الحصري)',
+    desc:'نوع نادر وفاخر من السانسيفيريا، تمتاز بأوراق عريضة صلبة ذات لون أخضر فضي باهت يشبه ضوء القمر الساحر، متينة جداً ولا تتطلب اهتماماً معقداً.',
+    water_schedule:'شحيحة جداً؛ اسقِ مرة كل 20 يوماً بعد التأكد من جفاف التربة تماماً بنسبة 100%.',
+    fertilizer_schedule:'تسميد مخفف جداً مرة واحدة بالربيع تكفيها تماماً.',
+    pruning_schedule:'لا تحتاج لتقليم، فقط حافظ على نظافتها ومسح أوراقها الفضية الكريستالية برفق.',
+    care_methods:['ممتازة للمبتدئين وللأماكن التي تفتقر للإضاءة القوية وتحافظ على رونقها المعماري المتميز.'],
+    killers:['🚫 سكب مياه الري بداخل قلب النبتة المتجمع أو كثرة السقاية تذيب الأوراق الفضية من القاعدة فورا.']
+  },
+  {
+    name:'عصفور الجنة الأبيض', sci:'Strelitzia nicolai', emoji:'🕊️', diff:'متوسطة', temp:'18–30°م', light:'ساطعة جداً (تعشق بضع ساعات من أشعة الشمس المباشرة النافذة)',
+    desc:'نبتة عملاقة وفخمة جداً ذات أوراق شجرية عريضة ضخمة تشبه أوراق الموز الاستوائية، تعطي شعور القصور والفنادق الفاخرة للصالات الكبيرة المفتوحة.',
+    water_schedule:'ري غزير متزن عند جفاف الجزء العلوي من التربة (كل 7-10 أيام)، ويقلل في الشتاء البارد.',
+    fertilizer_schedule:'سماد غني ومتوازن مرة كل شهر بالربيع والصيف لدعم نمو الأوراق العملاقة الممتدة.',
+    pruning_schedule:'الأوراق الضخمة معرضة للانشقاق الطبيعي بفعل الهواء وهو مظهر طبيعي لها، تقص الأوراق السفلية التالفة تماماً.',
+    care_methods:['امسح أوراقها الكبيرة بانتظام بقطعة ناعمة مبللة للحفاظ على النضارة واللمعان الطبيعي الاستوائي البراق.'],
+    killers:['🚫 قلة الإضاءة الشديدة توقف نموها تماماً وتسبب ترهل الأوراق الطويلة وانكسار أعناقها لأسفل.']
   }
 ];
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// STATE MANAGEMENT
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// APPLICATION CONTROLLER
 let catFilter='all';
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// POPULATE SELECT MENU & BADGES
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function initApp(){
   const select = document.getElementById('quick-plant-select');
-  document.getElementById('cat-count-badge').textContent = `(${PLANTS.length} نبتة)`;
+  document.getElementById('cat-count-badge').textContent = `(${PLANTS.length} نوع)`;
   
-  // Populate dropdown
   PLANTS.forEach((p, idx) => {
     const opt = new Option(`${p.emoji} ${p.name}`, idx);
     select.add(opt);
   });
 
   renderCatalog();
+  createFloatingLeaves();
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// RENDER CATALOG GRID
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function diffDots(d){
   const map={سهلة:1,متوسطة:2,صعبة:3}; const n=map[d]||1; let h='';
-  for(let i=1;i<=3;i++) h+=`<span class="diff-dot" style="background:${i<=n?'var(--gold)':'rgba(168,201,127,.15)'}"></span>`;
+  for(let i=1;i<=3;i++) h+=`<span class="diff-dot" style="background:${i<=n?'var(--nas-green)':'#e1e5e7'}"></span>`;
   return h;
 }
 
@@ -395,9 +597,7 @@ function renderCatalog(){
   let count=0;
 
   PLANTS.forEach((p, i) => {
-    // Filter by difficulty tab
     if(catFilter!=='all' && p.diff!==catFilter) return;
-    // Filter by search text
     if(q && !p.name.includes(q) && !p.sci.toLowerCase().includes(q)) return;
 
     count++;
@@ -416,7 +616,7 @@ function renderCatalog(){
       </div>
       <div class="cat-card-body">
         <div class="cat-desc">${p.desc}</div>
-        <div style="margin-top:auto; font-size:11px; color:var(--gold2); font-weight:600; display:flex; justify-content:space-between; align-items:center;">
+        <div style="margin-top:auto; font-size:12px; color:var(--nas-green); font-weight:800; display:flex; justify-content:space-between; align-items:center;">
           <span>عرض الدليل الشامل ←</span>
           <div class="diff-bar">${diffDots(p.diff)}</div>
         </div>
@@ -425,7 +625,7 @@ function renderCatalog(){
   });
 
   if(!count) {
-    grid.innerHTML='<div style="padding:40px; text-align:center; color:rgba(168,201,127,.3); grid-column:1/-1">عذراً، لم نجد نباتات تطابق بحثك 🌿</div>';
+    grid.innerHTML='<div style="padding:40px; text-align:center; color:var(--text-muted); grid-column:1/-1">لا توجد نباتات تطابق بحثك 🌿</div>';
   }
 }
 
@@ -436,9 +636,7 @@ function setFilter(f, btn){
   renderCatalog();
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// MODAL CONTROLS & RICH DETAILS
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// MODAL CONTROLS
 function openModal(idx){
   const p = PLANTS[idx];
   const content = document.getElementById('modal-content');
@@ -481,7 +679,7 @@ function openModal(idx){
       ${p.care_methods.map(m => `<div class="modal-item"><span class="modal-item-ico">🌱</span><div>${m}</div></div>`).join('')}
     </div>
 
-    <div class="modal-section-title" style="color:#f8a080; border-right-color:#e55a3a">🚨 أشياء قد تقتل النبتة! (احذرها)</div>
+    <div class="modal-section-title" style="color:var(--danger-text); border-right-color:var(--danger-text)">🚨 أشياء قد تقتل النبتة! (احذرها)</div>
     <div class="danger-box">
       ${p.killers.map(k => `<div class="danger-item"><div>${k}</div></div>`).join('')}
     </div>
@@ -493,17 +691,32 @@ function openModal(idx){
 function closeModal(e){if(e.target===document.getElementById('modal-overlay')) closeModalDirect()}
 function closeModalDirect(){document.getElementById('modal-overlay').classList.remove('open')}
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// FALLBACK PARTICLES FOR AESTHETICS
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-['🍃','🌿','🍀','🌱'].forEach((e,i)=>{
-  const d=document.createElement('div');
-  d.className='ptcl'; d.textContent=e;
-  d.style.cssText=`right:${10+i*22}%; font-size:${14+i*4}px; animation-duration:${18+i*3}s; animation-delay:${i*2}s`;
-  document.body.appendChild(d);
-});
+// FLOATING LEAVES SYSTEM
+function createFloatingLeaves(){
+  const container = document.getElementById('bg-leaves');
+  const leaves = ['🍃','🌿','🌱'];
+  const count = 12;
+  
+  for(let i=0; i<count; i++){
+    const d = document.createElement('div');
+    d.className = 'ptcl';
+    d.textContent = leaves[Math.floor(Math.random() * leaves.length)];
+    
+    const startX = Math.random() * 100;
+    const size = 14 + Math.random() * 18;
+    const duration = 16 + Math.random() * 18;
+    const delay = Math.random() * -20;
+    
+    d.style.cssText = `
+      left: ${startX}%;
+      font-size: ${size}px;
+      animation-duration: ${duration}s;
+      animation-delay: ${delay}s;
+    `;
+    container.appendChild(d);
+  }
+}
 
-// Run
 initApp();
 </script>
 </body>
